@@ -1,0 +1,19 @@
+{
+  "name": "templato",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "templato": "./index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.22.11",
+    "@types/node": "^20.5.9"
+  }
+}
