@@ -1,19 +1,34 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
+import * as afs from 'node:fs/promises';
+const TEMPLATO_DIR_NAME = 'templato';
+const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`;
+const CURR_DIR = process.cwd();
 async function main() {
-    const TEMPLATO_DIR_NAME = 'templato';
-    console.log("Hello World11");
-    const CURR_DIR = process.cwd();
     const args = process.argv;
-    console.log("CURR_DIR");
-    console.log(CURR_DIR);
-    try {
-        fs.mkdirSync(TEMPLATO_DIR_NAME);
+    if (!fs.existsSync(TEMPLATO_DIR_PATH)) {
+        await afs.mkdir(`${TEMPLATO_DIR_PATH}/templates`, { recursive: true });
+        console.log(`Created ${TEMPLATO_DIR_NAME} directory at ${TEMPLATO_DIR_PATH}`);
     }
-    catch (e) {
-        console.log("e");
-        console.log(e);
+    const command = args[2];
+    switch (command) {
+        case 'create': {
+            console.log('Creating template...');
+            const templateName = args[3];
+            const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`;
+            if (!fs.existsSync(templatePath)) {
+                await afs.mkdir(templatePath, { recursive: true });
+                console.log(`Created ${templateName} template at ${templatePath}`);
+            }
+            else {
+                console.log(`Template ${templateName} already exists`);
+            }
+            break;
+        }
+        default: {
+            console.log('Command not found');
+            break;
+        }
     }
-    console.log("args");
 }
 main();

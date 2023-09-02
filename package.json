@@ -58,6 +58,12 @@
     "@babel/core": "^7.22.11",
     "@types/node": "^20.5.9",
     "typescript": "^5.2.2"
+<<<<<<< HEAD
 >>>>>>> 6b75282 (added typescript)
+=======
+  },
+  "dependencies": {
+    "zod": "^3.22.2"
+>>>>>>> 0797bd4 (some basic functionality)
   }
 }
