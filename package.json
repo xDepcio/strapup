@@ -16,5 +16,8 @@
     "@babel/core": "^7.22.11",
     "@types/node": "^20.5.9",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "zod": "^3.22.2"
   }
 }
