@@ -1,9 +1,12 @@
 import ignore from "ignore"
 import { TEMPLATO_DIR_PATH, WORK_DIR, args } from "./index.js"
 import * as fs from 'fs'
-import { copyDirectoryContents } from "./utils.js"
+import { copyDirectoryContents, getParameterNames } from "./utils.js"
 import path from "path"
 import * as afs from 'node:fs/promises'
+import { scripts } from "./scripts.js"
+import { inspect } from "util"
+import { execSync } from "child_process"
 
 interface SaveOptions {
     templateName: string
@@ -78,8 +81,9 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
     }
 
     if (!fs.existsSync(destinationAbsolutePath)) {
-        console.log(`Directory specified as destination: ${destinationAbsolutePath} does not exists`)
-        return
+        fs.mkdirSync(destinationAbsolutePath, { recursive: true })
+        console.log(`Directory ${destinationAbsolutePath} does not exists. Creating it...`)
+        // return
     }
 
     copyDirectoryContents(templatePath, destinationAbsolutePath)
@@ -101,4 +105,27 @@ export function list() {
     templates.forEach(template => {
         console.log(template)
     })
+}
+
+
+export type ScriptsNames = keyof typeof scripts
+interface RunScriptOptions {
+    scriptName: ScriptsNames
+}
+
+export function runScript({ scriptName }: RunScriptOptions) {
+    console.log(`Running script ${scriptName}...`)
+    const scriptParams = args.slice(4)
+    const script = scripts[scriptName]
+
+    if (script.length !== scriptParams.length) {
+        console.log(`Script ${scriptName} requires ${script.length} parameters, but ${scriptParams.length} were provided`)
+        const params = getParameterNames(script)
+        console.log(`Parameters needed: ${params.join(', ')}`)
+        return
+    }
+    // @ts-ignore length checked above
+    const commands = script(...scriptParams)
+    const concatedCommands = commands.join('\n')
+    execSync(concatedCommands, { stdio: 'inherit' })
 }
