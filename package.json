@@ -63,6 +63,7 @@
 =======
   },
   "dependencies": {
+    "ignore": "^5.2.4",
     "zod": "^3.22.2"
 >>>>>>> 0797bd4 (some basic functionality)
   }
