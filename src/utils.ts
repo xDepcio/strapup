@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { scripts } from './scripts'
 
 export const copyDirectoryContents = (
     fromPath: string,
@@ -35,4 +36,20 @@ export const copyDirectoryContents = (
             copyDirectoryContents(`${toPath}/${file}`, `${fromPath}/${file}`)
         }
     })
+}
+
+// export const isOfType = <T>(varToBeChecked: any, propertyToCheckFor: keyof T): varToBeChecked is T => {
+//     return (varToBeChecked as T)[propertyToCheckFor] !== undefined
+// }
+// export const isOfType = <T>(varToBeChecked: any): varToBeChecked is T => {
+//     return varToBeChecked !== undefined
+// }
+
+export function getParameterNames(func: Function) {
+    const funcString = func.toString();
+    const parameterNames = funcString
+        .slice(funcString.indexOf('(') + 1, funcString.indexOf(')'))
+        .split(',')
+        .map((param) => param.trim());
+    return parameterNames.filter(Boolean); // Removes empty strings
 }

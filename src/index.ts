@@ -2,7 +2,8 @@
 
 import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
-import { list, paste, save } from './commandsHandlers.js'
+import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js'
+import { scripts } from './scripts.js'
 
 export const TEMPLATO_DIR_NAME = 'templato'
 export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
@@ -18,6 +19,15 @@ async function main() {
     const command = args[2]
 
     switch (command) {
+        case 'run-script': {
+            const scriptName = args[3]
+            if (!scripts.hasOwnProperty(scriptName)) {
+                console.log('Script does not exist')
+                return
+            }
+            runScript({ scriptName: scriptName as ScriptsNames })
+            break
+        }
         case 'save': {
             const templateName = args[3]
             const sourceRelativePath = args[4] || '.'
