@@ -18,6 +18,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "ignore": "^5.2.4",
     "zod": "^3.22.2"
   }
 }

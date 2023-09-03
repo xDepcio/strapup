@@ -2,7 +2,8 @@
 
 import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
-import { z } from "zod";
+import ignore from 'ignore'
+import path from 'path'
 
 const TEMPLATO_DIR_NAME = 'templato'
 const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
@@ -19,13 +20,16 @@ async function main() {
     const command = args[2]
 
     switch (command) {
-        case 'create': {
-            console.log('Creating template...')
+        case 'save': {
+            console.log('Saving template...')
 
             const templateName = args[3]
             const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
             const sourceRelativePath = args[4] || '.'
             const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
+
+            const flagArgs = args.slice(5)
+            const withGitignore = flagArgs.includes('--with-gitignore')
 
             if (!fs.existsSync(sourceAbsolutePath)) {
                 console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
@@ -34,15 +38,42 @@ async function main() {
 
             if (!fs.existsSync(templatePath)) {
                 await afs.mkdir(templatePath, { recursive: true })
+                if (withGitignore) {
+                    const gitignorePath = `${sourceAbsolutePath}/.gitignore`
+                    if (!fs.existsSync(gitignorePath)) {
+                        console.log(`No .gitignore found in ${sourceAbsolutePath}`)
+                        return
+                    }
+
+                    const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
+                    const gitignore = ignore().add(gitignoreContents)
+                    gitignore.add('.git')
+                    gitignore.add('.gitignore')
+
+                    createDirectoryContents(templatePath, sourceAbsolutePath, {
+                        validate: ({ createName, createPath, isFile, sourcePath }) => {
+                            const relPath = path.relative(sourceAbsolutePath, sourcePath)
+                            const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
+
+                            if (ignores) {
+                                console.log(`File ${sourcePath} ignored (--with-gitignore))`)
+                                return false
+                            }
+                            return true
+                        }
+                    })
+
+                    break
+                }
                 createDirectoryContents(templatePath, sourceAbsolutePath)
-                console.log(`Created ${templateName} template at ${templatePath}`)
+                console.log(`Saved ${templateName} template at ${templatePath}`)
             } else {
                 console.log(`Template ${templateName} already exists`)
             }
             break
         }
-        case 'spawn': {
-            console.log('Spawning template...')
+        case 'paste': {
+            console.log('Pasting template...')
 
             const templateName = args[3]
             const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
@@ -60,7 +91,7 @@ async function main() {
             }
 
             createDirectoryContents(destinationAbsolutePath, templatePath)
-            console.log(`Created ${destinationRelativePath} directory at ${destinationAbsolutePath}`)
+            console.log(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
             break
         }
         case 'list': {
@@ -86,7 +117,14 @@ async function main() {
     }
 }
 
-const createDirectoryContents = (toCopyToPath: string, toCopyFromPath: string) => {
+const createDirectoryContents = (
+    toCopyToPath: string,
+    toCopyFromPath: string,
+    options: {
+        validate: ({ createName, createPath, sourcePath, isFile }:
+            { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
+    } = { validate: () => true }
+) => {
     const filesToCreate = fs.readdirSync(toCopyFromPath)
 
     filesToCreate.forEach(file => {
@@ -98,10 +136,18 @@ const createDirectoryContents = (toCopyToPath: string, toCopyFromPath: string) =
             const contents = fs.readFileSync(origFilePath, 'utf8')
 
             const writePath = `${toCopyToPath}/${file}`
+
+            if (!options.validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
+                return
+            }
+
             fs.writeFileSync(writePath, contents, 'utf8')
         } else if (stats.isDirectory()) {
-            fs.mkdirSync(`${toCopyToPath}/${file}`)
+            if (!options.validate({ createName: file, createPath: `${toCopyToPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
+                return
+            }
 
+            fs.mkdirSync(`${toCopyToPath}/${file}`)
             createDirectoryContents(`${toCopyFromPath}/${file}`, `${toCopyToPath}/${file}`)
         }
     })

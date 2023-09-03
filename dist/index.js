@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 import * as fs from 'fs';
 import * as afs from 'node:fs/promises';
+import ignore from 'ignore';
+import path from 'path';
 const TEMPLATO_DIR_NAME = 'templato';
 const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`;
 const WORK_DIR = process.cwd();
@@ -12,28 +14,62 @@ async function main() {
     }
     const command = args[2];
     switch (command) {
-        case 'create': {
-            console.log('Creating template...');
+        case 'save': {
+            console.log('Saving template...');
             const templateName = args[3];
             const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`;
             const sourceRelativePath = args[4] || '.';
             const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`;
+            const flagArgs = args.slice(5);
+            const withGitignore = flagArgs.includes('--with-gitignore');
             if (!fs.existsSync(sourceAbsolutePath)) {
                 console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`);
                 return;
             }
             if (!fs.existsSync(templatePath)) {
                 await afs.mkdir(templatePath, { recursive: true });
+                if (withGitignore) {
+                    const gitignorePath = `${sourceAbsolutePath}/.gitignore`;
+                    if (!fs.existsSync(gitignorePath)) {
+                        console.log(`No .gitignore found in ${sourceAbsolutePath}`);
+                        return;
+                    }
+                    const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8');
+                    console.log(`gitignoreContents ${gitignoreContents}`);
+                    const gitignore = ignore().add(gitignoreContents);
+                    gitignore.add('.git');
+                    gitignore.add('.gitignore');
+                    // console.log(`sourceAbsolutePath ${sourceAbsolutePath}`)
+                    // const relPath = path.relative(sourceAbsolutePath, `${sourceAbsolutePath}/redux`)
+                    // console.log(`relPath ${relPath}`)
+                    // break
+                    createDirectoryContents(templatePath, sourceAbsolutePath, {
+                        validate: ({ createName, createPath, isFile, sourcePath }) => {
+                            // console.log(`sap ${sourceAbsolutePath} sp ${sourcePath}`)
+                            const relPath = path.relative(sourceAbsolutePath, sourcePath);
+                            // console.log(`relPath ${relPath}`)
+                            const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'));
+                            // console.log(`ignores ${ignores}`)
+                            if (ignores) {
+                                // console.log(`sap ${sourceAbsolutePath} sp ${sourcePath}`)
+                                console.log(`File ${sourcePath} ignored (--with-gitignore))`);
+                                return false;
+                            }
+                            return true;
+                        }
+                    });
+                    break;
+                }
                 createDirectoryContents(templatePath, sourceAbsolutePath);
-                console.log(`Created ${templateName} template at ${templatePath}`);
+                console.log(`Saved ${templateName} template at ${templatePath}`);
             }
             else {
                 console.log(`Template ${templateName} already exists`);
             }
             break;
         }
-        case 'spawn': {
-            console.log('Spawning template...');
+        case 'paste': {
+            console.log('Pasting template...');
             const templateName = args[3];
             const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`;
             const destinationRelativePath = args[4] || '.';
@@ -47,7 +83,7 @@ async function main() {
                 return;
             }
             createDirectoryContents(destinationAbsolutePath, templatePath);
-            console.log(`Created ${destinationRelativePath} directory at ${destinationAbsolutePath}`);
+            console.log(`Pasted ${templateName} template to ${destinationAbsolutePath}`);
             break;
         }
         case 'list': {
@@ -69,7 +105,7 @@ async function main() {
         }
     }
 }
-const createDirectoryContents = (toCopyToPath, toCopyFromPath) => {
+const createDirectoryContents = (toCopyToPath, toCopyFromPath, options = { validate: () => true }) => {
     const filesToCreate = fs.readdirSync(toCopyFromPath);
     filesToCreate.forEach(file => {
         const origFilePath = `${toCopyFromPath}/${file}`;
@@ -77,9 +113,15 @@ const createDirectoryContents = (toCopyToPath, toCopyFromPath) => {
         if (stats.isFile()) {
             const contents = fs.readFileSync(origFilePath, 'utf8');
             const writePath = `${toCopyToPath}/${file}`;
+            if (!options.validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
+                return;
+            }
             fs.writeFileSync(writePath, contents, 'utf8');
         }
         else if (stats.isDirectory()) {
+            if (!options.validate({ createName: file, createPath: `${toCopyToPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
+                return;
+            }
             fs.mkdirSync(`${toCopyToPath}/${file}`);
             createDirectoryContents(`${toCopyFromPath}/${file}`, `${toCopyToPath}/${file}`);
         }
