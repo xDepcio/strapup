@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
@@ -38,4 +39,7 @@ next-env.d.ts
 # contentlayer
 .contentlayer
 
+=======
+node_modules/
+>>>>>>> 2bc126c (seperated code fragments for maintainability)
 dist/

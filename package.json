@@ -64,6 +64,7 @@
   },
   "dependencies": {
     "ignore": "^5.2.4",
+    "inquirer": "^9.2.10",
     "zod": "^3.22.2"
 >>>>>>> 0797bd4 (some basic functionality)
   }
