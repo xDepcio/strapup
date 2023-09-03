@@ -18,6 +18,8 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@clack/core": "^0.3.3",
+    "@clack/prompts": "^0.7.0",
     "ignore": "^5.2.4",
     "inquirer": "^9.2.10",
     "zod": "^3.22.2"
