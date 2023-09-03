@@ -2,16 +2,14 @@
 
 import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
-import ignore from 'ignore'
-import path from 'path'
+import { list, paste, save } from './commandsHandlers.js'
 
-const TEMPLATO_DIR_NAME = 'templato'
-const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
-const WORK_DIR = process.cwd()
+export const TEMPLATO_DIR_NAME = 'templato'
+export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
+export const WORK_DIR = process.cwd()
+export const args = process.argv
 
 async function main() {
-    const args = process.argv
-
     if (!fs.existsSync(TEMPLATO_DIR_PATH)) {
         await afs.mkdir(`${TEMPLATO_DIR_PATH}/templates`, { recursive: true })
         console.log(`Created ${TEMPLATO_DIR_NAME} directory at ${TEMPLATO_DIR_PATH}`)
@@ -21,94 +19,27 @@ async function main() {
 
     switch (command) {
         case 'save': {
-            console.log('Saving template...')
-
             const templateName = args[3]
-            const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
             const sourceRelativePath = args[4] || '.'
-            const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
             const flagArgs = args.slice(5)
             const withGitignore = flagArgs.includes('--with-gitignore')
 
-            if (!fs.existsSync(sourceAbsolutePath)) {
-                console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
-                return
-            }
-
-            if (!fs.existsSync(templatePath)) {
-                await afs.mkdir(templatePath, { recursive: true })
-                if (withGitignore) {
-                    const gitignorePath = `${sourceAbsolutePath}/.gitignore`
-                    if (!fs.existsSync(gitignorePath)) {
-                        console.log(`No .gitignore found in ${sourceAbsolutePath}`)
-                        return
-                    }
-
-                    const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
-                    const gitignore = ignore().add(gitignoreContents)
-                    gitignore.add('.git')
-                    gitignore.add('.gitignore')
-
-                    createDirectoryContents(templatePath, sourceAbsolutePath, {
-                        validate: ({ createName, createPath, isFile, sourcePath }) => {
-                            const relPath = path.relative(sourceAbsolutePath, sourcePath)
-                            const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
-
-                            if (ignores) {
-                                console.log(`File ${sourcePath} ignored (--with-gitignore))`)
-                                return false
-                            }
-                            return true
-                        }
-                    })
-
-                    break
-                }
-                createDirectoryContents(templatePath, sourceAbsolutePath)
-                console.log(`Saved ${templateName} template at ${templatePath}`)
-            } else {
-                console.log(`Template ${templateName} already exists`)
-            }
+            await save({ sourceRelativePath, templateName, withGitignore })
             break
         }
         case 'paste': {
-            console.log('Pasting template...')
-
             const templateName = args[3]
-            const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
             const destinationRelativePath = args[4] || '.'
-            const destinationAbsolutePath = `${WORK_DIR}/${destinationRelativePath}`
 
-            if (!fs.existsSync(templatePath)) {
-                console.log(`Template ${templateName} does not exist`)
-                return
-            }
-
-            if (!fs.existsSync(destinationAbsolutePath)) {
-                console.log(`Directory specified as destination: ${destinationAbsolutePath} does not exists`)
-                return
-            }
-
-            createDirectoryContents(destinationAbsolutePath, templatePath)
-            console.log(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
+            paste({
+                templateName: templateName,
+                destinationRelativePath: destinationRelativePath
+            })
             break
         }
         case 'list': {
-            console.log('Listing templates...')
-
-            const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`)
-
-            if (templates.length === 0) {
-                console.log('No templates found')
-                return
-            }
-
-            console.log('Templates:')
-            templates.forEach(template => {
-                console.log(template)
-            })
-            break
+            list()
         }
         default: {
             console.log('Command not found')
@@ -117,40 +48,5 @@ async function main() {
     }
 }
 
-const createDirectoryContents = (
-    toCopyToPath: string,
-    toCopyFromPath: string,
-    options: {
-        validate: ({ createName, createPath, sourcePath, isFile }:
-            { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
-    } = { validate: () => true }
-) => {
-    const filesToCreate = fs.readdirSync(toCopyFromPath)
-
-    filesToCreate.forEach(file => {
-        const origFilePath = `${toCopyFromPath}/${file}`
-
-        const stats = fs.statSync(origFilePath)
-
-        if (stats.isFile()) {
-            const contents = fs.readFileSync(origFilePath, 'utf8')
-
-            const writePath = `${toCopyToPath}/${file}`
-
-            if (!options.validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
-                return
-            }
-
-            fs.writeFileSync(writePath, contents, 'utf8')
-        } else if (stats.isDirectory()) {
-            if (!options.validate({ createName: file, createPath: `${toCopyToPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
-                return
-            }
-
-            fs.mkdirSync(`${toCopyToPath}/${file}`)
-            createDirectoryContents(`${toCopyFromPath}/${file}`, `${toCopyToPath}/${file}`)
-        }
-    })
-}
 
 main()
