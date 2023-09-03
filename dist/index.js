@@ -50,6 +50,19 @@ async function main() {
             console.log(`Created ${destinationRelativePath} directory at ${destinationAbsolutePath}`);
             break;
         }
+        case 'list': {
+            console.log('Listing templates...');
+            const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`);
+            if (templates.length === 0) {
+                console.log('No templates found');
+                return;
+            }
+            console.log('Templates:');
+            templates.forEach(template => {
+                console.log(template);
+            });
+            break;
+        }
         default: {
             console.log('Command not found');
             break;
