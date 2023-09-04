@@ -7,6 +7,7 @@ import color from 'picocolors';
 import { searchselect } from './clack/SearchableSelection.js';
 import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js';
 import { scripts } from './scripts.js';
+import { getParameterNames } from './utils.js';
 
 export const TEMPLATO_DIR_NAME = 'templato'
 export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
@@ -35,12 +36,26 @@ async function main() {
 
     switch (command) {
         case 'run-script': {
-            const scriptName = args[3]
-            if (!scripts.hasOwnProperty(scriptName)) {
-                console.log('Script does not exist')
-                return
+            const scriptName = await searchselect({
+                message: 'What script do you want to run?',
+                options: Object.keys(scripts).map(script => ({ value: script, label: script })),
+            }) as ScriptsNames
+            const script = scripts[scriptName]
+
+            const scriptParams = getParameterNames(scripts[scriptName])
+            const scriptArguments: string[] = []
+
+            for (const param of scriptParams) {
+                const paramValue = await p.text({
+                    message: `Provide value for ${param}`,
+                    validate: (value) => {
+                        if (!value) return 'Please enter a value.'
+                    }
+                }) as string
+                scriptArguments.push(paramValue)
             }
-            runScript({ scriptName: scriptName as ScriptsNames })
+
+            runScript({ functionParams: scriptArguments, functionToRun: script })
             break
         }
         case 'save': {
