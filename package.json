@@ -1,7 +1,18 @@
 {
+<<<<<<< HEAD
   "name": "strapup-web",
   "version": "0.1.0",
   "private": true,
+=======
+  "name": "templato",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "templato": "./dist/index-clack.js"
+  },
+>>>>>>> 2fdc6c6 (seperatefd extended clack files)
   "scripts": {
     "dev": "next dev",
     "build": "next build",

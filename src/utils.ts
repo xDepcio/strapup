@@ -38,13 +38,6 @@ export const copyDirectoryContents = (
     })
 }
 
-// export const isOfType = <T>(varToBeChecked: any, propertyToCheckFor: keyof T): varToBeChecked is T => {
-//     return (varToBeChecked as T)[propertyToCheckFor] !== undefined
-// }
-// export const isOfType = <T>(varToBeChecked: any): varToBeChecked is T => {
-//     return varToBeChecked !== undefined
-// }
-
 export function getParameterNames(func: Function) {
     const funcString = func.toString();
     const parameterNames = funcString
