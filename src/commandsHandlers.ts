@@ -7,6 +7,7 @@ import * as afs from 'node:fs/promises'
 import { scripts } from "./scripts.js"
 import { inspect } from "util"
 import { execSync } from "child_process"
+import * as p from '@clack/prompts';
 
 interface SaveOptions {
     templateName: string
@@ -70,24 +71,23 @@ interface PasteOptions {
 }
 
 export function paste({ templateName, destinationRelativePath }: PasteOptions) {
-    console.log('Pasting template...')
+    p.log.message(`Pasting template...`)
 
     const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
     const destinationAbsolutePath = `${WORK_DIR}/${destinationRelativePath}`
 
     if (!fs.existsSync(templatePath)) {
-        console.log(`Template ${templateName} does not exist`)
+        p.log.error(`Template ${templateName} does not exist`)
         return
     }
 
     if (!fs.existsSync(destinationAbsolutePath)) {
         fs.mkdirSync(destinationAbsolutePath, { recursive: true })
-        console.log(`Directory ${destinationAbsolutePath} does not exists. Creating it...`)
-        // return
+        p.log.info(`Directory ${destinationAbsolutePath} does not exists. Creating it...`)
     }
 
     copyDirectoryContents(templatePath, destinationAbsolutePath)
-    console.log(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
+    p.log.success(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
 }
 
 
