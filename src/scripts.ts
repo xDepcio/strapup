@@ -1,7 +1,7 @@
 export const scripts = {
-    nextshad: (name: string) => [
-        `npx create-next-app ${name} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`,
-        `cd ${name}`,
+    nextshad: (projectName: string) => [
+        `npx create-next-app ${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`,
+        `cd ${projectName}`,
         `npx shadcn-ui@latest init -y`,
         `templato paste redux-ts redux`
     ],

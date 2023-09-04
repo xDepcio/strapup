@@ -107,25 +107,18 @@ export function list() {
     })
 }
 
-
+export type ScriptsFunctions = typeof scripts[keyof typeof scripts]
 export type ScriptsNames = keyof typeof scripts
+
 interface RunScriptOptions {
-    scriptName: ScriptsNames
+    functionToRun: ScriptsFunctions
+    functionParams: string[]
 }
 
-export function runScript({ scriptName }: RunScriptOptions) {
-    console.log(`Running script ${scriptName}...`)
-    const scriptParams = args.slice(4)
-    const script = scripts[scriptName]
 
-    if (script.length !== scriptParams.length) {
-        console.log(`Script ${scriptName} requires ${script.length} parameters, but ${scriptParams.length} were provided`)
-        const params = getParameterNames(script)
-        console.log(`Parameters needed: ${params.join(', ')}`)
-        return
-    }
-    // @ts-ignore length checked above
-    const commands = script(...scriptParams)
+export function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
+    // @ts-ignore
+    const commands = functionToRun(...functionParams)
     const concatedCommands = commands.join('\n')
     execSync(concatedCommands, { stdio: 'inherit' })
 }

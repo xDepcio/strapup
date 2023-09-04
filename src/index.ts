@@ -25,7 +25,7 @@ async function main() {
                 console.log('Script does not exist')
                 return
             }
-            runScript({ scriptName: scriptName as ScriptsNames })
+            // runScript({ scriptName: scriptName as ScriptsNames })
             break
         }
         case 'save': {
