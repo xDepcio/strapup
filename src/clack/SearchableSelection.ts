@@ -1,8 +1,8 @@
 import * as pcore from '@clack/core';
 import color from 'picocolors';
 
-export const TEMPLATO_DIR_NAME = 'templato'
-export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
+export const STRAPUP_DIR_NAME = 'strapup'
+export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
 export const WORK_DIR = process.cwd()
 export const args = process.argv
 
