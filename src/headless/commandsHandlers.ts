@@ -1,7 +1,7 @@
 import * as p from '@clack/prompts'
 import { execSync } from "child_process"
 import * as fs from 'fs'
-import ignore from "ignore"
+// import ignore from "ignore"
 import * as afs from 'node:fs/promises'
 import path from "path"
 import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
@@ -15,52 +15,52 @@ interface SaveOptions {
 }
 
 export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
-    console.log('Saving template...')
+    // console.log('Saving template...')
 
-    const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
-    const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
+    // const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
+    // const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
-    if (!fs.existsSync(sourceAbsolutePath)) {
-        console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
-        return
-    }
+    // if (!fs.existsSync(sourceAbsolutePath)) {
+    //     console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
+    //     return
+    // }
 
-    if (!fs.existsSync(templatePath)) {
-        await afs.mkdir(templatePath, { recursive: true })
+    // if (!fs.existsSync(templatePath)) {
+    //     await afs.mkdir(templatePath, { recursive: true })
 
-        if (withGitignore) {
-            const gitignorePath = `${sourceAbsolutePath}/.gitignore`
-            if (!fs.existsSync(gitignorePath)) {
-                console.log(`No .gitignore found in ${sourceAbsolutePath}`)
-                return
-            }
+    //     if (withGitignore) {
+    //         const gitignorePath = `${sourceAbsolutePath}/.gitignore`
+    //         if (!fs.existsSync(gitignorePath)) {
+    //             console.log(`No .gitignore found in ${sourceAbsolutePath}`)
+    //             return
+    //         }
 
-            const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
-            const gitignore = ignore().add(gitignoreContents)
-            gitignore.add('.git')
-            gitignore.add('.gitignore')
+    //         const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
+    //         const gitignore = ignore().add(gitignoreContents)
+    //         gitignore.add('.git')
+    //         gitignore.add('.gitignore')
 
-            copyDirectoryContents(sourceAbsolutePath, templatePath, {
-                validate: ({ createName, createPath, isFile, sourcePath }) => {
-                    const relPath = path.relative(sourceAbsolutePath, sourcePath)
-                    const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
+    //         copyDirectoryContents(sourceAbsolutePath, templatePath, {
+    //             validate: ({ createName, createPath, isFile, sourcePath }) => {
+    //                 const relPath = path.relative(sourceAbsolutePath, sourcePath)
+    //                 const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
 
-                    if (ignores) {
-                        console.log(`File ${sourcePath} ignored (--with-gitignore)`)
-                        return false
-                    }
-                    return true
-                }
-            })
-        }
-        else {
-            copyDirectoryContents(sourceAbsolutePath, templatePath)
-            console.log(`Saved ${templateName} template at ${templatePath}`)
-        }
-    }
-    else {
-        console.log(`Template ${templateName} already exists`)
-    }
+    //                 if (ignores) {
+    //                     console.log(`File ${sourcePath} ignored (--with-gitignore)`)
+    //                     return false
+    //                 }
+    //                 return true
+    //             }
+    //         })
+    //     }
+    //     else {
+    //         copyDirectoryContents(sourceAbsolutePath, templatePath)
+    //         console.log(`Saved ${templateName} template at ${templatePath}`)
+    //     }
+    // }
+    // else {
+    //     console.log(`Template ${templateName} already exists`)
+    // }
 }
 
 

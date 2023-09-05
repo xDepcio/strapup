@@ -5,8 +5,8 @@
   "private": true,
 =======
   "name": "templato",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.1.0",
+  "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
   "bin": {
@@ -75,6 +75,7 @@
   },
   "dependencies": {
     "@clack/core": "^0.3.3",
+<<<<<<< HEAD
     "@clack/prompts": "^0.7.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -86,5 +87,8 @@
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.2"
 >>>>>>> 0797bd4 (some basic functionality)
+=======
+    "@clack/prompts": "^0.7.0"
+>>>>>>> c69b0d7 (removed not needed dependancies)
   }
 }

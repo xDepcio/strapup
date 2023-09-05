@@ -1,14 +1,13 @@
 import * as p from '@clack/prompts'
 import { execSync } from "child_process"
 import * as fs from 'fs'
-import ignore from "ignore"
 import * as afs from 'node:fs/promises'
 import path from "path"
+import color from 'picocolors'
+import { S_BAR } from './clack/SearchableSelection.js'
 import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "./scripts.js"
 import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
-import { S_BAR, S_BAR_END, S_BAR_START } from './clack/SearchableSelection.js'
-import color from 'picocolors'
 
 interface SaveOptions {
     templateName: string
