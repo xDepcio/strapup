@@ -42,7 +42,7 @@ async function main() {
             { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
             { value: 'save', label: `${color.underline(color.cyan('save'))} - save a new template.` },
             { value: 'paste', label: `${color.underline(color.cyan('paste'))} - paste saved template.` },
-            { value: 'list', label: `${color.underline(color.cyan('list'))} - lsit saved templates.` },
+            { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
         ],
     })
 
@@ -131,6 +131,7 @@ async function main() {
         }
         case 'list': {
             list()
+            break
         }
         default: {
             console.log('Command not found')

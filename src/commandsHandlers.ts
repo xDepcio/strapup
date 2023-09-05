@@ -103,18 +103,16 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 
 
 export function list() {
-    console.log('Listing templates...')
-
     const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`)
 
     if (templates.length === 0) {
-        console.log('No templates found')
+        p.log.warn(`You don't have any saved templates.`)
         return
     }
 
-    console.log('Templates:')
+    p.log.success(`Your templates:`)
     templates.forEach(template => {
-        console.log(template)
+        console.log(`${color.gray(S_BAR)}  ${color.dim(template)}`)
     })
 }
 
