@@ -92,9 +92,10 @@ async function main() {
             const flags = await p.multiselect({
                 message: 'Select additional options.',
                 options: [
-                    { value: '--with-gitignore', label: `Don't save files which are in source directory .gitignore`, hint: 'make sure you use templato from correct path.' },
+                    { value: '--with-gitignore', label: `Ignore files not tracked by git`, hint: 'make sure there is a valid repo.' },
                 ],
                 required: false,
+                initialValues: ['--with-gitignore'],
             }) as string[]
 
             const withGitignore = flags.includes('--with-gitignore')

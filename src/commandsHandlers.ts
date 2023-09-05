@@ -6,7 +6,7 @@ import * as afs from 'node:fs/promises'
 import path from "path"
 import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "./scripts.js"
-import { copyDirectoryContents } from "./utils.js"
+import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
 import { S_BAR, S_BAR_END, S_BAR_START } from './clack/SearchableSelection.js'
 import color from 'picocolors'
 
@@ -38,42 +38,31 @@ export async function save({ templateName, sourceRelativePath, withGitignore }: 
         await afs.mkdir(templatePath, { recursive: true })
 
         if (withGitignore) {
-            const gitignorePath = `${sourceAbsolutePath}/.gitignore`
-            if (fs.existsSync(gitignorePath)) {
-                const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
-                const gitignore = ignore().add(gitignoreContents)
-                gitignore.add('.git')
-                gitignore.add('.gitignore')
-
-                copyDirectoryContents(sourceAbsolutePath, templatePath, {
-                    validate: ({ createName, createPath, isFile, sourcePath }) => {
-                        const relPath = path.relative(sourceAbsolutePath, sourcePath)
-                        const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
-
-                        if (ignores) {
-                            const normalizedSrcPath = path.normalize(sourcePath)
-                            const isFile = fs.statSync(normalizedSrcPath).isFile()
-                            p.log.info(`${isFile ? 'File' : 'Directory'} at ${color.dim(normalizedSrcPath)} ignored by .gitignore`)
-                            return false
-                        }
-                        return true
+            let files: string[] = []
+            try {
+                files = await getFilesIgnoredByGit()
+            } catch (e) {
+                p.log.warn(`Problem with checking git files: ${color.dim((e as Error).message)}`)
+            }
+            copyDirectoryContents(sourceAbsolutePath, templatePath, {
+                validate: ({ createName, createPath, isFile, sourcePath }) => {
+                    if (files.includes(createName)) {
+                        p.log.info(`${color.dim(createName)} ignored by git. Skipping It...`)
+                        return false
                     }
-                })
-                p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
-            }
-            else {
-                p.log.warn(`No .gitignore found in ${sourceAbsolutePath}`)
-                copyDirectoryContents(sourceAbsolutePath, templatePath)
-                p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
-            }
+                    return true
+                }
+            })
+
+            p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
         }
         else {
             copyDirectoryContents(sourceAbsolutePath, templatePath)
-            p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
+            p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
         }
     }
     else {
-        p.log.error(`Aborted saving ${templateName} template.`)
+        p.log.error(`Aborted saving ${color.cyan(templateName)} template.`)
     }
 }
 
