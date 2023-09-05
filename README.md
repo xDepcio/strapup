@@ -32,3 +32,8 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Instalation
+`npm i strapup -g` - install globally to be able to paste and save your templates anywhere.
+
+### Basic use
+`npx strapup` - Opens up interactive CLI. Follow on-screen informations to save/paste templates and more.

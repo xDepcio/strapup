@@ -4,23 +4,27 @@ import * as p from '@clack/prompts';
 import * as fs from 'fs';
 import * as afs from 'node:fs/promises';
 import color from 'picocolors';
-import { searchselect } from './clack/SearchableSelection.js';
+import { S_BAR, searchselect } from './clack/SearchableSelection.js';
 import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js';
 import { scripts } from './scripts.js';
 import { getParameterNames } from './utils.js';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 import { execSync } from 'child_process';
+import { scriptsContent } from './constants.js';
 
-export const STRAPUP_DIR_NAME = 'strapup'
-export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
-export const WORK_DIR = process.cwd()
 export const args = process.argv
 
 // @ts-ignore
 export const __filename = fileURLToPath(import.meta.url);
 // @ts-ignore
 export const __dirname = dirname(fileURLToPath(import.meta.url));
+
+export const STRAPUP_DIR_NAME = 'strapup'
+export const STRAPUP_DIR_PATH = path.normalize(`${__dirname}/../${STRAPUP_DIR_NAME}`)
+export const TEMPLATES_PATH = `${STRAPUP_DIR_PATH}/templates`
+export const SCRIPTS_PATH = `${STRAPUP_DIR_PATH}/scripts.js`
+export const WORK_DIR = process.cwd()
 
 async function main() {
     if (args.length > 2) {
@@ -29,13 +33,20 @@ async function main() {
     }
 
     console.clear();
-    if (!fs.existsSync(STRAPUP_DIR_PATH)) {
-        await afs.mkdir(`${STRAPUP_DIR_PATH}/templates`, { recursive: true })
-        console.log(`Created ${STRAPUP_DIR_NAME} directory at ${STRAPUP_DIR_PATH}`)
+    if (!fs.existsSync(`${TEMPLATES_PATH}`)) {
+        await afs.mkdir(`${TEMPLATES_PATH}`, { recursive: true })
+        console.log(`Created strapup templates directory at ${STRAPUP_DIR_PATH}`)
+    }
+    if (!fs.existsSync(`${SCRIPTS_PATH}`)) {
+        await afs.writeFile(`${SCRIPTS_PATH}`, scriptsContent, { encoding: 'utf-8' })
+        console.log(`Created strapup scripts.js file at ${STRAPUP_DIR_PATH}`)
     }
 
-    console.log(`${color.dim(process.cwd())} <- You are here.\n`)
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
+
+    p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH)}`)
+    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH)}`)
+    console.log(`${color.gray(S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
     const command = await p.select({
         message: 'What do you want to do?',

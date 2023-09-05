@@ -66,6 +66,15 @@
     "typescript": "5.2.2",
     "zod": "^3.22.2"
   },
+<<<<<<< HEAD
+=======
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xDepcio/strapup"
+  },
+  "author": "",
+  "license": "ISC",
+>>>>>>> 4dfa8ca (made it any more universal for other systems)
   "devDependencies": {
 <<<<<<< HEAD
     "prisma": "^5.2.0"
