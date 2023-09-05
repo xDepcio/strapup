@@ -1,16 +1,20 @@
 {
 <<<<<<< HEAD
+<<<<<<< HEAD
   "name": "strapup-web",
   "version": "0.1.0",
   "private": true,
 =======
   "name": "templato",
+=======
+  "name": "strapup",
+>>>>>>> cb2667a (renamed from templato to strapup)
   "version": "0.1.0",
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
   "bin": {
-    "templato": "./dist/index.js"
+    "strapup": "./dist/index.js"
   },
 >>>>>>> 2fdc6c6 (seperatefd extended clack files)
   "scripts": {

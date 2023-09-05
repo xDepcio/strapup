@@ -5,16 +5,16 @@ import * as afs from 'node:fs/promises'
 import { list, paste, save } from './commandsHandlers.js'
 import { scripts } from '../scripts.js'
 
-export const TEMPLATO_DIR_NAME = 'templato'
-export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
+export const STRAPUP_DIR_NAME = 'strapup'
+export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
 export const WORK_DIR = process.cwd()
 export const args = process.argv
 
 async function main() {
     console.log('started headless')
-    if (!fs.existsSync(TEMPLATO_DIR_PATH)) {
-        await afs.mkdir(`${TEMPLATO_DIR_PATH}/templates`, { recursive: true })
-        console.log(`Created ${TEMPLATO_DIR_NAME} directory at ${TEMPLATO_DIR_PATH}`)
+    if (!fs.existsSync(STRAPUP_DIR_PATH)) {
+        await afs.mkdir(`${STRAPUP_DIR_PATH}/templates`, { recursive: true })
+        console.log(`Created ${STRAPUP_DIR_NAME} directory at ${STRAPUP_DIR_PATH}`)
     }
 
     const command = args[2]

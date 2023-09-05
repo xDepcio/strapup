@@ -12,8 +12,8 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { execSync } from 'child_process';
 
-export const TEMPLATO_DIR_NAME = 'templato'
-export const TEMPLATO_DIR_PATH = `/home/olek/${TEMPLATO_DIR_NAME}`
+export const STRAPUP_DIR_NAME = 'strapup'
+export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
 export const WORK_DIR = process.cwd()
 export const args = process.argv
 
@@ -29,13 +29,13 @@ async function main() {
     }
 
     console.clear();
-    if (!fs.existsSync(TEMPLATO_DIR_PATH)) {
-        await afs.mkdir(`${TEMPLATO_DIR_PATH}/templates`, { recursive: true })
-        console.log(`Created ${TEMPLATO_DIR_NAME} directory at ${TEMPLATO_DIR_PATH}`)
+    if (!fs.existsSync(STRAPUP_DIR_PATH)) {
+        await afs.mkdir(`${STRAPUP_DIR_PATH}/templates`, { recursive: true })
+        console.log(`Created ${STRAPUP_DIR_NAME} directory at ${STRAPUP_DIR_PATH}`)
     }
 
     console.log(`${color.dim(process.cwd())} <- You are here.\n`)
-    p.intro(`${color.bgCyan(color.black(' templato '))}`);
+    p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
     const command = await p.select({
         message: 'What do you want to do?',
@@ -105,7 +105,7 @@ async function main() {
             break
         }
         case 'paste': {
-            const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`)
+            const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
             if (templates.length == 0) {
                 p.log.error(`You don't have any templates saved.`)
                 return

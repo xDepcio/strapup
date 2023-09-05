@@ -4,7 +4,7 @@ import * as fs from 'fs'
 // import ignore from "ignore"
 import * as afs from 'node:fs/promises'
 import path from "path"
-import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
+import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "../scripts.js"
 import { copyDirectoryContents } from "../utils.js"
 
@@ -17,7 +17,7 @@ interface SaveOptions {
 export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
     // console.log('Saving template...')
 
-    // const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
+    // const templatePath = `${STRAPUP_DIR_PATH}/templates/${templateName}`
     // const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
     // if (!fs.existsSync(sourceAbsolutePath)) {
@@ -72,7 +72,7 @@ interface PasteOptions {
 export function paste({ templateName, destinationRelativePath }: PasteOptions) {
     p.log.message(`Pasting template...`)
 
-    const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
+    const templatePath = `${STRAPUP_DIR_PATH}/templates/${templateName}`
     const destinationAbsolutePath = `${WORK_DIR}/${destinationRelativePath}`
 
     if (!fs.existsSync(templatePath)) {
@@ -93,7 +93,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 export function list() {
     console.log('Listing templates...')
 
-    const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`)
+    const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
 
     if (templates.length === 0) {
         console.log('No templates found')

@@ -5,7 +5,7 @@ import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
 import { S_BAR } from './clack/SearchableSelection.js'
-import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
+import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "./scripts.js"
 import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
 
@@ -16,7 +16,7 @@ interface SaveOptions {
 }
 
 export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
-    const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
+    const templatePath = `${STRAPUP_DIR_PATH}/templates/${templateName}`
     const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
     if (!fs.existsSync(sourceAbsolutePath)) {
@@ -72,7 +72,7 @@ interface PasteOptions {
 }
 
 export function paste({ templateName, destinationRelativePath }: PasteOptions) {
-    const templatePath = path.normalize(`${TEMPLATO_DIR_PATH}/templates/${templateName}`)
+    const templatePath = path.normalize(`${STRAPUP_DIR_PATH}/templates/${templateName}`)
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
@@ -91,7 +91,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 
 
 export function list() {
-    const templates = fs.readdirSync(`${TEMPLATO_DIR_PATH}/templates`)
+    const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
 
     if (templates.length === 0) {
         p.log.warn(`You don't have any saved templates.`)
