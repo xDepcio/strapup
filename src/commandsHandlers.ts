@@ -84,23 +84,21 @@ interface PasteOptions {
 }
 
 export function paste({ templateName, destinationRelativePath }: PasteOptions) {
-    p.log.message(`Pasting template...`)
-
-    const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
-    const destinationAbsolutePath = `${WORK_DIR}/${destinationRelativePath}`
+    const templatePath = path.normalize(`${TEMPLATO_DIR_PATH}/templates/${templateName}`)
+    const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
-        p.log.error(`Template ${templateName} does not exist`)
+        p.log.error(`Template ${templateName} does not exist. Aborting.`)
         return
     }
 
     if (!fs.existsSync(destinationAbsolutePath)) {
         fs.mkdirSync(destinationAbsolutePath, { recursive: true })
-        p.log.info(`Directory ${destinationAbsolutePath} does not exists. Creating it...`)
+        p.log.info(`Directory ${color.dim(destinationAbsolutePath)} does not exists. Creating it...`)
     }
 
     copyDirectoryContents(templatePath, destinationAbsolutePath)
-    p.log.success(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
+    p.log.success(`Pasted ${templateName} template to ${color.dim(destinationAbsolutePath)}`)
 }
 
 
