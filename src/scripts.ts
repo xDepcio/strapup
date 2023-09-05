@@ -8,4 +8,7 @@ export const scripts = {
     expressts: (...params: string[]) => [
         `npx bootstrap-express-ts ${params[0]}`,
     ],
+    shadcn: () => [
+        `npx shadcn-ui@latest init -y`,
+    ]
 }

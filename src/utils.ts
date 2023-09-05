@@ -1,5 +1,4 @@
 import fs from 'fs'
-import { scripts } from './scripts'
 
 export const copyDirectoryContents = (
     fromPath: string,
