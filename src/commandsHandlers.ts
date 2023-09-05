@@ -1,13 +1,14 @@
-import ignore from "ignore"
-import { TEMPLATO_DIR_PATH, WORK_DIR, args } from "./index.js"
-import * as fs from 'fs'
-import { copyDirectoryContents, getParameterNames } from "./utils.js"
-import path from "path"
-import * as afs from 'node:fs/promises'
-import { scripts } from "./scripts.js"
-import { inspect } from "util"
+import * as p from '@clack/prompts'
 import { execSync } from "child_process"
-import * as p from '@clack/prompts';
+import * as fs from 'fs'
+import ignore from "ignore"
+import * as afs from 'node:fs/promises'
+import path from "path"
+import { TEMPLATO_DIR_PATH, WORK_DIR } from "./index.js"
+import { scripts } from "./scripts.js"
+import { copyDirectoryContents } from "./utils.js"
+import { S_BAR, S_BAR_END, S_BAR_START } from './clack/SearchableSelection.js'
+import color from 'picocolors'
 
 interface SaveOptions {
     templateName: string
@@ -115,10 +116,17 @@ interface RunScriptOptions {
     functionParams: string[]
 }
 
-
-export function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
+export async function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
     // @ts-ignore
     const commands = functionToRun(...functionParams)
     const concatedCommands = commands.join('\n')
+
+    p.log.info(`Running following commands, follow on-screen prompts.`)
+    commands.forEach(command => {
+        console.log(`${color.gray(S_BAR)}  ${color.green(command)}`)
+    })
+
     execSync(concatedCommands, { stdio: 'inherit' })
+
+    p.log.success(`Script ${functionToRun.name} finished successfully.`)
 }

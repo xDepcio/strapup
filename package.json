@@ -10,7 +10,7 @@
   "main": "index.js",
   "type": "module",
   "bin": {
-    "templato": "./dist/index-clack.js"
+    "templato": "./dist/index.js"
   },
 >>>>>>> 2fdc6c6 (seperatefd extended clack files)
   "scripts": {
@@ -76,8 +76,14 @@
   "dependencies": {
     "@clack/core": "^0.3.3",
     "@clack/prompts": "^0.7.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.0.0",
     "ignore": "^5.2.4",
     "inquirer": "^9.2.10",
+    "lucide-react": "^0.274.0",
+    "sisteransi": "^1.0.5",
+    "tailwind-merge": "^1.14.0",
+    "tailwindcss-animate": "^1.0.7",
     "zod": "^3.22.2"
 >>>>>>> 0797bd4 (some basic functionality)
   }
