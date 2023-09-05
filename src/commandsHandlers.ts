@@ -17,51 +17,63 @@ interface SaveOptions {
 }
 
 export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
-    console.log('Saving template...')
-
     const templatePath = `${TEMPLATO_DIR_PATH}/templates/${templateName}`
     const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
     if (!fs.existsSync(sourceAbsolutePath)) {
-        console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
+        p.log.error(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
         return
     }
 
-    if (!fs.existsSync(templatePath)) {
+    let override = false
+    if (fs.existsSync(templatePath)) {
+        override = await p.confirm({
+            message: `Template ${templateName} already exists. Override It?`,
+            initialValue: false
+        }) as boolean
+        fs.rmSync(templatePath, { recursive: true, force: true })
+    }
+
+    if (!fs.existsSync(templatePath) || override) {
         await afs.mkdir(templatePath, { recursive: true })
 
         if (withGitignore) {
             const gitignorePath = `${sourceAbsolutePath}/.gitignore`
-            if (!fs.existsSync(gitignorePath)) {
-                console.log(`No .gitignore found in ${sourceAbsolutePath}`)
-                return
-            }
+            if (fs.existsSync(gitignorePath)) {
+                const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
+                const gitignore = ignore().add(gitignoreContents)
+                gitignore.add('.git')
+                gitignore.add('.gitignore')
 
-            const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
-            const gitignore = ignore().add(gitignoreContents)
-            gitignore.add('.git')
-            gitignore.add('.gitignore')
+                copyDirectoryContents(sourceAbsolutePath, templatePath, {
+                    validate: ({ createName, createPath, isFile, sourcePath }) => {
+                        const relPath = path.relative(sourceAbsolutePath, sourcePath)
+                        const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
 
-            copyDirectoryContents(sourceAbsolutePath, templatePath, {
-                validate: ({ createName, createPath, isFile, sourcePath }) => {
-                    const relPath = path.relative(sourceAbsolutePath, sourcePath)
-                    const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
-
-                    if (ignores) {
-                        console.log(`File ${sourcePath} ignored (--with-gitignore)`)
-                        return false
+                        if (ignores) {
+                            const normalizedSrcPath = path.normalize(sourcePath)
+                            const isFile = fs.statSync(normalizedSrcPath).isFile()
+                            p.log.info(`${isFile ? 'File' : 'Directory'} at ${color.dim(normalizedSrcPath)} ignored by .gitignore`)
+                            return false
+                        }
+                        return true
                     }
-                    return true
-                }
-            })
+                })
+                p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
+            }
+            else {
+                p.log.warn(`No .gitignore found in ${sourceAbsolutePath}`)
+                copyDirectoryContents(sourceAbsolutePath, templatePath)
+                p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
+            }
         }
         else {
             copyDirectoryContents(sourceAbsolutePath, templatePath)
-            console.log(`Saved ${templateName} template at ${templatePath}`)
+            p.log.success(`Saved ${templateName} template at ${color.dim(templatePath)}`)
         }
     }
     else {
-        console.log(`Template ${templateName} already exists`)
+        p.log.error(`Aborted saving ${templateName} template.`)
     }
 }
 
