@@ -34,6 +34,7 @@ async function main() {
         console.log(`Created ${TEMPLATO_DIR_NAME} directory at ${TEMPLATO_DIR_PATH}`)
     }
 
+    console.log(`${color.dim(process.cwd())} <- You are here.\n`)
     p.intro(`${color.bgCyan(color.black(' templato '))}`);
 
     const command = await p.select({
