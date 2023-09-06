@@ -34,7 +34,7 @@ export const copyDirectoryContents = (
             }
 
             fs.mkdirSync(`${toPath}/${file}`)
-            copyDirectoryContents(`${toPath}/${file}`, `${fromPath}/${file}`)
+            copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
         }
     })
 }
