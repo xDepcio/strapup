@@ -50,10 +50,10 @@ export default class SearchableSelect<T extends { value: any }> extends pcore.Pr
         });
 
         this.on('key', (key: string) => {
-            if (key.charCodeAt(0) === 13) {
+            if (key.charCodeAt(0) === 13) { // enter
                 return
             }
-            if (key.charCodeAt(0) === 127) {
+            if (key.charCodeAt(0) === 127) { // backspace
                 this.search = this.search.slice(0, -1)
                 this.options = [...opts.options].filter(option => option.value?.includes(this.search))
             }
