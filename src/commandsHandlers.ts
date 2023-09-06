@@ -4,10 +4,10 @@ import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { S_BAR } from './clack/SearchableSelection.js'
 import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "./scripts.js"
 import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
+import { S_BAR } from './clack/styled/utils.js'
 
 interface SaveOptions {
     templateName: string

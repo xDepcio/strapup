@@ -4,7 +4,6 @@ import * as p from '@clack/prompts';
 import * as fs from 'fs';
 import * as afs from 'node:fs/promises';
 import color from 'picocolors';
-import { S_BAR, searchselect } from './clack/SearchableSelection.js';
 import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js';
 import { scripts } from './scripts.js';
 import { getParameterNames } from './utils.js';
@@ -12,6 +11,8 @@ import { fileURLToPath } from 'url';
 import path, { dirname } from 'path';
 import { execSync } from 'child_process';
 import { scriptsContent } from './constants.js';
+import { S_BAR } from './clack/styled/utils.js';
+import { searchselect } from './clack/styled/SearchableSelect.js';
 
 export const args = process.argv
 
@@ -152,7 +153,7 @@ async function main() {
         }
     }
 
-    p.outro(`Problems? ${color.underline(color.cyan('https://example.com/issues'))}`);
+    p.outro(`Problems? ${color.underline(color.cyan('https://github.com/xDepcio/strapup'))}`);
 }
 
 

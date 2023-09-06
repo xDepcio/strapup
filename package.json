@@ -93,6 +93,7 @@
   "dependencies": {
     "@clack/core": "^0.3.3",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@clack/prompts": "^0.7.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -107,5 +108,9 @@
 =======
     "@clack/prompts": "^0.7.0"
 >>>>>>> c69b0d7 (removed not needed dependancies)
+=======
+    "@clack/prompts": "^0.7.0",
+    "is-unicode-supported": "^1.3.0"
+>>>>>>> 80c411f (made better code seperation for clack extended classes)
   }
 }
