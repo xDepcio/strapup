@@ -23,7 +23,7 @@ export const scriptsContent = `export const scripts = {
         \`npx shadcn-ui@latest init -y\`,
         \`npx shadcn-ui@latest add button -y\`,
         \`npm i next-auth\`,
-        \`strapup paste next13-app-auth ./\`,
+        \`strapup paste next13-app-auth-paste-from-root ./\`,
     ]
     // Create a new script by adding a key-value pair based on examples above.
 }
