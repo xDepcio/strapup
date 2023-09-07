@@ -17,7 +17,7 @@ export const scriptsContent = `export const scripts = {
     shadcn: () => [
         \`npx shadcn-ui@latest init -y\`,
     ],
-    next-full: (projectName) => [
+    nextJsShadcnAuthJs: (projectName) => [
         \`npx create-next-app \${projectName}\`,
         \`cd \${projectName}\`,
         \`npx shadcn-ui@latest init -y\`,
