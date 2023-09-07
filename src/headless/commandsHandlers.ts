@@ -30,7 +30,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
         p.log.info(`Directory ${destinationAbsolutePath} does not exists. Creating it...`)
     }
 
-    copyDirectoryContents(templatePath, destinationAbsolutePath)
+    copyDirectoryContents({ fromPath: templatePath, toPath: destinationAbsolutePath })
     p.log.success(`Pasted ${templateName} template to ${destinationAbsolutePath}`)
 }
 
@@ -68,119 +68,119 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 
 //     return diff;
 // }
-    // await new Promise((resolve, reject) => {
-    //     const process = exec(concatedCommands)
+// await new Promise((resolve, reject) => {
+//     const process = exec(concatedCommands)
 
-    //     // process.stdout?.on('data', (data) => {
-    //     //     const formattedLines = data
-    //     //         .toString()
-    //     //         .split('\n')
-    //     //         .reduce((acc: string, line: string) => {
-    //     //             if (line.trim()) return `${acc}${color.gray(S_BAR)}  ${line.trim()}\n`
-    //     //             else return acc
-    //     //         }, '')
+//     // process.stdout?.on('data', (data) => {
+//     //     const formattedLines = data
+//     //         .toString()
+//     //         .split('\n')
+//     //         .reduce((acc: string, line: string) => {
+//     //             if (line.trim()) return `${acc}${color.gray(S_BAR)}  ${line.trim()}\n`
+//     //             else return acc
+//     //         }, '')
 
-    //     //     console.log(formattedLines)
-    //     // })
-    //     process.stdin?.on('close', () => console.log('close'))
-    //     process.stdin?.on('drain', () => console.log('drain'))
-    //     process.stdin?.on('error', () => console.log('error'))
-    //     process.stdin?.on('finish', () => console.log('finish'))
-    //     process.stdin?.on('pipe', () => console.log('pipe'))
-    //     process.stdin?.on('unpipe', () => console.log('unpipe'))
-    //     process.on('message', (data) => console.log('send', data))
-    //     process.stdout?.on('data', (data) => console.log('stdout', data))
-    //     process.on('close', (code) => resolve(code))
-    // })
-    // process.stdout.write(erase.screen);
-    // process.stdout.write(cursor.move(0, 0));
-    // process.stdout.write(cursor.show);
-    // const tres = await setTimeout(2000)
-    // for (const command of commands) {
-    //     p.log.info(`Running: ${color.green(command)}`)
-    //     let prevFrame = ''
-    //     let prevLinesLen = 0
-    //     await new Promise((resolve, reject) => {
-    //         const name = command.split(' ')[0]
-    //         const args = command.split(' ').slice(1)
-    //         const shell = spawn(name, args, { stdio: ['inherit', 'pipe', 'inherit'] })
-    //         shell.stdout.on('data', (data) => {
-    //             if (!data.toString().trim()) return
-    //             let frame = data.toString().trim() as string
-    //             // const diff = diffLines(prevFrame, frame)
-    //             const linesCount = frame.split('\n').length - 1
-    //             // const newLinesCount = frame.split('\n').length - 1
-    //             // process.stdout.write(cursor.up(newLinesCount));
-    //             // process.stdout.write(erase.down());
-    //             // process.stdout.write(cursor.down(newLinesCount));
-    //             // process.stdout.write(`${newLinesCount}${frame}`);
-    //             process.stdout.moveCursor(0, -prevLinesLen);
-    //             // process.stdout.
-    //             // process.stdout.cursorTo(0, 0);
-    //             process.stdout.clearScreenDown();
-    //             process.stdout.write(frame);
-    //             prevLinesLen = linesCount
-    //             process.stdout.write(color.bgRed('test'));
-    //             // process.stdout.write(cursor.left);
-    //             // process.stdout.write(cursor.show);
-    //             // let linesLen = lines.length
-    //             // process.stdout.write(erase.up(prevLinesLen));
-    //             // process.stdout.write(cursor.up(prevLinesLen));
-    //             // prevLinesLen = linesLen
-    //             // lines.forEach((line, i) => {
-    //             //     process.stdout.write(line + '\n');
-    //             // })
-    //             // process.stdout.write(frame);
-    //             // process.stdout.write(cursor.show);
-    //             // console.log('newLinesCount', newLinesCount)
-    //             // if (diff && diff?.length === 1) {
-    //             //     const diffLine = diff[0];
-    //             //     process.stdout.write(cursor.move(0, diffLine));
-    //             //     process.stdout.write(erase.lines(1));
-    //             //     const lines = frame.split('\n');
-    //             //     process.stdout.write(lines[diffLine]);
-    //             //     prevFrame = frame;
-    //             //     process.stdout.write(cursor.move(0, lines.length - diffLine - 1));
-    //             //     return;
-    //             //     // If many lines have changed, rerender everything past the first line
-    //             // } else if (diff && diff?.length > 1) {
-    //             //     const diffLine = diff[0];
-    //             //     process.stdout.write(cursor.move(0, diffLine));
-    //             //     process.stdout.write(erase.down());
-    //             //     const lines = frame.split('\n');
-    //             //     const newLines = lines.slice(diffLine);
-    //             //     process.stdout.write(newLines.join('\n'));
-    //             //     prevFrame = frame;
-    //             //     return;
-    //             // }
+//     //     console.log(formattedLines)
+//     // })
+//     process.stdin?.on('close', () => console.log('close'))
+//     process.stdin?.on('drain', () => console.log('drain'))
+//     process.stdin?.on('error', () => console.log('error'))
+//     process.stdin?.on('finish', () => console.log('finish'))
+//     process.stdin?.on('pipe', () => console.log('pipe'))
+//     process.stdin?.on('unpipe', () => console.log('unpipe'))
+//     process.on('message', (data) => console.log('send', data))
+//     process.stdout?.on('data', (data) => console.log('stdout', data))
+//     process.on('close', (code) => resolve(code))
+// })
+// process.stdout.write(erase.screen);
+// process.stdout.write(cursor.move(0, 0));
+// process.stdout.write(cursor.show);
+// const tres = await setTimeout(2000)
+// for (const command of commands) {
+//     p.log.info(`Running: ${color.green(command)}`)
+//     let prevFrame = ''
+//     let prevLinesLen = 0
+//     await new Promise((resolve, reject) => {
+//         const name = command.split(' ')[0]
+//         const args = command.split(' ').slice(1)
+//         const shell = spawn(name, args, { stdio: ['inherit', 'pipe', 'inherit'] })
+//         shell.stdout.on('data', (data) => {
+//             if (!data.toString().trim()) return
+//             let frame = data.toString().trim() as string
+//             // const diff = diffLines(prevFrame, frame)
+//             const linesCount = frame.split('\n').length - 1
+//             // const newLinesCount = frame.split('\n').length - 1
+//             // process.stdout.write(cursor.up(newLinesCount));
+//             // process.stdout.write(erase.down());
+//             // process.stdout.write(cursor.down(newLinesCount));
+//             // process.stdout.write(`${newLinesCount}${frame}`);
+//             process.stdout.moveCursor(0, -prevLinesLen);
+//             // process.stdout.
+//             // process.stdout.cursorTo(0, 0);
+//             process.stdout.clearScreenDown();
+//             process.stdout.write(frame);
+//             prevLinesLen = linesCount
+//             process.stdout.write(color.bgRed('test'));
+//             // process.stdout.write(cursor.left);
+//             // process.stdout.write(cursor.show);
+//             // let linesLen = lines.length
+//             // process.stdout.write(erase.up(prevLinesLen));
+//             // process.stdout.write(cursor.up(prevLinesLen));
+//             // prevLinesLen = linesLen
+//             // lines.forEach((line, i) => {
+//             //     process.stdout.write(line + '\n');
+//             // })
+//             // process.stdout.write(frame);
+//             // process.stdout.write(cursor.show);
+//             // console.log('newLinesCount', newLinesCount)
+//             // if (diff && diff?.length === 1) {
+//             //     const diffLine = diff[0];
+//             //     process.stdout.write(cursor.move(0, diffLine));
+//             //     process.stdout.write(erase.lines(1));
+//             //     const lines = frame.split('\n');
+//             //     process.stdout.write(lines[diffLine]);
+//             //     prevFrame = frame;
+//             //     process.stdout.write(cursor.move(0, lines.length - diffLine - 1));
+//             //     return;
+//             //     // If many lines have changed, rerender everything past the first line
+//             // } else if (diff && diff?.length > 1) {
+//             //     const diffLine = diff[0];
+//             //     process.stdout.write(cursor.move(0, diffLine));
+//             //     process.stdout.write(erase.down());
+//             //     const lines = frame.split('\n');
+//             //     const newLines = lines.slice(diffLine);
+//             //     process.stdout.write(newLines.join('\n'));
+//             //     prevFrame = frame;
+//             //     return;
+//             // }
 
-    //             // process.stdout.write(erase.down());
+//             // process.stdout.write(erase.down());
 
-    //             // process.stdout.write(frame);
+//             // process.stdout.write(frame);
 
-    //             // prevFrame = frame;
-    //             // console.log('========================')
-    //             // console.log('data', data.toString())
-    //             // console.log('lines', data.toString().split('\n').length)
-    //             // console.log('========================')
-    //             // let linesCount = data.toString().split('\n').length
-    //             // const trimmedData = data.toString().trim()
-    //             // const linesCount = trimmedData.split('\n').length
-    //             // console.log('linesCount', linesCount)
-    //             // const formattedLines = data
-    //             //     .toString()
-    //             //     .split('\n')
-    //             //     .reduce((acc: string, line: string) => {
-    //             //         if (line.trim()) {
-    //             //             return `${acc}${color.gray(S_BAR)}  ${line.trim()}\n`
-    //             //         }
-    //             //         else return acc
-    //             //     }, '')
-    //             // console.log(formattedLines)
-    //             // process.stdout.write(erase.lines(linesCount))
-    //             // console.log(data.toString())
-    //             // process.stdout.write(data.toString())
-    //         })
-    //         shell.on('close', (code) => resolve(code))
-    //     })
-    // }
+//             // prevFrame = frame;
+//             // console.log('========================')
+//             // console.log('data', data.toString())
+//             // console.log('lines', data.toString().split('\n').length)
+//             // console.log('========================')
+//             // let linesCount = data.toString().split('\n').length
+//             // const trimmedData = data.toString().trim()
+//             // const linesCount = trimmedData.split('\n').length
+//             // console.log('linesCount', linesCount)
+//             // const formattedLines = data
+//             //     .toString()
+//             //     .split('\n')
+//             //     .reduce((acc: string, line: string) => {
+//             //         if (line.trim()) {
+//             //             return `${acc}${color.gray(S_BAR)}  ${line.trim()}\n`
+//             //         }
+//             //         else return acc
+//             //     }, '')
+//             // console.log(formattedLines)
+//             // process.stdout.write(erase.lines(linesCount))
+//             // console.log(data.toString())
+//             // process.stdout.write(data.toString())
+//         })
+//         shell.on('close', (code) => resolve(code))
+//     })
+// }

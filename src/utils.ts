@@ -6,15 +6,14 @@ import { StrapupSettings, inintialSettings } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 
-export const copyDirectoryContents = (
-    fromPath: string,
-    toPath: string,
-    options: {
-        validate: ({ createName, createPath, sourcePath, isFile }:
-            { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
-        overwriteFiles?: boolean
-    } = { validate: () => true, overwriteFiles: true }
-) => {
+export interface CopyDirectoryContentsParams {
+    fromPath: string
+    toPath: string
+    validate?: ({ createName, createPath, sourcePath, isFile }: { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
+    overwriteFiles?: boolean
+}
+
+export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true, overwriteFiles = true }: CopyDirectoryContentsParams) => {
     const filesToCreate = fs.readdirSync(fromPath)
 
     filesToCreate.forEach(file => {
@@ -27,7 +26,7 @@ export const copyDirectoryContents = (
 
             const writePath = path.normalize(`${toPath}/${file}`)
 
-            if (!options.validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
+            if (!validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
                 return
             }
 
@@ -35,7 +34,7 @@ export const copyDirectoryContents = (
                 fs.writeFileSync(writePath, contents, 'utf8')
                 return
             }
-            if (options.overwriteFiles) {
+            if (overwriteFiles) {
                 fs.writeFileSync(writePath, contents, 'utf8')
                 p.log.info(`Overwriting ${color.dim(file)}`)
                 return
@@ -43,16 +42,18 @@ export const copyDirectoryContents = (
             p.log.info(`Skipping ${color.dim(file)}. File already exists.`)
         }
         else if (stats.isDirectory()) {
-            if (!options.validate({ createName: file, createPath: `${toPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
+            if (!validate({ createName: file, createPath: `${toPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
                 return
             }
 
             try {
                 fs.mkdirSync(`${toPath}/${file}`)
-                copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+                // copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate })
             } catch (e: any) {
                 if (e.code === 'EEXIST') {
-                    copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+                    // copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate })
                 }
             }
         }
