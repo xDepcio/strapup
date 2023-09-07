@@ -3,15 +3,14 @@
 import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import * as afs from 'node:fs/promises';
-import path, { dirname } from 'path';
+import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
-import { SCRIPTS_PATH, STRAPUP_DIR_NAME, Scripts, StrapupSettings, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, scriptsContent } from './constants.js';
-import { getParameterNames, loadSettings, saveSettings } from './utils.js';
+import { SCRIPTS_PATH, STRAPUP_DIR_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
+import { copyDirectoryContents, getParameterNames, loadSettings, saveSettings } from './utils.js';
 
 export const args = process.argv
 
@@ -46,6 +45,7 @@ async function main() {
 
         try {
             fs.mkdirSync(settings.strapupDirPath)
+            p.log.info(`Created strapup directory at ${color.dim(settings.strapupDirPath)}`)
         } catch (e: any) {
             if (e.code === "EEXIST") {
                 p.log.info(`Existing strapup directory found at ${color.dim(settings.strapupDirPath)}`)
@@ -55,6 +55,8 @@ async function main() {
 
         try {
             fs.mkdirSync(TEMPLATES_PATH())
+            copyDirectoryContents(premadeTemplatesDirPath(), TEMPLATES_PATH())
+            p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
         } catch (e: any) {
             if (e.code === "EEXIST") {
                 p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
@@ -67,6 +69,7 @@ async function main() {
         }
         else {
             fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+            p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
         }
     }
 

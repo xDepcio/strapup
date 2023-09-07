@@ -36,4 +36,4 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 `npm i strapup -g` - install globally to be able to paste and save your templates anywhere.
 
 ### Basic use
-`npx strapup` - Opens up interactive CLI. Follow on-screen informations to save/paste templates and more.
+`strapup` - Opens up interactive CLI. Follow on-screen informations to save/paste templates and more.
