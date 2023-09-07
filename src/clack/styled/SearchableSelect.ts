@@ -1,59 +1,16 @@
-import * as pcore from '@clack/core';
-import color from 'picocolors';
-import SearchableSelect from '../core/SearchableSelect.js';
-import { S_BAR, S_BAR_END, S_RADIO_ACTIVE, S_RADIO_INACTIVE, symbol } from './utils.js';
+import SelectSearch from "../core/SearchableSelect.js";
+import color from 'picocolors'
+import { S_BAR, S_BAR_END, S_RADIO_ACTIVE, S_RADIO_INACTIVE, symbol } from "./utils.js";
 
-
-interface LimitOptionsParams<TOption> {
-    options: TOption[];
-    maxItems: number | undefined;
-    cursor: number;
-    style: (option: TOption, active: boolean) => string;
-}
-
-const limitOptions = <TOption>(params: LimitOptionsParams<TOption>): string[] => {
-    const { cursor, options, style } = params;
-
-    // We clamp to minimum 5 because anything less doesn't make sense UX wise
-    const maxItems = params.maxItems === undefined ? Infinity : Math.max(params.maxItems, 5);
-    let slidingWindowLocation = 0;
-
-    if (cursor >= slidingWindowLocation + maxItems - 3) {
-        slidingWindowLocation = Math.max(Math.min(cursor - maxItems + 3, options.length - maxItems), 0);
-    } else if (cursor < slidingWindowLocation + 2) {
-        slidingWindowLocation = Math.max(cursor - 2, 0);
-    }
-
-    const shouldRenderTopEllipsis = maxItems < options.length && slidingWindowLocation > 0;
-    const shouldRenderBottomEllipsis =
-        maxItems < options.length && slidingWindowLocation + maxItems < options.length;
-
-    return options
-        .slice(slidingWindowLocation, slidingWindowLocation + maxItems)
-        .map((option, i, arr) => {
-            const isTopLimit = i === 0 && shouldRenderTopEllipsis;
-            const isBottomLimit = i === arr.length - 1 && shouldRenderBottomEllipsis;
-            return isTopLimit || isBottomLimit
-                ? color.dim('...')
-                : style(option, i + slidingWindowLocation === cursor);
-        });
-};
-
-type Primitive = Readonly<string | boolean | number>;
-
-type Option<Value> = Value extends Primitive
-    ? { value: Value; label?: string; hint?: string }
-    : { value: Value; label: string; hint?: string };
-
-export interface SelectOptions2<Value> {
+export interface SelectSearchOptions {
     message: string;
-    options: Option<Value>[];
-    initialValue?: Value;
-    maxItems?: number;
+    searchPlaceholder?: string;
+    options: { value: string; label: string; hint?: string }[];
+    initialValue?: string;
+    validate?: (value: string) => string | void;
 }
-
-export const searchselect = <Value>(opts: SelectOptions2<Value>) => {
-    const opt = (option: Option<Value>, state: 'inactive' | 'active' | 'selected' | 'cancelled') => {
+export const selectsearch = (opts: SelectSearchOptions) => {
+    const opt = (option: { value: string; label: string; hint?: string }, state: 'inactive' | 'active' | 'selected' | 'cancelled') => {
         const label = option.label ?? String(option.value);
         switch (state) {
             case 'selected':
@@ -68,29 +25,45 @@ export const searchselect = <Value>(opts: SelectOptions2<Value>) => {
         }
     };
 
-    return new SearchableSelect({
-        options: opts.options,
+    return new SelectSearch({
+        validate: opts.validate,
+        searchPlaceholder: opts.searchPlaceholder,
         initialValue: opts.initialValue,
+        options: opts.options,
         render() {
+            if (this.matchingOptions.length === 0) this.state = 'error'
             const title = `${color.gray(S_BAR)}\n${symbol(this.state)}  ${opts.message}\n`;
-            const searchValue = `${color.gray(S_BAR)}  ${color.dim(this.search)}${color.inverse(color.hidden('_'))}\n`
+            const searchPlaceholder = opts.searchPlaceholder
+                ? color.inverse(opts.searchPlaceholder[0]) + color.dim(opts.searchPlaceholder.slice(1))
+                : color.inverse(color.hidden('_'));
+            // const value = !this.value ? searchPlaceholder : this.searchValue;
+            const value = this.searchValueRaw ? this.searchValueStyled : searchPlaceholder;
+            if (this.matchingOptions.length === 0) {
+                return `${title.trim()}\n${color.yellow(S_BAR)}  ${value}\n${color.yellow(
+                    S_BAR_END
+                )}  ${color.yellow("No matching values found.")}\n`;
+            }
             switch (this.state) {
+                // case 'error':jor.yellow(this.error)}\n`;
                 case 'submit':
-                    return `${title}${color.gray(S_BAR)}  ${opt(this.options[this.cursor], 'selected')}`;
+                    return `${title}${color.gray(S_BAR)}  ${color.dim(this.value || opts.searchPlaceholder)}`;
                 case 'cancel':
-                    return `${title}${searchValue}${color.gray(S_BAR)}  ${opt(
-                        this.options[this.cursor],
-                        'cancelled'
-                    )}\n${color.gray(S_BAR)}`;
-                default: {
-                    return `${title}${searchValue}${color.cyan(S_BAR)}  ${limitOptions({
-                        cursor: this.cursor,
-                        options: this.options,
-                        maxItems: opts.maxItems,
-                        style: (item, active) => opt(item, active ? 'active' : 'inactive'),
-                    }).join(`\n${color.cyan(S_BAR)}  `)}\n${color.cyan(S_BAR_END)}\n`;
-                }
+                    return `${title}${color.gray(S_BAR)}  ${color.strikethrough(
+                        color.dim(this.value ?? '')
+                    )}${this.value?.trim() ? '\n' + color.gray(S_BAR) : ''}`;
+                case 'error':
+                default:
+                    return `${title}${color.cyan(S_BAR)}  ${value}\n ${this.matchingOptions.map((option, i) => {
+                        return `${color.cyan(S_BAR)}  ${opt(option, this.selectedOptionIndex === i ? 'active' : 'inactive')}`;
+                        // const isSelected = this.selectedOptionIndex === i;
+                        // const isHighlighted = this.cursor === i;
+                        // const isLast = i === this.matchingOptions.length - 1;
+                        // const prefix = isSelected ? color.cyan('>') : ' ';
+                        // const suffix = isHighlighted ? color.cyan('<') : ' ';
+                        // const label = `${prefix} ${option.label}${option.hint ? color.dim(` (${option.hint})`) : ''}${suffix}`;
+                        // return `${isLast ? color.cyan(S_BAR_END) : color.cyan(S_BAR)}  ${label}`;
+                    }).join('\n')}`;
             }
         },
-    }).prompt() as Promise<Value | symbol>;
+    }).prompt().catch(e => { throw e }) as Promise<string | symbol>;
 };
