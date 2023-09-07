@@ -3,7 +3,7 @@ import { loadSettings } from './utils.js'
 
 export const STRAPUP_DIR_NAME = 'strapup'
 export const TEMPLATES_PATH = () => loadSettings().strapupDirPath + `/templates`
-export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.js`
+export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.mjs`
 
 export const scriptsContent = `export const scripts = {
     nextshad: (projectName) => [
@@ -15,6 +15,7 @@ export const scriptsContent = `export const scripts = {
     shadcn: () => [
         \`npx shadcn-ui@latest init -y\`,
     ]
+    // Create a new script by adding a key-value pair based on examples above.
 }
 `
 

@@ -23,6 +23,9 @@ export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const WORK_DIR = process.cwd()
 
 async function main() {
+    console.clear();
+    p.intro(`${color.bgCyan(color.black(' strapup '))}`);
+
     const settings = loadSettings()
     if (!settings.strapupDirPath) {
         p.log.warn(dirNotSpecifiedStartupWarning)
@@ -40,9 +43,33 @@ async function main() {
         }) as string
         settings.strapupDirPath = strapupDirPath + '/' + STRAPUP_DIR_NAME
         saveSettings(settings)
-        fs.mkdirSync(`${settings.strapupDirPath}/templates`, { recursive: true })
-        fs.writeFileSync(`${settings.strapupDirPath}/scripts.js`, scriptsContent, { encoding: 'utf-8' })
+
+        try {
+            fs.mkdirSync(settings.strapupDirPath)
+        } catch (e: any) {
+            if (e.code === "EEXIST") {
+                p.log.info(`Existing strapup directory found at ${color.dim(settings.strapupDirPath)}`)
+            }
+            else throw e
+        }
+
+        try {
+            fs.mkdirSync(TEMPLATES_PATH())
+        } catch (e: any) {
+            if (e.code === "EEXIST") {
+                p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
+            }
+            else throw e
+        }
+
+        if (fs.existsSync(SCRIPTS_PATH())) {
+            p.log.info(`Existing scripts file found at ${color.dim(SCRIPTS_PATH())}`)
+        }
+        else {
+            fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+        }
     }
+
 
     if (!fs.existsSync(settings.strapupDirPath)) {
         p.log.error(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}.`)
@@ -53,9 +80,6 @@ async function main() {
         execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
         return
     }
-
-    console.clear();
-    p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
     console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH())}`)
@@ -73,7 +97,7 @@ async function main() {
 
     switch (command) {
         case 'run-script': {
-            const scripts: Scripts = await import(SCRIPTS_PATH())
+            const scripts: Scripts = await import(SCRIPTS_PATH()).then(module => module.scripts)
             const scriptName = await selectsearch({
                 searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
