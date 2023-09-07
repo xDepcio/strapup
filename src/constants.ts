@@ -1,12 +1,14 @@
 import color from 'picocolors'
 import { loadSettings } from './utils.js'
+import { __dirname } from './index.js'
 
 export const STRAPUP_DIR_NAME = 'strapup'
 export const TEMPLATES_PATH = () => loadSettings().strapupDirPath + `/templates`
 export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.mjs`
+export const premadeTemplatesDirPath = () => `${__dirname}/premade-templates`
 
 export const scriptsContent = `export const scripts = {
-    nextshad: (projectName) => [
+    nextshadreduxts: (projectName) => [
         \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
         \`cd \${projectName}\`,
         \`npx shadcn-ui@latest init -y\`,
