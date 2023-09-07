@@ -1,18 +1,19 @@
 #!/usr/bin/env node
 
 import * as p from '@clack/prompts';
+import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as afs from 'node:fs/promises';
+import path, { dirname } from 'path';
 import color from 'picocolors';
+import { fileURLToPath } from 'url';
+import { selectsearch } from './clack/styled/SearchableSelect.js';
+import { S_BAR } from './clack/styled/utils.js';
 import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js';
+import { scriptsContent } from './constants.js';
 import { scripts } from './scripts.js';
 import { getParameterNames } from './utils.js';
-import { fileURLToPath } from 'url';
-import path, { dirname } from 'path';
-import { execSync } from 'child_process';
-import { scriptsContent } from './constants.js';
-import { S_BAR } from './clack/styled/utils.js';
-import { searchselect } from './clack/styled/SearchableSelect.js';
+// import { searchselect } from './clack/styled/SearchableSelect.js';
 
 export const args = process.argv
 
@@ -61,7 +62,8 @@ async function main() {
 
     switch (command) {
         case 'run-script': {
-            const scriptName = await searchselect({
+            const scriptName = await selectsearch({
+                searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
                 options: Object.keys(scripts).map(script => ({ value: script, label: script })),
             }) as ScriptsNames
@@ -123,7 +125,7 @@ async function main() {
                 return
             }
 
-            const templateName = await searchselect({
+            const templateName = await p.select({
                 message: 'What template do you want to paste?',
                 options: templates.map(template => ({ value: template, label: template })),
             }) as string

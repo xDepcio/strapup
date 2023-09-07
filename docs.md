@@ -1,10 +1,10 @@
 ## Basic use:
-`templato <command> ...args`
+`strapup <command> ...args`
 
 ## Commands:
 
 ### create:
-`templato create <template-name> <source?>`
+`strapup create <template-name> <source?>`
 - Creates a template
 #### args:
 template-name:
