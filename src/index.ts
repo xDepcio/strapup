@@ -55,7 +55,8 @@ async function main() {
 
         try {
             fs.mkdirSync(TEMPLATES_PATH())
-            copyDirectoryContents(premadeTemplatesDirPath(), TEMPLATES_PATH())
+            // copyDirectoryContents(premadeTemplatesDirPath(), TEMPLATES_PATH())
+            copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH() })
             p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
         } catch (e: any) {
             if (e.code === "EEXIST") {
@@ -72,7 +73,6 @@ async function main() {
             p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
         }
     }
-
 
     if (!fs.existsSync(settings.strapupDirPath)) {
         p.log.error(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}.`)
@@ -132,6 +132,11 @@ async function main() {
                     if (value.match(/[^(a-zA-Z_\-)]/)?.length) return 'Please enter a valid name.'
                 }
             }) as string
+
+            const templateDescription = await p.text({
+                message: `Describe your template. ${color.dim("(optional)")}`,
+                placeholder: 'Template that spins up something big...',
+            }) as string | undefined
 
             const sourceRelativePath = await p.text({
                 message: 'Specify relative path to the source directory.',
