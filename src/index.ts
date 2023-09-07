@@ -9,11 +9,10 @@ import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
-import { ScriptsNames, list, paste, runScript, save } from './commandsHandlers.js';
-import { scriptsContent } from './constants.js';
+import { ScriptsNames, StringParamsFunction, list, paste, runScript, save } from './commandsHandlers.js';
+import { SCRIPTS_PATH, STRAPUP_DIR_NAME, StrapupSettings, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, scriptsContent } from './constants.js';
 import { scripts } from './scripts.js';
-import { getParameterNames } from './utils.js';
-// import { searchselect } from './clack/styled/SearchableSelect.js';
+import { getParameterNames, loadSettings, saveSettings } from './utils.js';
 
 export const args = process.argv
 
@@ -22,32 +21,45 @@ export const __filename = fileURLToPath(import.meta.url);
 // @ts-ignore
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
-export const STRAPUP_DIR_NAME = 'strapup'
-export const STRAPUP_DIR_PATH = path.normalize(`${__dirname}/../${STRAPUP_DIR_NAME}`)
-export const TEMPLATES_PATH = `${STRAPUP_DIR_PATH}/templates`
-export const SCRIPTS_PATH = `${STRAPUP_DIR_PATH}/scripts.js`
 export const WORK_DIR = process.cwd()
 
 async function main() {
+    const settings = loadSettings()
+    if (!settings.strapupDirPath) {
+        p.log.warn(dirNotSpecifiedStartupWarning)
+        const strapupDirPath = await p.text({
+            message: 'Specify path where to save strapup files.',
+            validate: (value) => {
+                if (!value) return 'Please enter a path.'
+                if (!fs.existsSync(value)) return 'Directory does not exist.'
+                try {
+                    fs.accessSync(value, fs.constants.R_OK | fs.constants.W_OK);
+                } catch (err) {
+                    return 'Specified directory is read/write protected.'
+                }
+            }
+        }) as string
+        settings.strapupDirPath = strapupDirPath + '/' + STRAPUP_DIR_NAME
+        saveSettings(settings)
+        fs.mkdirSync(`${settings.strapupDirPath}/templates`, { recursive: true })
+        fs.writeFileSync(`${settings.strapupDirPath}/scripts.js`, scriptsContent, { encoding: 'utf-8' })
+    }
+
+    if (!fs.existsSync(settings.strapupDirPath)) {
+        p.log.error(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}.`)
+        return
+    }
+
     if (args.length > 2) {
         execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
         return
     }
 
     console.clear();
-    if (!fs.existsSync(`${TEMPLATES_PATH}`)) {
-        await afs.mkdir(`${TEMPLATES_PATH}`, { recursive: true })
-        console.log(`Created strapup templates directory at ${STRAPUP_DIR_PATH}`)
-    }
-    if (!fs.existsSync(`${SCRIPTS_PATH}`)) {
-        await afs.writeFile(`${SCRIPTS_PATH}`, scriptsContent, { encoding: 'utf-8' })
-        console.log(`Created strapup scripts.js file at ${STRAPUP_DIR_PATH}`)
-    }
-
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
-    p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH)}`)
-    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH)}`)
+    p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
+    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH())}`)
     console.log(`${color.gray(S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
     const command = await p.select({
@@ -67,8 +79,7 @@ async function main() {
                 message: 'What script do you want to run?',
                 options: Object.keys(scripts).map(script => ({ value: script, label: script })),
             }) as ScriptsNames
-            const script = scripts[scriptName]
-
+            const script: StringParamsFunction = await import(SCRIPTS_PATH())
             const scriptParams = getParameterNames(scripts[scriptName])
             const scriptArguments: string[] = []
 
@@ -119,7 +130,7 @@ async function main() {
             break
         }
         case 'paste': {
-            const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
+            const templates = fs.readdirSync(TEMPLATES_PATH())
             if (templates.length == 0) {
                 p.log.error(`You don't have any templates saved.`)
                 return

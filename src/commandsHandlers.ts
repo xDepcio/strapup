@@ -4,10 +4,11 @@ import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
 import { scripts } from "./scripts.js"
 import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
 import { S_BAR } from './clack/styled/utils.js'
+import { WORK_DIR } from './index.js'
+import { TEMPLATES_PATH } from './constants.js'
 
 interface SaveOptions {
     templateName: string
@@ -16,7 +17,7 @@ interface SaveOptions {
 }
 
 export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
-    const templatePath = `${STRAPUP_DIR_PATH}/templates/${templateName}`
+    const templatePath = `${TEMPLATES_PATH()}/${templateName}`
     const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
 
     if (!fs.existsSync(sourceAbsolutePath)) {
@@ -72,7 +73,7 @@ interface PasteOptions {
 }
 
 export function paste({ templateName, destinationRelativePath }: PasteOptions) {
-    const templatePath = path.normalize(`${STRAPUP_DIR_PATH}/templates/${templateName}`)
+    const templatePath = path.normalize(`${TEMPLATES_PATH()}/${templateName}`)
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
@@ -91,7 +92,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 
 
 export function list() {
-    const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
+    const templates = fs.readdirSync(TEMPLATES_PATH())
 
     if (templates.length === 0) {
         p.log.warn(`You don't have any saved templates.`)
@@ -104,6 +105,7 @@ export function list() {
     })
 }
 
+export type StringParamsFunction = (...args: string[]) => string[];
 export type ScriptsFunctions = typeof scripts[keyof typeof scripts]
 export type ScriptsNames = keyof typeof scripts
 

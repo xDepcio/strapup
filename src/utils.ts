@@ -1,6 +1,8 @@
 import { spawn } from 'child_process'
 import fs from 'fs'
 import path from 'path'
+import { __dirname } from './index.js'
+import { StrapupSettings, inintialSettings } from './constants.js'
 
 export const copyDirectoryContents = (
     fromPath: string,
@@ -64,4 +66,15 @@ export const getFilesIgnoredByGit = () => {
             resolve(results)
         })
     })
+}
+
+export const loadSettings = () => {
+    if (!fs.existsSync(__dirname + '/settings.json')) {
+        fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
+    }
+    return JSON.parse(fs.readFileSync(__dirname + '/settings.json', { encoding: 'utf-8' })) as StrapupSettings
+}
+
+export const saveSettings = (settings: StrapupSettings) => {
+    fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(settings, null, 4), { encoding: 'utf-8' })
 }
