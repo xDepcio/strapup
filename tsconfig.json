@@ -149,6 +149,9 @@
   },
   "include": [
     "./src/**/*"
+  ],
+  "exclude": [
+    "./src/premade-templates/**/*",
   ]
 >>>>>>> da6d773 (officialy failed at fixing bug with old data being piped to readline.)
 }

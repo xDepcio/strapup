@@ -26,11 +26,16 @@
   },
 >>>>>>> 2fdc6c6 (seperatefd extended clack files)
   "scripts": {
+<<<<<<< HEAD
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "sync-templates": "node ./automatic-mdx/dist/index.js && cp ./automatic-mdx/results/templates/* ./docs/Included\\ templates && cp ./automatic-mdx/results/scripts/* ./docs/Included\\ scripts"
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "ts": "tsc && cp ./src/premade-templates ./dist -r"
+>>>>>>> f0f86b5 (added error handling for whenever you provide path to already existing strapup dir)
   },
   "dependencies": {
     "@code-hike/mdx": "^0.9.0",
