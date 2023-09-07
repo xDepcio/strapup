@@ -12,7 +12,7 @@ export const scriptsContent = `export const scripts = {
         \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
         \`cd \${projectName}\`,
         \`npx shadcn-ui@latest init -y\`,
-        \`strapup paste redux-ts redux\`
+        \`strapup paste next-redux-ts redux\`
     ],
     shadcn: () => [
         \`npx shadcn-ui@latest init -y\`,
