@@ -10,6 +10,7 @@
   "name": "strapup",
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> cb2667a (renamed from templato to strapup)
   "version": "0.1.0",
 =======
@@ -18,6 +19,9 @@
 =======
   "version": "0.1.2",
 >>>>>>> f9a562d (new ver)
+=======
+  "version": "0.2.0",
+>>>>>>> 142b973 (updated version)
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
