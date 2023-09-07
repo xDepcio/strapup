@@ -4,11 +4,10 @@ import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { scripts } from "./scripts.js"
 import { copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
 import { S_BAR } from './clack/styled/utils.js'
 import { WORK_DIR } from './index.js'
-import { TEMPLATES_PATH } from './constants.js'
+import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 
 interface SaveOptions {
     templateName: string
@@ -105,12 +104,8 @@ export function list() {
     })
 }
 
-export type StringParamsFunction = (...args: string[]) => string[];
-export type ScriptsFunctions = typeof scripts[keyof typeof scripts]
-export type ScriptsNames = keyof typeof scripts
-
 interface RunScriptOptions {
-    functionToRun: ScriptsFunctions
+    functionToRun: ScriptsFunction
     functionParams: string[]
 }
 

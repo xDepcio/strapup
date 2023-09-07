@@ -2,8 +2,7 @@
 
 import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
-import { list, paste, save } from './commandsHandlers.js'
-import { scripts } from '../scripts.js'
+import { paste } from './commandsHandlers.js'
 
 export const STRAPUP_DIR_NAME = 'strapup'
 export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
@@ -20,25 +19,6 @@ async function main() {
     const command = args[2]
 
     switch (command) {
-        case 'run-script': {
-            const scriptName = args[3]
-            if (!scripts.hasOwnProperty(scriptName)) {
-                console.log('Script does not exist')
-                return
-            }
-            // runScript({ scriptName: scriptName as ScriptsNames })
-            break
-        }
-        case 'save': {
-            const templateName = args[3]
-            const sourceRelativePath = args[4] || '.'
-
-            const flagArgs = args.slice(5)
-            const withGitignore = flagArgs.includes('--with-gitignore')
-
-            await save({ sourceRelativePath, templateName, withGitignore })
-            break
-        }
         case 'paste': {
             const templateName = args[3]
             const destinationRelativePath = args[4] || '.'
@@ -48,9 +28,6 @@ async function main() {
                 destinationRelativePath: destinationRelativePath
             })
             break
-        }
-        case 'list': {
-            list()
         }
         default: {
             console.log('Command not found')

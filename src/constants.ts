@@ -31,3 +31,9 @@ export type StrapupSettings = {
 export const inintialSettings: StrapupSettings = {
     strapupDirPath: null
 }
+
+export type ScriptsFunction = (...args: string[]) => string[]
+
+export type Scripts = {
+    [key: string]: ScriptsFunction
+}
