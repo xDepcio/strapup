@@ -3,6 +3,8 @@ import fs from 'fs'
 import path from 'path'
 import { __dirname } from './index.js'
 import { StrapupSettings, inintialSettings } from './constants.js'
+import * as p from '@clack/prompts'
+import color from 'picocolors'
 
 export const copyDirectoryContents = (
     fromPath: string,
@@ -10,7 +12,8 @@ export const copyDirectoryContents = (
     options: {
         validate: ({ createName, createPath, sourcePath, isFile }:
             { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
-    } = { validate: () => true }
+        overwriteFiles?: boolean
+    } = { validate: () => true, overwriteFiles: true }
 ) => {
     const filesToCreate = fs.readdirSync(fromPath)
 
@@ -28,15 +31,30 @@ export const copyDirectoryContents = (
                 return
             }
 
-            fs.writeFileSync(writePath, contents, 'utf8')
+            if (!fs.existsSync(writePath)) {
+                fs.writeFileSync(writePath, contents, 'utf8')
+                return
+            }
+            if (options.overwriteFiles) {
+                fs.writeFileSync(writePath, contents, 'utf8')
+                p.log.info(`Overwriting ${color.dim(file)}`)
+                return
+            }
+            p.log.info(`Skipping ${color.dim(file)}. File already exists.`)
         }
         else if (stats.isDirectory()) {
             if (!options.validate({ createName: file, createPath: `${toPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
                 return
             }
 
-            fs.mkdirSync(`${toPath}/${file}`)
-            copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+            try {
+                fs.mkdirSync(`${toPath}/${file}`)
+                copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+            } catch (e: any) {
+                if (e.code === 'EEXIST') {
+                    copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
+                }
+            }
         }
     })
 }
