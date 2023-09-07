@@ -9,9 +9,8 @@ import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
-import { ScriptsNames, StringParamsFunction, list, paste, runScript, save } from './commandsHandlers.js';
-import { SCRIPTS_PATH, STRAPUP_DIR_NAME, StrapupSettings, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, scriptsContent } from './constants.js';
-import { scripts } from './scripts.js';
+import { list, paste, runScript, save } from './commandsHandlers.js';
+import { SCRIPTS_PATH, STRAPUP_DIR_NAME, Scripts, StrapupSettings, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, scriptsContent } from './constants.js';
 import { getParameterNames, loadSettings, saveSettings } from './utils.js';
 
 export const args = process.argv
@@ -74,12 +73,13 @@ async function main() {
 
     switch (command) {
         case 'run-script': {
+            const scripts: Scripts = await import(SCRIPTS_PATH())
             const scriptName = await selectsearch({
                 searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
                 options: Object.keys(scripts).map(script => ({ value: script, label: script })),
-            }) as ScriptsNames
-            const script: StringParamsFunction = await import(SCRIPTS_PATH())
+            }) as string
+            const script = scripts[scriptName]
             const scriptParams = getParameterNames(scripts[scriptName])
             const scriptArguments: string[] = []
 

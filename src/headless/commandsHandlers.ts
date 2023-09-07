@@ -1,68 +1,13 @@
 import * as p from '@clack/prompts'
-import { execSync } from "child_process"
 import * as fs from 'fs'
-// import ignore from "ignore"
-import * as afs from 'node:fs/promises'
-import path from "path"
-import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
-import { scripts } from "../scripts.js"
 import { copyDirectoryContents } from "../utils.js"
+import { STRAPUP_DIR_PATH, WORK_DIR } from "./index.js"
 
 interface SaveOptions {
     templateName: string
     sourceRelativePath: string
     withGitignore: boolean
 }
-
-export async function save({ templateName, sourceRelativePath, withGitignore }: SaveOptions) {
-    // console.log('Saving template...')
-
-    // const templatePath = `${STRAPUP_DIR_PATH}/templates/${templateName}`
-    // const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
-
-    // if (!fs.existsSync(sourceAbsolutePath)) {
-    //     console.log(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
-    //     return
-    // }
-
-    // if (!fs.existsSync(templatePath)) {
-    //     await afs.mkdir(templatePath, { recursive: true })
-
-    //     if (withGitignore) {
-    //         const gitignorePath = `${sourceAbsolutePath}/.gitignore`
-    //         if (!fs.existsSync(gitignorePath)) {
-    //             console.log(`No .gitignore found in ${sourceAbsolutePath}`)
-    //             return
-    //         }
-
-    //         const gitignoreContents = fs.readFileSync(gitignorePath, 'utf8')
-    //         const gitignore = ignore().add(gitignoreContents)
-    //         gitignore.add('.git')
-    //         gitignore.add('.gitignore')
-
-    //         copyDirectoryContents(sourceAbsolutePath, templatePath, {
-    //             validate: ({ createName, createPath, isFile, sourcePath }) => {
-    //                 const relPath = path.relative(sourceAbsolutePath, sourcePath)
-    //                 const ignores = gitignore.ignores(relPath + (isFile ? '' : '/'))
-
-    //                 if (ignores) {
-    //                     console.log(`File ${sourcePath} ignored (--with-gitignore)`)
-    //                     return false
-    //                 }
-    //                 return true
-    //             }
-    //         })
-    //     }
-    //     else {
-    //         copyDirectoryContents(sourceAbsolutePath, templatePath)
-    //         console.log(`Saved ${templateName} template at ${templatePath}`)
-    //     }
-    // }
-    // else {
-    //     console.log(`Template ${templateName} already exists`)
-    // }
-}
-
 
 interface PasteOptions {
     templateName: string,
@@ -90,37 +35,21 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 }
 
 
-export function list() {
-    console.log('Listing templates...')
+// export type ScriptsFunctions = typeof scripts[keyof typeof scripts]
+// export type ScriptsNames = keyof typeof scripts
 
-    const templates = fs.readdirSync(`${STRAPUP_DIR_PATH}/templates`)
+// interface RunScriptOptions {
+//     functionToRun: ScriptsFunctions
+//     functionParams: string[]
+// }
 
-    if (templates.length === 0) {
-        console.log('No templates found')
-        return
-    }
-
-    console.log('Templates:')
-    templates.forEach(template => {
-        console.log(template)
-    })
-}
-
-export type ScriptsFunctions = typeof scripts[keyof typeof scripts]
-export type ScriptsNames = keyof typeof scripts
-
-interface RunScriptOptions {
-    functionToRun: ScriptsFunctions
-    functionParams: string[]
-}
-
-export async function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
-    // @ts-ignore
-    const commands = functionToRun(...functionParams)
-    const concatedCommands = commands.join('\n')
-    execSync(concatedCommands, { stdio: 'inherit' })
-    return
-}
+// export async function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
+//     // @ts-ignore
+//     const commands = functionToRun(...functionParams)
+//     const concatedCommands = commands.join('\n')
+//     execSync(concatedCommands, { stdio: 'inherit' })
+//     return
+// }
 
 
 
