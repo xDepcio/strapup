@@ -1,8 +1,8 @@
-import { spawn } from 'child_process'
+import { execSync, spawn, spawnSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { __dirname } from './index.js'
-import { StrapupSettings, inintialSettings } from './constants.js'
+import { StrapupSettings, TEMPLATES_PATH, inintialSettings } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 
@@ -119,4 +119,35 @@ export const createMetadataFile = ({ directoryPath, templateDesc = '' }: CreateM
 export const readMetadataFile = (directoryPath: string) => {
     if (!fs.existsSync(`${directoryPath}/_strapupmetadata.json`)) return null
     return JSON.parse(fs.readFileSync(`${directoryPath}/_strapupmetadata.json`, { encoding: 'utf-8' })) as Metadata
+}
+
+export const setSystemEnv = (key: string, value: string) => {
+    if (process.platform === 'win32') {
+        // spawnSync('setx', [key, value], { stdio: 'inherit' })
+    }
+    else if (process.platform === 'linux') {
+        let bashrcContent = fs.readFileSync(`${process.env.HOME}/.bashrc`, { encoding: 'utf-8' })
+        if (bashrcContent.includes(`export ${key}=`)) {
+            const regex = new RegExp(`export ${key}=(.*)`, 'g')
+            bashrcContent = bashrcContent.replace(regex, `export ${key}=${value}`)
+            fs.writeFileSync(`${process.env.HOME}/.bashrc`, bashrcContent, { encoding: 'utf-8' })
+        }
+        else {
+            fs.appendFileSync(`${process.env.HOME}/.bashrc`, `\nexport ${key}=${value}`, { encoding: 'utf-8' })
+        }
+    }
+    else {
+        throw new Error('Unsupported platform: ' + process.platform)
+    }
+}
+
+export const addPremadeTemplatesToExistingTemplatesDir = (existingDirPath: string) => {
+    const templatesPath = `${__dirname}/premade-templates`
+    const templates = fs.readdirSync(templatesPath)
+    templates.forEach(template => {
+        fs.rmSync(`${existingDirPath}/${template}`, { recursive: true, force: true })
+        fs.mkdirSync(`${existingDirPath}/${template}`, { recursive: true })
+        const templatePath = path.normalize(`${templatesPath}/${template}`)
+        copyDirectoryContents({ fromPath: templatePath, toPath: `${existingDirPath}/${template}`, overwriteFiles: false, skipMetadataFile: false })
+    })
 }
