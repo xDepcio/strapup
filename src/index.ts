@@ -29,10 +29,10 @@ async function main() {
     const settings = loadSettings()
     settings.strapupDirPath = process.env[STRAPUP_DIR_PATH_ENV_NAME] || settings.strapupDirPath
     saveSettings(settings)
-    if (!settings.strapupDirPath) {
+    if (!settings.strapupDirPath || true) {
         p.log.warn(dirNotSpecifiedStartupWarning)
         const providedPath = await p.text({
-            message: 'Specify path where to save strapup files.',
+            message: 'Specify absolute path where to save strapup files.',
             validate: (value) => {
                 if (!value) return 'Please enter a path.'
                 if (!fs.existsSync(value)) return 'Directory does not exist.'
@@ -41,7 +41,8 @@ async function main() {
                 } catch (err) {
                     return 'Specified directory is read/write protected.'
                 }
-            }
+            },
+            initialValue: process.platform === 'win32' ? process.env.HOMEPATH : process.env.HOME,
         }) as string
         settings.strapupDirPath = providedPath + '/' + STRAPUP_DIR_NAME
         saveSettings(settings)
