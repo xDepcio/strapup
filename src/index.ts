@@ -55,7 +55,6 @@ async function main() {
 
         try {
             fs.mkdirSync(TEMPLATES_PATH())
-            // copyDirectoryContents(premadeTemplatesDirPath(), TEMPLATES_PATH())
             copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
             p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
         } catch (e: any) {
@@ -104,10 +103,10 @@ async function main() {
             const scriptName = await selectsearch({
                 searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
-                options: Object.keys(scripts).map(script => ({ value: script, label: script })),
+                options: Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description })),
             }) as string
             const script = scripts[scriptName]
-            const scriptParams = getParameterNames(scripts[scriptName])
+            const scriptParams = getParameterNames(script.command)
             const scriptArguments: string[] = []
 
             for (const param of scriptParams) {
@@ -120,7 +119,7 @@ async function main() {
                 scriptArguments.push(paramValue)
             }
 
-            await runScript({ functionParams: scriptArguments, functionToRun: script })
+            await runScript({ functionParams: scriptArguments, functionToRun: script.command })
             break
         }
         case 'save': {
