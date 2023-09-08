@@ -1,11 +1,12 @@
 import color from 'picocolors'
 import { loadSettings } from './utils.js'
 import { __dirname } from './index.js'
+import { normalize } from 'path'
 
 export const STRAPUP_DIR_NAME = 'strapup'
-export const TEMPLATES_PATH = () => loadSettings().strapupDirPath + `/templates`
-export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.mjs`
-export const premadeTemplatesDirPath = () => `${__dirname}/premade-templates`
+export const TEMPLATES_PATH = () => normalize(loadSettings().strapupDirPath + `/templates`)
+export const SCRIPTS_PATH = () => normalize(loadSettings().strapupDirPath + `/scripts.mjs`)
+export const premadeTemplatesDirPath = () => normalize(`${__dirname}/premade-templates`)
 export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
 
 export const scriptsContent = `export const scripts = {

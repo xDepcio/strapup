@@ -4,7 +4,7 @@
 import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import { dirname } from 'path';
+import { dirname, normalize } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
@@ -44,16 +44,16 @@ async function main() {
             },
             initialValue: process.platform === 'win32' ? process.env.HOMEPATH : process.env.HOME,
         }) as string
-        settings.strapupDirPath = providedPath + '/' + STRAPUP_DIR_NAME
+        settings.strapupDirPath = normalize(providedPath + '/' + STRAPUP_DIR_NAME)
         saveSettings(settings)
         setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
 
         try {
             fs.mkdirSync(settings.strapupDirPath)
-            p.log.info(`Created strapup directory at ${color.dim(settings.strapupDirPath)}`)
+            p.log.info(`Created strapup directory at ${color.dim(normalize(settings.strapupDirPath))}`)
         } catch (e: any) {
             if (e.code === "EEXIST") {
-                p.log.info(`Existing strapup directory found at ${color.dim(settings.strapupDirPath)}`)
+                p.log.info(`Existing strapup directory found at ${color.dim(normalize(settings.strapupDirPath))}`)
             }
             else throw e
         }
