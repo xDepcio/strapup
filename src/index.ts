@@ -29,7 +29,7 @@ async function main() {
     const settings = loadSettings()
     settings.strapupDirPath = process.env[STRAPUP_DIR_PATH_ENV_NAME] || settings.strapupDirPath
     saveSettings(settings)
-    if (!settings.strapupDirPath || true) {
+    if (!settings.strapupDirPath) {
         p.log.warn(dirNotSpecifiedStartupWarning)
         const providedPath = await p.text({
             message: 'Specify absolute path where to save strapup files.',
