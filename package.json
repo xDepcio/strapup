@@ -17,6 +17,11 @@
   },
   "author": "",
   "license": "ISC",
+  "keywords": [
+    "template-cli",
+    "template",
+    "cli"
+  ],
   "devDependencies": {
     "@babel/core": "^7.22.11",
     "@types/node": "^20.5.9",
