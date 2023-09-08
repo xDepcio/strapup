@@ -119,7 +119,15 @@
   },
   "author": "",
   "license": "ISC",
+<<<<<<< HEAD
 >>>>>>> 4dfa8ca (made it any more universal for other systems)
+=======
+  "keywords": [
+    "template-cli",
+    "template",
+    "cli"
+  ],
+>>>>>>> 954dd92 (added keywords)
   "devDependencies": {
 <<<<<<< HEAD
     "prisma": "^5.2.0"
