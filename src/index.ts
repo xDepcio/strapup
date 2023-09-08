@@ -10,7 +10,7 @@ import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
 import { SCRIPTS_PATH, STRAPUP_DIR_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
-import { copyDirectoryContents, getParameterNames, loadSettings, saveSettings } from './utils.js';
+import { copyDirectoryContents, getParameterNames, loadSettings, readMetadataFile, saveSettings } from './utils.js';
 
 export const args = process.argv
 
@@ -56,7 +56,7 @@ async function main() {
         try {
             fs.mkdirSync(TEMPLATES_PATH())
             // copyDirectoryContents(premadeTemplatesDirPath(), TEMPLATES_PATH())
-            copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH() })
+            copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
             p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
         } catch (e: any) {
             if (e.code === "EEXIST") {
@@ -158,11 +158,17 @@ async function main() {
 
             const withGitignore = flags.includes('--with-gitignore')
 
-            await save({ sourceRelativePath, templateName, withGitignore })
+            await save({ sourceRelativePath, templateName, withGitignore, templateDescription })
             break
         }
         case 'paste': {
-            const templates = fs.readdirSync(TEMPLATES_PATH())
+            const templates = fs.readdirSync(TEMPLATES_PATH()).map(template => {
+                const metdata = readMetadataFile(`${TEMPLATES_PATH()}/${template}`)
+                return {
+                    name: template,
+                    description: metdata?.templateDesc
+                }
+            })
             if (templates.length == 0) {
                 p.log.error(`You don't have any templates saved.`)
                 return
@@ -170,7 +176,7 @@ async function main() {
 
             const templateName = await p.select({
                 message: 'What template do you want to paste?',
-                options: templates.map(template => ({ value: template, label: template })),
+                options: templates.map(({ name, description }) => ({ value: name, label: name, hint: description })),
             }) as string
 
             const destinationRelativePath = await p.text({

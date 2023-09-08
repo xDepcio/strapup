@@ -11,9 +11,10 @@ export interface CopyDirectoryContentsParams {
     toPath: string
     validate?: ({ createName, createPath, sourcePath, isFile }: { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
     overwriteFiles?: boolean
+    skipMetadataFile?: boolean
 }
 
-export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true, overwriteFiles = true }: CopyDirectoryContentsParams) => {
+export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true, overwriteFiles = true, skipMetadataFile = true }: CopyDirectoryContentsParams) => {
     const filesToCreate = fs.readdirSync(fromPath)
 
     filesToCreate.forEach(file => {
@@ -27,6 +28,10 @@ export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true,
             const writePath = path.normalize(`${toPath}/${file}`)
 
             if (!validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
+                return
+            }
+
+            if (file === '_strapupmetadata.json' && skipMetadataFile) {
                 return
             }
 
@@ -96,4 +101,24 @@ export const loadSettings = () => {
 
 export const saveSettings = (settings: StrapupSettings) => {
     fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(settings, null, 4), { encoding: 'utf-8' })
+}
+
+export type Metadata = {
+    templateDesc?: string
+}
+
+export type CreateMetadataFileParams = {
+    directoryPath: string
+} & Metadata
+
+export const createMetadataFile = ({ directoryPath, templateDesc = '' }: CreateMetadataFileParams) => {
+    const metadata: Metadata = {
+        templateDesc: templateDesc,
+    }
+    fs.writeFileSync(`${directoryPath}/_strapupmetadata.json`, JSON.stringify(metadata, null, 4), { encoding: 'utf-8' })
+}
+
+export const readMetadataFile = (directoryPath: string) => {
+    if (!fs.existsSync(`${directoryPath}/_strapupmetadata.json`)) return null
+    return JSON.parse(fs.readFileSync(`${directoryPath}/_strapupmetadata.json`, { encoding: 'utf-8' })) as Metadata
 }
