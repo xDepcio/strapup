@@ -6,6 +6,7 @@ export const STRAPUP_DIR_NAME = 'strapup'
 export const TEMPLATES_PATH = () => loadSettings().strapupDirPath + `/templates`
 export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.mjs`
 export const premadeTemplatesDirPath = () => `${__dirname}/premade-templates`
+export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
 
 export const scriptsContent = `export const scripts = {
     nextshadreduxts: {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-nocheck
 
 import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
@@ -9,8 +10,8 @@ import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
-import { SCRIPTS_PATH, STRAPUP_DIR_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
-import { copyDirectoryContents, getParameterNames, loadSettings, readMetadataFile, saveSettings } from './utils.js';
+import { SCRIPTS_PATH, STRAPUP_DIR_NAME, STRAPUP_DIR_PATH_ENV_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
+import { addPremadeTemplatesToExistingTemplatesDir, copyDirectoryContents, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
 
 export const args = process.argv
 
@@ -26,9 +27,11 @@ async function main() {
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
     const settings = loadSettings()
+    settings.strapupDirPath = process.env[STRAPUP_DIR_PATH_ENV_NAME] || settings.strapupDirPath
+    saveSettings(settings)
     if (!settings.strapupDirPath) {
         p.log.warn(dirNotSpecifiedStartupWarning)
-        const strapupDirPath = await p.text({
+        const providedPath = await p.text({
             message: 'Specify path where to save strapup files.',
             validate: (value) => {
                 if (!value) return 'Please enter a path.'
@@ -40,8 +43,9 @@ async function main() {
                 }
             }
         }) as string
-        settings.strapupDirPath = strapupDirPath + '/' + STRAPUP_DIR_NAME
+        settings.strapupDirPath = providedPath + '/' + STRAPUP_DIR_NAME
         saveSettings(settings)
+        setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
 
         try {
             fs.mkdirSync(settings.strapupDirPath)
@@ -60,6 +64,8 @@ async function main() {
         } catch (e: any) {
             if (e.code === "EEXIST") {
                 p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
+                p.log.message(`Syncing premade templates...`)
+                addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
             }
             else throw e
         }
