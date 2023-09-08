@@ -2,7 +2,7 @@ import { execSync, spawn, spawnSync } from 'child_process'
 import fs from 'fs'
 import path from 'path'
 import { __dirname } from './index.js'
-import { StrapupSettings, TEMPLATES_PATH, inintialSettings } from './constants.js'
+import { STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 
@@ -123,9 +123,9 @@ export const readMetadataFile = (directoryPath: string) => {
 
 export const setSystemEnv = (key: string, value: string) => {
     if (process.platform === 'win32') {
-        // spawnSync('setx', [key, value], { stdio: 'inherit' })
+        spawnSync('setx', [key, value], { stdio: 'inherit' })
     }
-    else if (process.platform === 'linux') {
+    else if (process.platform === 'linux' || process.platform === 'darwin') {
         let bashrcContent = fs.readFileSync(`${process.env.HOME}/.bashrc`, { encoding: 'utf-8' })
         if (bashrcContent.includes(`export ${key}=`)) {
             const regex = new RegExp(`export ${key}=(.*)`, 'g')
