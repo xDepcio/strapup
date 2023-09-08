@@ -53,12 +53,10 @@ export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true,
 
             try {
                 fs.mkdirSync(`${toPath}/${file}`)
-                // copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
-                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate })
+                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate, skipMetadataFile })
             } catch (e: any) {
                 if (e.code === 'EEXIST') {
-                    // copyDirectoryContents(`${fromPath}/${file}`, `${toPath}/${file}`)
-                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate })
+                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate, skipMetadataFile })
                 }
             }
         }
