@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// @ts-nocheck
 
 import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
@@ -144,14 +143,17 @@ async function main() {
                 placeholder: 'Template that spins up something big...',
             }) as string | undefined
 
-            const sourceRelativePath = await p.text({
-                message: 'Specify relative path to the source directory.',
+            const sourceRelativePaths = (await p.text({
+                message: 'Specify relative path (or paths space seperated) to the source directory/file. Directory structure leading to the source will be preserved.',
                 initialValue: './',
                 validate: (value) => {
                     if (!value) return 'Please enter a path.'
-                    if (value[0] !== '.') return 'Please enter a relative path.'
+                    for (const path of value.split(' ')) {
+                        if (path[0] === '.' && path[1] === '.') return 'Upward traversal is not allowed. Please only use ./'
+                        if (path[0] !== '.' && path[1] !== '/') return 'Please enter a relative path.'
+                    }
                 },
-            }) as string
+            }) as string).split(' ')
 
             const flags = await p.multiselect({
                 message: 'Select additional options.',
@@ -164,7 +166,7 @@ async function main() {
 
             const withGitignore = flags.includes('--with-gitignore')
 
-            await save({ sourceRelativePath, templateName, withGitignore, templateDescription })
+            await save({ sourceRelativePaths, templateName, withGitignore, templateDescription })
             break
         }
         case 'paste': {

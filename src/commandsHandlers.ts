@@ -11,59 +11,71 @@ import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 
 interface SaveOptions {
     templateName: string
-    sourceRelativePath: string
+    sourceRelativePaths: string[]
     withGitignore: boolean
     templateDescription?: string
 }
 
-export async function save({ templateName, sourceRelativePath, withGitignore, templateDescription }: SaveOptions) {
-    const templatePath = `${TEMPLATES_PATH()}/${templateName}`
-    const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
-    const copyArgs: CopyDirectoryContentsParams = {
-        fromPath: sourceAbsolutePath,
-        toPath: templatePath,
-    }
-
-    if (!fs.existsSync(sourceAbsolutePath)) {
-        p.log.error(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
-        return
-    }
-
-    let override = false
+export async function save({ templateName, sourceRelativePaths, withGitignore, templateDescription }: SaveOptions) {
+    const templatePath = path.normalize(`${TEMPLATES_PATH()}/${templateName}`)
     if (fs.existsSync(templatePath)) {
-        override = await p.confirm({
+        let override = await p.confirm({
             message: `Template ${templateName} already exists. Override It?`,
             initialValue: false
         }) as boolean
 
         if (override) fs.rmSync(templatePath, { recursive: true, force: true })
-    }
-
-    let ignoredFiles: string[] = []
-    if (withGitignore) {
-        try {
-            ignoredFiles = await getFilesIgnoredByGit()
-            copyArgs.validate = ({ createName, createPath, isFile, sourcePath }) => {
-                if (ignoredFiles.includes(createName)) {
-                    p.log.info(`${color.dim(createName)} ignored by git. Skipping It...`)
-                    return false
-                }
-                return true
-            }
-        } catch (e) {
-            p.log.warn(`Problem with checking git files: ${color.dim((e as Error).message)}`)
+        else {
+            p.log.error(`Aborted saving ${color.cyan(templateName)} template.`)
+            return
         }
     }
 
-    if (!fs.existsSync(templatePath) || override) {
-        await afs.mkdir(templatePath, { recursive: true })
+    for (const sourceRelativePath of sourceRelativePaths) {
+        const sourceAbsolutePath = path.normalize(`${WORK_DIR}/${sourceRelativePath}`)
+        const copyArgs: CopyDirectoryContentsParams = {
+            fromPath: sourceAbsolutePath,
+            toPath: templatePath,
+        }
 
-        copyDirectoryContents(copyArgs)
-        createMetadataFile({ directoryPath: templatePath, templateDesc: templateDescription })
-        p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
-    }
-    else {
-        p.log.error(`Aborted saving ${color.cyan(templateName)} template.`)
+        if (!fs.existsSync(sourceAbsolutePath)) {
+            p.log.error(`Directory specified as source: ${sourceAbsolutePath} does not exist`)
+            return
+        }
+
+        let ignoredFiles: string[] = []
+        if (withGitignore) {
+            try {
+                ignoredFiles = await getFilesIgnoredByGit()
+                copyArgs.validate = ({ createName, createPath, isFile, sourcePath }) => {
+                    if (ignoredFiles.includes(createName)) {
+                        p.log.info(`${color.dim(createName)} ignored by git. Skipping It...`)
+                        return false
+                    }
+                    return true
+                }
+            } catch (e) {
+                p.log.warn(`Problem with checking git files: ${color.dim((e as Error).message)}`)
+            }
+        }
+
+        const stat = fs.statSync(sourceAbsolutePath)
+        if (stat.isFile()) {
+            const dirStructure = path.dirname(sourceRelativePath)
+            const fileContent = fs.readFileSync(sourceAbsolutePath, 'utf8')
+
+            if (!fs.existsSync(`${templatePath}/${dirStructure}`)) {
+                await afs.mkdir(`${templatePath}/${dirStructure}`, { recursive: true })
+                fs.writeFileSync(`${templatePath}/${sourceRelativePath}`, fileContent, 'utf8')
+            }
+        }
+        else {
+            await afs.mkdir(`${templatePath}/${sourceRelativePath}`, { recursive: true })
+            copyArgs.toPath = `${templatePath}/${sourceRelativePath}`
+            copyDirectoryContents(copyArgs)
+            createMetadataFile({ directoryPath: templatePath, templateDesc: templateDescription })
+            p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
+        }
     }
 }
 
