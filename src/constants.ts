@@ -8,26 +8,53 @@ export const SCRIPTS_PATH = () => loadSettings().strapupDirPath + `/scripts.mjs`
 export const premadeTemplatesDirPath = () => `${__dirname}/premade-templates`
 
 export const scriptsContent = `export const scripts = {
-    nextshadreduxts: (projectName) => [
-        \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
-        \`cd \${projectName}\`,
-        \`npx shadcn-ui@latest init -y\`,
-        \`strapup paste next-redux-ts redux\`
-    ],
-    shadcn: () => [
-        \`npx shadcn-ui@latest init -y\`,
-    ],
-    nextJsShadcnAuthJs: (projectName) => [
-        \`npx create-next-app \${projectName}\`,
-        \`cd \${projectName}\`,
-        \`npx shadcn-ui@latest init -y\`,
-        \`npx shadcn-ui@latest add button -y\`,
-        \`npm i next-auth\`,
-        \`strapup paste next13-app-auth-paste-from-root ./\`,
-    ]
+    nextshadreduxts: {
+        description: "Create new Next.js app dir, Tailwind, Typescript, Shadcn UI, Redux Toolkit",
+        command: (projectName) => [
+            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
+            \`cd \${projectName}\`,
+            \`npx shadcn-ui@latest init -y\`,
+            \`strapup paste next-redux-ts redux\`
+        ],
+    },
+    shadcn: {
+        description: "Add Shadcn UI to existing project with basic components (button, input, skeleton)",
+        command: () => [
+            \`npx shadcn-ui@latest init -y\`,
+            \`npx shadcn-ui@latest add button -y\`,
+            \`npx shadcn-ui@latest add input -y\`,
+            \`npx shadcn-ui@latest add skeleton -y\`,
+        ],
+    },
+    nextJsShadcnAuthJs: {
+        description: "Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js",
+        command: (projectName) => [
+            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
+            \`cd \${projectName}\`,
+            \`npx shadcn-ui@latest init -y\`,
+            \`npx shadcn-ui@latest add button -y\`,
+            \`npx shadcn-ui@latest add input -y\`,
+            \`npx shadcn-ui@latest add skeleton -y\`,
+            \`npm i next-auth\`,
+            \`strapup paste next13-app-auth-paste-from-root ./\`,
+        ]
+    },
+    nextJsShadcnAuthJsRTKTS: {
+        description: "Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js, basic redux-toolkit",
+        command: (projectName) => [
+            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
+            \`cd \${projectName}\`,
+            \`npx shadcn-ui@latest init -y\`,
+            \`npx shadcn-ui@latest add button -y\`,
+            \`npx shadcn-ui@latest add input -y\`,
+            \`npx shadcn-ui@latest add skeleton -y\`,
+            \`npm i next-auth\`,
+            \`strapup paste next13-app-auth-paste-from-root ./\`,
+            \`strapup paste next-redux-ts redux\`,
+        ]
+    }
     // Create a new script by adding a key-value pair based on examples above.
-}
-`
+}`
 
 export const dirNotSpecifiedStartupWarning = `Path to save strapup files is not specified. This may happen when:
 ${color.yellow("-")} ${color.dim("This is your first time running strapup.")}
@@ -46,5 +73,8 @@ export const inintialSettings: StrapupSettings = {
 export type ScriptsFunction = (...args: string[]) => string[]
 
 export type Scripts = {
-    [key: string]: ScriptsFunction
+    [key: string]: {
+        description: string
+        command: ScriptsFunction
+    }
 }
