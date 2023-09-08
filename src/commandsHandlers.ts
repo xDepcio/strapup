@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { CopyDirectoryContentsParams, copyDirectoryContents, getFilesIgnoredByGit } from "./utils.js"
+import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit } from "./utils.js"
 import { S_BAR } from './clack/styled/utils.js'
 import { WORK_DIR } from './index.js'
 import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
@@ -13,10 +13,10 @@ interface SaveOptions {
     templateName: string
     sourceRelativePath: string
     withGitignore: boolean
-    templateDescsription?: string
+    templateDescription?: string
 }
 
-export async function save({ templateName, sourceRelativePath, withGitignore, templateDescsription }: SaveOptions) {
+export async function save({ templateName, sourceRelativePath, withGitignore, templateDescription }: SaveOptions) {
     const templatePath = `${TEMPLATES_PATH()}/${templateName}`
     const sourceAbsolutePath = `${WORK_DIR}/${sourceRelativePath}`
     const copyArgs: CopyDirectoryContentsParams = {
@@ -59,6 +59,7 @@ export async function save({ templateName, sourceRelativePath, withGitignore, te
         await afs.mkdir(templatePath, { recursive: true })
 
         copyDirectoryContents(copyArgs)
+        createMetadataFile({ directoryPath: templatePath, templateDesc: templateDescription })
         p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
     }
     else {
