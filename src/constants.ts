@@ -20,7 +20,7 @@ export const scriptsContent = `export const scripts = {
         ],
     },
     nextjsshadcn: {
-        description: "Create new Next.js app, add Shadcn UI with basic components (button, input, skeleton)",
+        description: "New Next.js app, Shadcn UI add (button, input, skeleton, dropdown), darkmode",
         command: (projectName) => [
             \`npx create-next-app \${projectName}\`,
             \`cd \${projectName}\`,
@@ -28,6 +28,9 @@ export const scriptsContent = `export const scripts = {
             \`npx shadcn-ui@latest add button -y\`,
             \`npx shadcn-ui@latest add input -y\`,
             \`npx shadcn-ui@latest add skeleton -y\`,
+            \`npx shadcn-ui@latest add dropdown-menu -y\`,
+            \`npm i next-themes\`,
+            \`npx strapup paste next-shad-darkmode ./\`,
         ],
     },
     shadcn: {
