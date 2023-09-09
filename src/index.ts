@@ -10,7 +10,7 @@ import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
 import { SCRIPTS_PATH, STRAPUP_DIR_NAME, STRAPUP_DIR_PATH_ENV_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
-import { addPremadeTemplatesToExistingTemplatesDir, copyDirectoryContents, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
+import { addPremadeTemplatesToExistingTemplatesDir, copyDirectoryContents, createStrapupDirectory, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
 
 export const args = process.argv
 
@@ -47,41 +47,12 @@ async function main() {
         saveSettings(settings)
         setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
 
-        try {
-            fs.mkdirSync(settings.strapupDirPath)
-            p.log.info(`Created strapup directory at ${color.dim(normalize(settings.strapupDirPath))}`)
-        } catch (e: any) {
-            if (e.code === "EEXIST") {
-                p.log.info(`Existing strapup directory found at ${color.dim(normalize(settings.strapupDirPath))}`)
-            }
-            else throw e
-        }
-
-        try {
-            fs.mkdirSync(TEMPLATES_PATH())
-            copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
-            p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
-        } catch (e: any) {
-            if (e.code === "EEXIST") {
-                p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
-                p.log.message(`Syncing premade templates...`)
-                addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
-            }
-            else throw e
-        }
-
-        if (fs.existsSync(SCRIPTS_PATH())) {
-            p.log.info(`Existing scripts file found at ${color.dim(SCRIPTS_PATH())}`)
-        }
-        else {
-            fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
-            p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
-        }
+        createStrapupDirectory(settings.strapupDirPath)
     }
 
     if (!fs.existsSync(settings.strapupDirPath)) {
-        p.log.error(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}.`)
-        return
+        p.log.warn(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}. Creating one...`)
+        createStrapupDirectory(settings.strapupDirPath)
     }
 
     if (args.length > 2) {
