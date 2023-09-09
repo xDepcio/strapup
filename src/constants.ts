@@ -19,6 +19,17 @@ export const scriptsContent = `export const scripts = {
             \`strapup paste next-redux-ts redux\`
         ],
     },
+    nextjsshadcn: {
+        description: "Create new Next.js app, add Shadcn UI with basic components (button, input, skeleton)",
+        command: (projectName) => [
+            \`npx create-next-app \${projectName}\`,
+            \`cd \${projectName}\`,
+            \`npx shadcn-ui@latest init -y\`,
+            \`npx shadcn-ui@latest add button -y\`,
+            \`npx shadcn-ui@latest add input -y\`,
+            \`npx shadcn-ui@latest add skeleton -y\`,
+        ],
+    },
     shadcn: {
         description: "Add Shadcn UI to existing project with basic components (button, input, skeleton)",
         command: () => [

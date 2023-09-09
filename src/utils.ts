@@ -1,8 +1,8 @@
 import { execSync, spawn, spawnSync } from 'child_process'
 import fs from 'fs'
-import path from 'path'
+import path, { normalize } from 'path'
 import { __dirname } from './index.js'
-import { STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings } from './constants.js'
+import { SCRIPTS_PATH, STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 
@@ -150,4 +150,41 @@ export const addPremadeTemplatesToExistingTemplatesDir = (existingDirPath: strin
         const templatePath = path.normalize(`${templatesPath}/${template}`)
         copyDirectoryContents({ fromPath: templatePath, toPath: `${existingDirPath}/${template}`, overwriteFiles: false, skipMetadataFile: false })
     })
+}
+
+/**
+ * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
+ * @param dirPath - absolute path to strapup directory contents (.../strapup)
+ */
+export const createStrapupDirectory = (dirPath: string) => {
+    try {
+        fs.mkdirSync(dirPath)
+        p.log.info(`Created strapup directory at ${color.dim(normalize(dirPath))}`)
+    } catch (e: any) {
+        if (e.code === "EEXIST") {
+            p.log.info(`Existing strapup directory found at ${color.dim(normalize(dirPath))}`)
+        }
+        else throw e
+    }
+
+    try {
+        fs.mkdirSync(TEMPLATES_PATH())
+        copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
+        p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
+    } catch (e: any) {
+        if (e.code === "EEXIST") {
+            p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
+            p.log.message(`Syncing premade templates...`)
+            addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
+        }
+        else throw e
+    }
+
+    if (fs.existsSync(SCRIPTS_PATH())) {
+        p.log.info(`Existing scripts file found at ${color.dim(SCRIPTS_PATH())}`)
+    }
+    else {
+        fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+        p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
+    }
 }
