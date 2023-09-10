@@ -8,10 +8,12 @@ export default async function Home() {
     })
 
     return (
-        <main className="min-h-screen">
-            <p>Templates saved: {stats?.templatesSaved}</p>
-            <p>Templates pasted: {stats?.templatesPasted}</p>
-            <p>Scripts ran: {stats?.scriptsRun}</p>
+        <main className="min-h-screen flex justify-center h-[200vh]">
+            <section className="w-full flex justify-center">
+                <div>
+                    <p>Stop wasting time setting up your projects, <span>use Strapup</span></p>
+                </div>
+            </section>
         </main>
     )
 }
