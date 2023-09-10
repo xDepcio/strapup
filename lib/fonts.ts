@@ -1,4 +1,5 @@
 import localFont from 'next/font/local'
+import { Roboto_Mono } from 'next/font/google'
 
 export const ProximaSoft = localFont({
     src: [
@@ -43,4 +44,8 @@ export const ProximaSoft = localFont({
             weight: "900"
         },
     ]
+})
+
+export const robotoMono = Roboto_Mono({
+    subsets: ["latin"]
 })
