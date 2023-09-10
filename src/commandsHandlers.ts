@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit } from "./utils.js"
+import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, sendTelemetryStats } from "./utils.js"
 import { S_BAR } from './clack/styled/utils.js'
 import { WORK_DIR } from './index.js'
 import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
@@ -74,9 +74,10 @@ export async function save({ templateName, sourceRelativePaths, withGitignore, t
             copyArgs.toPath = `${templatePath}/${sourceRelativePath}`
             copyDirectoryContents(copyArgs)
             createMetadataFile({ directoryPath: templatePath, templateDesc: templateDescription })
-            p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
         }
     }
+    p.log.success(`Saved ${color.cyan(templateName)} template at ${color.dim(templatePath)}`)
+    sendTelemetryStats("templateSaved")
 }
 
 
@@ -101,6 +102,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
 
     copyDirectoryContents({ fromPath: templatePath, toPath: destinationAbsolutePath })
     p.log.success(`Pasted ${templateName} template to ${color.dim(destinationAbsolutePath)}`)
+    sendTelemetryStats("templatePasted")
 }
 
 
@@ -136,4 +138,5 @@ export async function runScript({ functionParams = [], functionToRun }: RunScrip
     execSync(concatedCommands, { stdio: 'inherit' })
 
     p.log.success(`Script ${functionToRun.name} finished successfully.`)
+    sendTelemetryStats("scriptRan")
 }
