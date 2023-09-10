@@ -8,6 +8,7 @@ export const TEMPLATES_PATH = () => normalize(loadSettings().strapupDirPath + `/
 export const SCRIPTS_PATH = () => normalize(loadSettings().strapupDirPath + `/scripts.mjs`)
 export const premadeTemplatesDirPath = () => normalize(`${__dirname}/premade-templates`)
 export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
+export const statsUrl = "https://strapup-web.vercel.app"
 
 export const scriptsContent = `export const scripts = {
     nextshadreduxts: {

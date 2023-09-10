@@ -2,7 +2,7 @@ import { execSync, spawn, spawnSync } from 'child_process'
 import fs from 'fs'
 import path, { normalize } from 'path'
 import { __dirname } from './index.js'
-import { SCRIPTS_PATH, STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent } from './constants.js'
+import { SCRIPTS_PATH, STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
 
@@ -187,4 +187,13 @@ export const createStrapupDirectory = (dirPath: string) => {
         fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
         p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
     }
+}
+
+export type TelemetryStat = "templateSaved" | "templatePasted" | "scriptRan"
+
+export const sendTelemetryStats = async (stat: TelemetryStat) => {
+    const res = await fetch(`${statsUrl}/api/stats`, {
+        method: 'POST',
+        body: JSON.stringify({ stat }),
+    })
 }
