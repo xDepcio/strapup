@@ -3,6 +3,8 @@ import { ProximaSoft, robotoMono } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
 import { Copy } from "lucide-react";
 import Image from "next/image";
+import { FaNpm } from "react-icons/fa"
+import { BiPaste } from "react-icons/bi"
 
 export default async function Home() {
     return (
@@ -54,7 +56,30 @@ export default async function Home() {
                     </div> */}
                 </div>
             </section>
-
+            <section className="mt-32">
+                <div className="flex gap-12">
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">package downloads</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <FaNpm className="text-5xl" />
+                    </div>
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">package downloads</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <FaNpm className="text-5xl" />
+                    </div>
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">package downloads</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <FaNpm className="text-5xl" />
+                    </div>
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">package downloads</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <FaNpm className="text-5xl" />
+                    </div>
+                </div>
+            </section>
         </main>
     )
 }
