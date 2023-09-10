@@ -30,6 +30,7 @@
   "dependencies": {
     "@clack/core": "^0.3.3",
     "@clack/prompts": "^0.7.0",
-    "is-unicode-supported": "^1.3.0"
+    "is-unicode-supported": "^1.3.0",
+    "node-fetch": "^3.3.2"
   }
 }
