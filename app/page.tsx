@@ -4,9 +4,18 @@ import { cn } from "@/lib/utils";
 import { Copy } from "lucide-react";
 import Image from "next/image";
 import { FaNpm } from "react-icons/fa"
-import { BiPaste } from "react-icons/bi"
+import { BiPaste, BiCodeAlt } from "react-icons/bi"
+import { prisma } from "@/lib/prisma";
+import { FiCopy } from "react-icons/fi"
+import { RiSave3Line } from "react-icons/ri"
 
 export default async function Home() {
+    // const stats = await prisma.strapupStats.findFirst({
+    //     where: {
+    //         id: 1
+    //     }
+    // })
+
     return (
         <main className="min-h-screen flex items-center flex-col h-[200vh] overflow-hidden">
             <section className="w-full flex justify-start h-64 mt-32 flex-col items-center relative">
@@ -56,27 +65,30 @@ export default async function Home() {
                     </div> */}
                 </div>
             </section>
-            <section className="mt-32">
-                <div className="flex gap-12">
-                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
-                        <p className="text-lg font-medium">package downloads</p>
+            <section className="mt-16">
+                <div>
+                    <h3 className="text-center mb-12 text-3xl font-medium relative w-fit mx-auto">Community stats 🎉</h3>
+                </div>
+                <div className="flex gap-12 items-stretch">
+                    <div className="flex items-center justify-center p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">templates saved</p>
                         <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
-                        <FaNpm className="text-5xl" />
+                        <RiSave3Line className="text-3xl flex-grow" />
+                    </div>
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col  ">
+                        <p className="text-lg font-medium">templates paste</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <FiCopy className="text-3xl flex-grow" />
+                    </div>
+                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
+                        <p className="text-lg font-medium">scripts ran</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <BiCodeAlt className="text-3xl flex-grow" />
                     </div>
                     <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
                         <p className="text-lg font-medium">package downloads</p>
                         <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
-                        <FaNpm className="text-5xl" />
-                    </div>
-                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
-                        <p className="text-lg font-medium">package downloads</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
-                        <FaNpm className="text-5xl" />
-                    </div>
-                    <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
-                        <p className="text-lg font-medium">package downloads</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
-                        <FaNpm className="text-5xl" />
+                        <FaNpm className="text-5xl flex-grow" />
                     </div>
                 </div>
             </section>
