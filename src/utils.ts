@@ -5,6 +5,7 @@ import { __dirname } from './index.js'
 import { SCRIPTS_PATH, STRAPUP_DIR_PATH_ENV_NAME, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
 import * as p from '@clack/prompts'
 import color from 'picocolors'
+import fetch from 'node-fetch';
 
 export interface CopyDirectoryContentsParams {
     fromPath: string
