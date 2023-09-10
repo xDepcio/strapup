@@ -84,7 +84,7 @@
   background-image: url("http://localhost:3000/hero-geo.svg");
   position: absolute;
   width: 1920px;
-  height: 1080px;
+  height: 580px;
   z-index: -1;
 }
 
