@@ -26,21 +26,35 @@ export default async function Home() {
                     {/* </div> */}
                 </div>
             </section>
-            <section className="bg-indigo-800 w-full h-[600px] flex items-center justify-center">
+            <section className="bg-indigo-800 w-full py-20 flex items-center justify-center flex-col">
                 <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center">
                     <div className="">
                         <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
-                            Its dead simple
+                            Start creating faster
                         </h3>
                         <p className="max-w-[30rem] text-zinc-100 leading-relaxed text-lg">
-                            Save, paste templates and run custom scripts, all from within interactive CLI. No more copy pasting from previous projects.
+                            Save time on repetive setups. Save and paste templates, all from within interactive CLI. No more copy pasting from previous projects.
                         </p>
                     </div>
                     <Image alt="" src="/paste.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                     {/* <div className="bg-zinc-900 w-[700px] h-[350px] rounded-xl border-zinc-700 border-[1px]">
                     </div> */}
                 </div>
+                <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center mt-20">
+                    <Image alt="" src="/paste.gif" className="rounded-xl shadow-lg" width={700} height={350} />
+                    <div className="">
+                        <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
+                            Improve your workflow
+                        </h3>
+                        <p className="max-w-[30rem] text-zinc-100 leading-relaxed text-lg">
+                            Go beyond tools like <span className={cn(robotoMono.className)}>npx create-next-app</span> by creating custom scripts, which can setup your whole custom project in one go.
+                        </p>
+                    </div>
+                    {/* <div className="bg-zinc-900 w-[700px] h-[350px] rounded-xl border-zinc-700 border-[1px]">
+                    </div> */}
+                </div>
             </section>
+
         </main>
     )
 }
