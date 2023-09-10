@@ -11,7 +11,7 @@ import NavScript from "./NavScript";
 export default function Navigation() {
 
     return (
-        <nav id="main-nav" className="w-full flex items-center justify-center sticky top-0 transition-all py-4">
+        <nav id="main-nav" className="w-full flex items-center justify-center sticky transition-all py-4">
             <div className="max-w-screen-lg flex items-center justify-between w-full">
                 <div className="flex items-center justify-center">
                     <Link href={'/'} className={cn(ProximaSoft.className, "font-bold text-2xl bg-clip-text text-transparent bg-[rgba(67,_56,_202,_1)]")}>Strapup</Link>
