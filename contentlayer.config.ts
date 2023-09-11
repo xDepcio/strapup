@@ -29,6 +29,7 @@ export default makeSource({
                 rehypePreetyCode,
                 {
                     theme: 'github-light',
+                    keepBackground: false,
                     onVisitLine: (node: any) => {
                         if (node.children.length === 0) {
                             node.children = [{ type: 'text', value: ' ' }]

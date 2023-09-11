@@ -2,6 +2,7 @@ import { allDocs } from "@/.contentlayer/generated"
 import { Mdx } from "@/components/mdx-components"
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import { redirect } from 'next/navigation'
+import { MdKeyboardArrowRight } from 'react-icons/md'
 
 const getDocBySlugs = (slugs: string[]) => {
     const pathFromSlugs = slugs.join('/')
@@ -17,14 +18,15 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
 
     const doc = getDocBySlugs(params.slug)
 
-    const MDXContent = useMDXComponent(doc.body.code)
+    console.log("MDXContent", doc)
 
     return (
         <div className="min-h-screen">
-            <div>
-
+            <div className="flex mb-4 gap-1 items-center">
+                <p className="text-muted-foreground">{doc._raw.sourceFileDir}</p>
+                <MdKeyboardArrowRight className="text-muted-foreground" />
+                <p className="font-medium text-indigo-800 bg-indigo-100 px-2 rounded-full">{doc.title}</p>
             </div>
-            <h1 className="text-4xl font-bold mb-8 tracking-tight">Tracking conversions for your components</h1>
             <Mdx code={doc?.body.code!} />
         </div>
     )
