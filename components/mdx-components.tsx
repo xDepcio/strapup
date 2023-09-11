@@ -4,6 +4,8 @@ import { useMDXComponent } from "next-contentlayer/hooks"
 import { BsLink45Deg } from 'react-icons/bs'
 
 import { cn } from "@/lib/utils"
+import { Copy } from "lucide-react"
+import { FiCopy } from "react-icons/fi"
 
 const components = {
     h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -138,24 +140,45 @@ const components = {
             {...props}
         />
     ),
-    pre: ({ className, ...props }: React.HTMLAttributes<HTMLPreElement>) => (
-        <pre
+    pre: ({ className, ...props }: React.HTMLAttributes<HTMLPreElement>) => {
+        // @ts-ignore
+        if (props['data-language'] === 'command') return <pre
+            className={cn(
+                "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50",
+                className
+            )}
+            {...props}
+        />
+
+        return <pre
             className={cn(
                 "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50 py-4",
                 className
             )}
             {...props}
         />
-    ),
-    code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
-        <code
+    },
+    code: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => {
+        // @ts-ignore
+        if (props['data-language'] === 'command') return <code
+            className={cn(
+                "relative rounded px-[1rem] py-[0.5rem] font-mono bg-indigo-50",
+                className
+            )}
+            {...props}
+        >
+            <FiCopy className="absolute top-1/2 -translate-y-1/2 right-1 hover:bg-indigo-200 p-2 rounded-md box-content transition-all cursor-pointer" />
+            {props.children}
+        </code>
+
+        return <code
             className={cn(
                 "relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm bg-indigo-50",
                 className
             )}
             {...props}
         />
-    ),
+    },
     Image,
 }
 

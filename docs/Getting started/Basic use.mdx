@@ -2,16 +2,15 @@
 title: Basic use
 sortNum: 2
 ---
-
-Take this file straucture as an example
-```bash
-├── index.html
-├── main.js
-├── package.json
-└── src
-    ├── App.vue
-    ├── assets
-    │   └── logo.png
-    └── components
-        └── HelloWorld.vue
+#### How to run It?
+To run the Strapup CLI from anywhere on your system, just use:
+```command
+npx strapup
 ```
+This will install required dependencies and correctly setup your enviroment on the first run.
+
+#### Running for the first time
+When you run Strapup for the first time, it will need to perform some setup. For this, you will be asked to provide:
+- Path where to create Strapup directory - used to store templates and scripts.
+
+Strapup saves those values in enviroment variables, so on next runs you don't have to provide them again.
