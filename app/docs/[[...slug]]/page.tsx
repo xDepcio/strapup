@@ -21,7 +21,7 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
     console.log("MDXContent", doc)
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-screen border-l-[1px] pl-8">
             <div className="flex mb-4 gap-1 items-center">
                 <p className="text-muted-foreground">{doc._raw.sourceFileDir}</p>
                 <MdKeyboardArrowRight className="text-muted-foreground" />

@@ -19,12 +19,12 @@ export default function DocsSideNav() {
     }, {})
 
     return (
-        <div className="border-r-[1px] pr-4">
+        <div className="">
             {Object.entries(categorizedDocs).map(([cat, docs]) => {
                 return (
                     <div className="mb-4">
-                        <p className="text-foreground font-semibold">{cat}</p>
-                        <div className="flex flex-col">
+                        <p className="text-foreground font-semibold mb-2">{cat}</p>
+                        <div className="flex flex-col gap-1">
                             {docs.map((doc) => {
                                 console.log(path)
                                 const isActive = path === `/docs/${doc._raw.flattenedPath}`
