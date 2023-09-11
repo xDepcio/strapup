@@ -7,13 +7,13 @@ import { MdKeyboardArrowRight } from 'react-icons/md'
 const getDocBySlugs = (slugs: string[]) => {
     const pathFromSlugs = slugs.join('/')
     const doc = allDocs.find((doc) => doc._raw.flattenedPath === pathFromSlugs)
-    if (!doc) return redirect('/')
+    if (!doc) return redirect('/docs/Getting started/Basic use')
     return doc
 }
 
 export default function DocsPage({ params }: { params: { slug?: string[] } }) {
 
-    if (!params.slug) return redirect('/docs/instalation')
+    if (!params.slug) return redirect('/docs/Getting started/Basic use')
     params.slug = params.slug?.map((slug) => decodeURI(slug))
 
     const doc = getDocBySlugs(params.slug)
