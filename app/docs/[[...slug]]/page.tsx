@@ -18,16 +18,14 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
 
     const doc = getDocBySlugs(params.slug)
 
-    console.log("MDXContent", doc)
-
     return (
-        <div className="min-h-screen border-l-[1px] pl-8">
-            <div className="flex mb-4 gap-1 items-center">
+        <article className="min-h-screen border-l-[1px] pl-8 mb-32">
+            <div className="flex mb-4 gap-1 items-center text-sm">
                 <p className="text-muted-foreground">{doc._raw.sourceFileDir}</p>
                 <MdKeyboardArrowRight className="text-muted-foreground" />
                 <p className="font-medium text-indigo-800 bg-indigo-100 px-2 rounded-full">{doc.title}</p>
             </div>
             <Mdx code={doc?.body.code!} />
-        </div>
+        </article>
     )
 }

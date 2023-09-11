@@ -1,6 +1,7 @@
 import * as React from "react"
 import Image from "next/image"
 import { useMDXComponent } from "next-contentlayer/hooks"
+import { BsLink45Deg } from 'react-icons/bs'
 
 import { cn } from "@/lib/utils"
 
@@ -59,12 +60,23 @@ const components = {
             {...props}
         />
     ),
-    a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => (
-        <a
+    a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => {
+        if (props['aria-label'] === "Link to section") {
+            console.log('xdddd')
+            return <a
+                className={cn("group flex items-center gap-1 relative", className)}
+                {...props}
+            >
+                <BsLink45Deg className="absolute -left-6 group-hover:visible invisible" />
+                {props.children}
+            </a>
+        }
+
+        return <a
             className={cn("font-medium underline underline-offset-4", className)}
             {...props}
         />
-    ),
+    },
     p: ({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) => (
         <p
             className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}

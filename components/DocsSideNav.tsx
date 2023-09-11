@@ -19,22 +19,23 @@ export default function DocsSideNav() {
     }, {})
 
     return (
-        <div className="">
-            {Object.entries(categorizedDocs).map(([cat, docs]) => {
-                return (
-                    <div className="mb-4">
-                        <p className="text-foreground font-semibold mb-2">{cat}</p>
-                        <div className="flex flex-col gap-1">
-                            {docs.map((doc) => {
-                                console.log(path)
-                                const isActive = path === `/docs/${doc._raw.flattenedPath}`
+        <div className="relative">
+            <div className='sticky top-24 text-sm'>
+                {Object.entries(categorizedDocs).map(([cat, docs]) => {
+                    return (
+                        <div className="mb-4">
+                            <p className="text-foreground font-semibold mb-2">{cat}</p>
+                            <div className="flex flex-col gap-1">
+                                {docs.map((doc) => {
+                                    const isActive = path === `/docs/${doc._raw.flattenedPath}`
 
-                                return <Link href={`/docs/${doc._raw.flattenedPath}`} className={cn("ml-0 text-muted-foreground hover:text-indigo-700 transition-all hover:bg-indigo-50 py-1 px-2 rounded-md", isActive ? "bg-indigo-50 text-indigo-700" : "")}>{doc.title}</Link>
-                            })}
+                                    return <Link href={`/docs/${doc._raw.flattenedPath}`} className={cn("ml-0 text-muted-foreground hover:text-indigo-700 transition-all hover:bg-indigo-50 py-1 px-2 rounded-md", isActive ? "bg-indigo-50 text-indigo-700" : "")}>{doc.title}</Link>
+                                })}
+                            </div>
                         </div>
-                    </div>
-                )
-            })}
+                    )
+                })}
+            </div>
         </div>
     )
 }

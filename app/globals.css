@@ -109,3 +109,22 @@
   background: rgb(165, 180, 252);
   background: radial-gradient(circle, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%), radial-gradient(circle, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%), linear-gradient(137deg, rgba(165, 180, 252, 1) 0%, rgba(67, 56, 202, 1) 50%, rgba(99, 102, 241, 1) 100%);
 } */
+
+div[data-rehype-pretty-code-title] {
+  margin-top: 0;
+  background-color: #eef2ff;
+  margin-top: 1.5rem;
+  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.5rem;
+  font-size: 0.875rem;
+  padding: 0.5rem 0.5rem;
+  border-bottom: 1px solid #dfe2f5;
+  font-weight: 500;
+
+  &+pre {
+    margin-top: 0;
+    padding-top: 0.5rem;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+}
