@@ -11,7 +11,9 @@ const getDocBySlugs = (slugs: string[]) => {
 }
 
 export default function DocsPage({ params }: { params: { slug?: string[] } }) {
+
     if (!params.slug) return redirect('/docs/instalation')
+    params.slug = params.slug?.map((slug) => decodeURI(slug))
 
     const doc = getDocBySlugs(params.slug)
 
