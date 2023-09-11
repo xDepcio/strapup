@@ -9,6 +9,7 @@ export const Doc = defineDocumentType(() => ({
     filePathPattern: `**/*.mdx`,
     fields: {
         title: { type: 'string', required: true },
+        sortNum: { type: 'number', required: true },
     },
     computedFields: {
         slug: { type: 'string', resolve: (doc) => `/${doc._raw.flattenedPath}` },
@@ -27,7 +28,7 @@ export default makeSource({
             [
                 rehypePreetyCode,
                 {
-                    theme: 'github-dark',
+                    theme: 'github-light',
                     onVisitLine: (node: any) => {
                         if (node.children.length === 0) {
                             node.children = [{ type: 'text', value: ' ' }]

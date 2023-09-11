@@ -21,6 +21,10 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
 
     return (
         <div className="min-h-screen">
+            <div>
+
+            </div>
+            <h1 className="text-4xl font-bold mb-8 tracking-tight">Tracking conversions for your components</h1>
             <Mdx code={doc?.body.code!} />
         </div>
     )
