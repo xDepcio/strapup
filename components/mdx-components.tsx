@@ -62,7 +62,6 @@ const components = {
     ),
     a: ({ className, ...props }: React.HTMLAttributes<HTMLAnchorElement>) => {
         if (props['aria-label'] === "Link to section") {
-            console.log('xdddd')
             return <a
                 className={cn("group flex items-center gap-1 relative", className)}
                 {...props}
