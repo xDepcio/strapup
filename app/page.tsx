@@ -47,12 +47,12 @@ export default async function Home() {
                             Save time on repetive setups. Save and paste templates, all from within interactive CLI. No more copy pasting from previous projects.
                         </p>
                     </div>
-                    <Image alt="" src="/paste.gif" className="rounded-xl shadow-lg" width={700} height={350} />
+                    <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                     {/* <div className="bg-zinc-900 w-[700px] h-[350px] rounded-xl border-zinc-700 border-[1px]">
                     </div> */}
                 </div>
                 <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center mt-20">
-                    <Image alt="" src="/paste.gif" className="rounded-xl shadow-lg" width={700} height={350} />
+                    <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                     <div className="">
                         <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
                             Improve your workflow
