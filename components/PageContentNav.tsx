@@ -3,6 +3,11 @@
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { Separator } from "./ui/separator"
+import { FaStar } from 'react-icons/fa'
+import { BsStar } from 'react-icons/bs'
+import { HiArrowLongRight } from 'react-icons/hi2'
+
 
 export default function PageContentNav() {
     const [linkedHeadings, setLinkedHeadings] = useState<HTMLAnchorElement[]>([])
@@ -44,6 +49,21 @@ export default function PageContentNav() {
                             </div>
                         )
                     })}
+                </div>
+                <Separator className="mt-6 mb-6" />
+                <div className="text-muted-foreground text-xs font-medium flex flex-col gap-1">
+                    <Link href={'/'}>
+                        <div className="flex items-center gap-2 hover:text-indigo-800 transition-all">
+                            <p>Star us</p>
+                            <BsStar />
+                        </div>
+                    </Link>
+                    <Link href={'/'}>
+                        <div className="flex items-center gap-2 hover:text-indigo-800 transition-all">
+                            <p>Contribute</p>
+                            <HiArrowLongRight />
+                        </div>
+                    </Link>
                 </div>
             </div>
         </div>

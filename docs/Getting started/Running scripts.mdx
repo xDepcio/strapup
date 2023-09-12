@@ -44,7 +44,7 @@ export const scripts = {
     // Create a new script by adding a key-value pair based on examples above.
 }
 ```
-It exports POJO object with where `keys` - are scripts names, and `values` - script informations:
+It exports POJO object where `keys` - are scripts names, and `values` - script informations:
 - `description` - string displayed in Strapup CLI for identification.
-- `command` - function, which returns array of strings, which will be executed as shell commands.\
+- `command` - function, which returns array of strings, which will be executed as shell commands.
   This function can have any number of parameters and user will be automatically prompted to enter them before script is executed. Parameter name will be displayed in CLI in the prompt.
