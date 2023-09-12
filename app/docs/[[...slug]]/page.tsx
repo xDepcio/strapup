@@ -19,7 +19,7 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
     const doc = getDocBySlugs(params.slug)
 
     return (
-        <article className="min-h-screen border-l-[1px] pl-8 mb-32">
+        <article className="min-h-screen pb-8 overflow-x-auto px-8 border-l">
             <div className="flex mb-4 gap-1 items-center text-sm">
                 <p className="text-muted-foreground">{doc._raw.sourceFileDir}</p>
                 <MdKeyboardArrowRight className="text-muted-foreground" />

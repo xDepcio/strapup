@@ -27,7 +27,7 @@ export default function PageContentNav() {
     }, [])
 
     return (
-        <div>
+        <div style={{ contain: 'strict' }}>
             <div className="sticky top-24">
                 <h3 className="text-sm font-semibold mb-2">On this page</h3>
                 {/* <h3 className="text-sm font-semibold mb-2">{highlitedHeading?.href}</h3> */}

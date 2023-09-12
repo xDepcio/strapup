@@ -147,3 +147,33 @@ code>[data-line]::before {
   text-align: right;
   color: gray;
 } */
+
+
+pre::-webkit-scrollbar-thumb {
+  background-color: #a5b4fc;
+  border-radius: 9999px;
+}
+
+pre::-webkit-scrollbar-thumb:hover {
+  background-color: #818cf8;
+}
+
+pre::-webkit-scrollbar-track {
+  /* background-color: green; */
+}
+
+pre::-webkit-scrollbar-corner {
+  /* background-color: green; */
+}
+
+pre::-webkit-scrollbar {
+  width: 0.4rem;
+  height: 0.4rem;
+}
+
+
+pre {
+  /* -ms-overflow-style: auto;
+  scrollbar-color: rebeccapurple green;
+  scrollbar-width: thin; */
+}
