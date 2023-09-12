@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 import { ArrowBigRight, Copy } from "lucide-react"
 import { FiCopy } from "react-icons/fi"
 import { FiBookOpen } from "react-icons/fi"
+import Link from "next/link"
 
 interface NextCardHolderProps {
     cards: {
@@ -21,14 +22,14 @@ function NextCardHolder({ cards }: NextCardHolderProps) {
     return (
         <div id="grid-card" className="grid grid-cols-2 gap-4 mt-6">
             {cards.map(({ description, iconType = 'arrow', link, title }, index) => (
-                <div key={index} className="flex flex-col border px-4 py-3 rounded-lg shadow-lg cursor-pointer">
+                <Link href={link} key={index} className="flex flex-col border px-4 py-3 rounded-lg shadow-lg cursor-pointer">
                     <div className="flex flex-row-reverse justify-between gap-2">
                         <h3 className="text-lg font-semibold text-left">{title}</h3>
                         {iconType === 'arrow' && <IoArrowForwardOutline className="text-3xl" />}
                         {iconType === 'book' && <FiBookOpen className="text-3xl" />}
                     </div>
                     <p className="text-base text-left">{description}</p>
-                </div>
+                </Link>
             ))}
         </div>
     )
