@@ -2,10 +2,37 @@ import * as React from "react"
 import Image from "next/image"
 import { useMDXComponent } from "next-contentlayer/hooks"
 import { BsLink45Deg } from 'react-icons/bs'
-
+import { IoArrowForwardOutline } from 'react-icons/io5'
 import { cn } from "@/lib/utils"
-import { Copy } from "lucide-react"
+import { ArrowBigRight, Copy } from "lucide-react"
 import { FiCopy } from "react-icons/fi"
+import { FiBookOpen } from "react-icons/fi"
+
+interface NextCardHolderProps {
+    cards: {
+        title: string
+        description: string
+        link: string
+        iconType?: 'arrow' | 'book'
+    }[]
+}
+
+function NextCardHolder({ cards }: NextCardHolderProps) {
+    return (
+        <div id="grid-card" className="grid grid-cols-2 gap-4 mt-6">
+            {cards.map(({ description, iconType = 'arrow', link, title }, index) => (
+                <div key={index} className="flex flex-col border px-4 py-3 rounded-lg shadow-lg cursor-pointer">
+                    <div className="flex flex-row-reverse justify-between gap-2">
+                        <h3 className="text-lg font-semibold text-left">{title}</h3>
+                        {iconType === 'arrow' && <IoArrowForwardOutline className="text-3xl" />}
+                        {iconType === 'book' && <FiBookOpen className="text-3xl" />}
+                    </div>
+                    <p className="text-base text-left">{description}</p>
+                </div>
+            ))}
+        </div>
+    )
+}
 
 const components = {
     h1: ({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) => (
@@ -180,6 +207,7 @@ const components = {
         />
     },
     Image,
+    NextCardHolder
 }
 
 interface MdxProps {

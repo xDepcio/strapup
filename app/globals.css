@@ -128,3 +128,7 @@ div[data-rehype-pretty-code-title] {
     border-top-right-radius: 0;
   }
 }
+
+#grid-card {
+  direction: rtl;
+}
