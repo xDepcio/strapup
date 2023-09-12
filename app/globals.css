@@ -132,3 +132,18 @@ div[data-rehype-pretty-code-title] {
 #grid-card {
   direction: rtl;
 }
+
+/* code {
+  counter-reset: line;
+}
+
+code>[data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+
+  display: inline-block;
+  width: 1rem;
+  margin-right: 2rem;
+  text-align: right;
+  color: gray;
+} */
