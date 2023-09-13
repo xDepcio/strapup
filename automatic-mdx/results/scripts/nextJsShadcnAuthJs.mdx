@@ -1,0 +1,17 @@
+---
+title: nextJsShadcnAuthJs
+sortNum: 1003
+---
+### nextJsShadcnAuthJs
+Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js
+### Executed commands
+```bash
+npx create-next-app ${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"
+cd ${projectName}
+npx shadcn-ui@latest init -y
+npx shadcn-ui@latest add button -y
+npx shadcn-ui@latest add input -y
+npx shadcn-ui@latest add skeleton -y
+npm i next-auth
+strapup paste next13-app-auth-paste-from-root ./
+```

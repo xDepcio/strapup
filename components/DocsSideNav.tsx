@@ -20,7 +20,7 @@ export default function DocsSideNav() {
 
     return (
         <div className="relative pr-6">
-            <div className='sticky top-24 text-sm'>
+            <div className='sticky top-[7.04rem] text-sm'>
                 {Object.entries(categorizedDocs).map(([cat, docs], i) => {
                     return (
                         <div key={i} className="mb-4">

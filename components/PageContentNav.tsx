@@ -33,7 +33,7 @@ export default function PageContentNav() {
 
     return (
         <div style={{ contain: 'strict' }}>
-            <div className="sticky top-24">
+            <div className="sticky top-[7.04rem]">
                 <h3 className="text-sm font-semibold mb-2">On this page</h3>
                 {/* <h3 className="text-sm font-semibold mb-2">{highlitedHeading?.href}</h3> */}
                 <div className=" flex flex-col gap-1">
@@ -51,7 +51,7 @@ export default function PageContentNav() {
                     })}
                 </div>
                 <Separator className="mt-6 mb-6" />
-                <div className="text-muted-foreground text-xs font-medium flex flex-col gap-1">
+                <div className="text-muted-foreground text-xs font-medium flex flex-col gap-2 pl-2">
                     <Link href={'/'}>
                         <div className="flex items-center gap-2 hover:text-indigo-800 transition-all">
                             <p>Star us</p>

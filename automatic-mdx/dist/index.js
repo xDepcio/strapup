@@ -3,16 +3,54 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-const TEMPLATES_PATH = "../public/templates";
-const SORT_OFFSET = 100;
+const TEMPLATES_PATH = `${process.env.STRAPUP_DIR_PATH}/templates`;
+const SCRIPTS_PATH = `${process.env.STRAPUP_DIR_PATH}/scripts.mjs`;
+const TEMPLATES_SORT_OFFSET = 100;
+const SCRIPTS_SORT_OFFSET = 1000;
 // @ts-ignore
 export const __filename = fileURLToPath(import.meta.url);
 // @ts-ignore
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
-console.log(__dirname);
-export const createMdxMain = async () => {
+console.log("TEMPLATES_PATH", TEMPLATES_PATH);
+console.log("TEMPLATES_PATH", TEMPLATES_PATH);
+console.log("TEMPLATES_PATH", TEMPLATES_PATH);
+console.log("SCRIPTS_PATH", SCRIPTS_PATH);
+console.log("SCRIPTS_PATH", SCRIPTS_PATH);
+console.log("SCRIPTS_PATH", SCRIPTS_PATH);
+console.log("__dirname", __dirname);
+console.log("__dirname", __dirname);
+console.log("__dirname", __dirname);
+const createScriptsMdx = async () => {
+    const scripts = await import(SCRIPTS_PATH).then(module => module.scripts);
+    const sciriptsFormatted = Object.entries(scripts).map(([scriptName, { description, command }], i) => {
+        const params = getParameterNames(command);
+        const args = params.map((param) => `\${${param}}`);
+        return {
+            name: scriptName,
+            description,
+            command: command(...args),
+        };
+    });
+    sciriptsFormatted.forEach((script, i) => {
+        const mdxContent = getMdxScriptsContent({ sortNum: SCRIPTS_SORT_OFFSET + i, script });
+        fs.writeFileSync(`${__dirname}/../results/scripts/${script.name}.mdx`, mdxContent);
+    });
+};
+const getMdxScriptsContent = ({ script, sortNum }) => {
+    return `---
+title: ${script.name}
+sortNum: ${sortNum}
+---
+### ${script.name}
+${script.description || ''}
+### Executed commands
+\`\`\`bash
+${script.command.join("\n")}
+\`\`\`
+`;
+};
+export const createTemplatesMdx = async () => {
     const templates = fs.readdirSync(TEMPLATES_PATH);
-    // for (const template of templates) {
     templates.forEach(async (template, i) => {
         const dirStructure = await getTreeString(`${TEMPLATES_PATH}/${template}`);
         let description = '';
@@ -23,8 +61,8 @@ export const createMdxMain = async () => {
         }
         const filesNames = getAllFilesNameDepthFirst(`${TEMPLATES_PATH}/${template}`);
         const codeBlocks = getCodeBlocks(filesNames, template);
-        const mdxContent = getMdxContent({ sortNum: SORT_OFFSET + i, title: template, codeBlocks, treeString: dirStructure, description });
-        fs.writeFileSync(`./results/${template}.mdx`, mdxContent);
+        const mdxContent = getMdxContent({ sortNum: TEMPLATES_SORT_OFFSET + i, title: template, codeBlocks, treeString: dirStructure, description });
+        fs.writeFileSync(`${__dirname}/../results/templates/${template}.mdx`, mdxContent);
     });
 };
 const getCodeBlocks = (files, templateName) => files.map((file) => {
@@ -78,4 +116,13 @@ function getAllFilesNameDepthFirst(dirPath) {
     }
     return filesNameDepthFirst;
 }
-// createMdxMain()
+export function getParameterNames(func) {
+    const funcString = func.toString();
+    const parameterNames = funcString
+        .slice(funcString.indexOf('(') + 1, funcString.indexOf(')'))
+        .split(',')
+        .map((param) => param.trim());
+    return parameterNames.filter(Boolean); // Removes empty strings
+}
+createTemplatesMdx();
+createScriptsMdx();

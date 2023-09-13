@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-templates": "node ./automatic-mdx/dist/index.js && cp ./automatic-mdx/results/* ./docs/Included\\ templates"
+    "sync-templates": "node ./automatic-mdx/dist/index.js && cp ./automatic-mdx/results/templates/* ./docs/Included\\ templates && cp ./automatic-mdx/results/scripts/* ./docs/Included\\ scripts"
   },
   "dependencies": {
     "@prisma/client": "^5.2.0",
