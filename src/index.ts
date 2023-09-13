@@ -9,8 +9,8 @@ import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
-import { SCRIPTS_PATH, STRAPUP_DIR_NAME, STRAPUP_DIR_PATH_ENV_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning, premadeTemplatesDirPath, scriptsContent } from './constants.js';
-import { addPremadeTemplatesToExistingTemplatesDir, copyDirectoryContents, createStrapupDirectory, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
+import { SCRIPTS_PATH, STRAPUP_DIR_NAME, STRAPUP_DIR_PATH_ENV_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning } from './constants.js';
+import { createStrapupDirectory, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
 
 export const args = process.argv
 
@@ -20,8 +20,11 @@ export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const WORK_DIR = process.cwd()
-
 async function main() {
+    if (args.length > 2) {
+        execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
+        return
+    }
     console.clear();
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
@@ -53,11 +56,6 @@ async function main() {
     if (!fs.existsSync(settings.strapupDirPath)) {
         p.log.warn(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}. Creating one...`)
         createStrapupDirectory(settings.strapupDirPath)
-    }
-
-    if (args.length > 2) {
-        execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
-        return
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
@@ -185,6 +183,5 @@ async function main() {
 
     p.outro(`Problems? ${color.underline(color.cyan('https://github.com/xDepcio/strapup'))}`);
 }
-
 
 main().catch(console.error);

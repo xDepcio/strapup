@@ -1,21 +1,17 @@
 #!/usr/bin/env node
 
-import * as fs from 'fs'
-import * as afs from 'node:fs/promises'
+import { fileURLToPath } from 'url'
 import { paste } from './commandsHandlers.js'
+import { dirname, normalize } from 'path'
 
 export const STRAPUP_DIR_NAME = 'strapup'
 export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
 export const WORK_DIR = process.cwd()
 export const args = process.argv
 
-async function main() {
-    console.log('started headless')
-    if (!fs.existsSync(STRAPUP_DIR_PATH)) {
-        await afs.mkdir(`${STRAPUP_DIR_PATH}/templates`, { recursive: true })
-        console.log(`Created ${STRAPUP_DIR_NAME} directory at ${STRAPUP_DIR_PATH}`)
-    }
+export const __dirname = normalize(dirname(fileURLToPath(import.meta.url)) + '/..');
 
+async function main() {
     const command = args[2]
 
     switch (command) {
@@ -35,6 +31,5 @@ async function main() {
         }
     }
 }
-
 
 main()
