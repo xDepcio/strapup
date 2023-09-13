@@ -8,6 +8,7 @@ import { BiPaste, BiCodeAlt } from "react-icons/bi"
 import { prisma } from "@/lib/prisma";
 import { FiCopy } from "react-icons/fi"
 import { RiSave3Line } from "react-icons/ri"
+import CopyBtnMain from "@/components/CopyBtnMain";
 
 export default async function Home() {
     const stats = await prisma.strapupStats.findFirst({
@@ -29,7 +30,8 @@ export default async function Home() {
             <section className="relative top-7 bg-zinc-800 text-zinc-100 shadow-xl rounded-lg w-[400px]">
                 <div className=" flex items-center justify-between">
                     <p className="text-xl py-4 px-5">$ npx strapup</p>
-                    <Copy className="hover:bg-zinc-700 cursor-pointer p-3 mr-2 rounded-lg box-content" />
+                    <CopyBtnMain />
+                    {/* <Copy className="hover:bg-zinc-700 cursor-pointer p-3 mr-2 rounded-lg box-content" /> */}
                 </div>
             </section>
             <section className="bg-indigo-800 w-full py-20 flex items-center justify-center flex-col">

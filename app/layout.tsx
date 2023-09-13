@@ -6,6 +6,7 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import { cn } from '@/lib/utils'
 import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from 'react-hot-toast'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,6 +24,7 @@ export default function RootLayout({
         <html lang="en" className='scroll-smooth'>
             <body className={cn(inter.className, "min-h-screen")}>
                 <Providers>
+                    <Toaster />
                     <NextTopLoader color='#4f46e5' />
                     <Navigation />
                     {children}
