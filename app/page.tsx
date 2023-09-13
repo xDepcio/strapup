@@ -10,11 +10,11 @@ import { FiCopy } from "react-icons/fi"
 import { RiSave3Line } from "react-icons/ri"
 
 export default async function Home() {
-    // const stats = await prisma.strapupStats.findFirst({
-    //     where: {
-    //         id: 1
-    //     }
-    // })
+    const stats = await prisma.strapupStats.findFirst({
+        where: {
+            id: 1
+        }
+    })
 
     return (
         <main className="min-h-screen flex items-center flex-col h-[200vh] overflow-hidden">
@@ -25,16 +25,11 @@ export default async function Home() {
                 <div id="bg-geo" className="">
                     <div id="innger-bg-geo"></div>
                 </div>
-                {/* <div id="bg-geo" className={`absolute w-[1920px] h-[1080px] -z-[1] bg-[url("http://localhost:3000/hero-geo.svg")]`}>
-                    <div id="innger-bg-geo" className="bg-[radial-gradient(circle,_rgba(255,_255,_255,_0)_0%,_rgba(255,_255,_255,_1)_100%),_linear-gradient(180deg,_rgba(255,_255,_255,_1)_0%,_rgba(0,_212,_255,_0)_100%)] z-20 w-[1920px] h-[1080px] absolute object-scale-down"></div>
-                </div> */}
             </section>
             <section className="relative top-7 bg-zinc-800 text-zinc-100 shadow-xl rounded-lg w-[400px]">
                 <div className=" flex items-center justify-between">
                     <p className="text-xl py-4 px-5">$ npx strapup</p>
-                    {/* <div className="flex items-center justify-center"> */}
                     <Copy className="hover:bg-zinc-700 cursor-pointer p-3 mr-2 rounded-lg box-content" />
-                    {/* </div> */}
                 </div>
             </section>
             <section className="bg-indigo-800 w-full py-20 flex items-center justify-center flex-col">
@@ -48,8 +43,6 @@ export default async function Home() {
                         </p>
                     </div>
                     <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
-                    {/* <div className="bg-zinc-900 w-[700px] h-[350px] rounded-xl border-zinc-700 border-[1px]">
-                    </div> */}
                 </div>
                 <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center mt-20">
                     <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
@@ -61,35 +54,36 @@ export default async function Home() {
                             Go beyond tools like <span className={cn(robotoMono.className)}>npx create-next-app</span> by creating custom scripts, which can setup your whole custom project in one go.
                         </p>
                     </div>
-                    {/* <div className="bg-zinc-900 w-[700px] h-[350px] rounded-xl border-zinc-700 border-[1px]">
-                    </div> */}
                 </div>
             </section>
-            <section className="mt-16">
+            <section className="mt-16 relative w-full">
                 <div>
                     <h3 className="text-center mb-12 text-3xl font-medium relative w-fit mx-auto">Community stats 🎉</h3>
                 </div>
-                <div className="flex gap-12 items-stretch">
+                <div className="flex gap-12 items-stretch justify-center">
                     <div className="flex items-center justify-center p-2 rounded-lg flex-col">
                         <p className="text-lg font-medium">templates saved</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >{stats?.templatesSaved || '917'}</p>
                         <RiSave3Line className="text-3xl flex-grow" />
                     </div>
                     <div className="flex items-center justify-center  p-2 rounded-lg flex-col  ">
                         <p className="text-lg font-medium">templates paste</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >{stats?.templatesPasted || '1233'}</p>
                         <FiCopy className="text-3xl flex-grow" />
                     </div>
                     <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
                         <p className="text-lg font-medium">scripts ran</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >{stats?.scriptsRun || '122'}</p>
                         <BiCodeAlt className="text-3xl flex-grow" />
                     </div>
                     <div className="flex items-center justify-center  p-2 rounded-lg flex-col">
                         <p className="text-lg font-medium">package downloads</p>
-                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >917</p>
+                        <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >1514</p>
                         <FaNpm className="text-5xl flex-grow" />
                     </div>
+                </div>
+                <div id="bg-geo-2" className="">
+                    <div id="innger-bg-geo-2"></div>
                 </div>
             </section>
         </main>

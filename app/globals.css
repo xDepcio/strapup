@@ -99,6 +99,30 @@
   z-index: 20;
 }
 
+#bg-geo-2 {
+  background-image: url("http://localhost:3000/hero-geo.svg");
+  position: absolute;
+  width: 1920px;
+  height: 580px;
+  z-index: -1;
+  /* top: -265px; */
+  top: -350px;
+}
+
+#innger-bg-geo-2 {
+  /* background-color: blue; */
+  /* top: -50%; */
+  top: 0;
+  background: rgb(255, 255, 255);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%), linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(0, 212, 255, 0) 100%), linear-gradient(0deg, rgba(255, 255, 255, 0.281) 0%, rgb(255, 255, 255) 100%);
+  object-fit: scale-down;
+  width: 1920px;
+  height: 580px;
+  position: absolute;
+  z-index: 20;
+}
+
+
 /* #stats {
   position: absolute;
   width: 200%;
