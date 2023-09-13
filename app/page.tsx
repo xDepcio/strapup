@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ProximaSoft, robotoMono } from "@/lib/fonts";
 import { cn } from "@/lib/utils";
-import { Copy } from "lucide-react";
+import { ArrowRight, Copy } from "lucide-react";
 import Image from "next/image";
 import { FaNpm } from "react-icons/fa"
 import { BiPaste, BiCodeAlt } from "react-icons/bi"
@@ -9,6 +9,7 @@ import { prisma } from "@/lib/prisma";
 import { FiCopy } from "react-icons/fi"
 import { RiSave3Line } from "react-icons/ri"
 import CopyBtnMain from "@/components/CopyBtnMain";
+import Link from "next/link";
 
 export default async function Home() {
     const stats = await prisma.strapupStats.findFirst({
@@ -43,6 +44,14 @@ export default async function Home() {
                         <p className="max-w-[30rem] text-zinc-100 leading-relaxed text-lg">
                             Save time on repetive setups. Save and paste templates, all from within interactive CLI. No more copy pasting from previous projects.
                         </p>
+                        <div className="w-full flex items-center justify-start mt-4">
+                            <Button variant={'ghost'} className="text-zinc-100 self-end  underline-offset-4 hover:bg-indigo-600 hover:text-zinc-100 transition-all text-lg bg-indigo-700 shadow-md">
+                                <Link href={'/docs/Basic use/Save and Paste'} className="flex items-center justify-center gap-1">
+                                    <p>read more</p>
+                                    <ArrowRight />
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                     <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                 </div>
@@ -55,6 +64,14 @@ export default async function Home() {
                         <p className="max-w-[30rem] text-zinc-100 leading-relaxed text-lg">
                             Go beyond tools like <span className={cn(robotoMono.className)}>npx create-next-app</span> by creating custom scripts, which can setup your whole custom project in one go.
                         </p>
+                        <div className="w-full flex items-center justify-start mt-4">
+                            <Button variant={'ghost'} className="text-zinc-100 self-end  underline-offset-4 hover:bg-indigo-600 hover:text-zinc-100 transition-all text-lg bg-indigo-700 shadow-md">
+                                <Link href={'/docs/Basic use/Scripts'} className="flex items-center justify-center gap-1">
+                                    <p>read more</p>
+                                    <ArrowRight />
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </section>
