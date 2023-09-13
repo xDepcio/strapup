@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from "react"
 import Image from "next/image"
 import { useMDXComponent } from "next-contentlayer/hooks"
@@ -8,6 +10,7 @@ import { ArrowBigRight, Copy } from "lucide-react"
 import { FiCopy } from "react-icons/fi"
 import { FiBookOpen } from "react-icons/fi"
 import Link from "next/link"
+import toast from "react-hot-toast"
 
 interface NextCardHolderProps {
     cards: {
@@ -195,7 +198,7 @@ const components = {
             )}
             {...props}
         >
-            <FiCopy className="absolute top-1/2 -translate-y-1/2 right-1 hover:bg-indigo-200 p-2 rounded-md box-content transition-all cursor-pointer" />
+            <FiCopy onClick={() => toast.success('copied! 📝')} className="absolute top-1/2 -translate-y-1/2 right-1 hover:bg-indigo-200 p-2 rounded-md box-content transition-all cursor-pointer" />
             {props.children}
         </code>
 
