@@ -47,7 +47,7 @@ export default async function Home() {
                     <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                 </div>
                 <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center mt-20">
-                    <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
+                    <Image alt="" src="/running-scripts.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                     <div className="">
                         <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
                             Improve your workflow
