@@ -51,13 +51,13 @@ export default function PageContentNav() {
                 <Separator className="mt-6 mb-6" />
                 <div className="text-muted-foreground text-xs font-medium flex flex-col gap-2 pl-2">
                     <Link href={'/'}>
-                        <div className="flex items-center gap-2 hover:text-indigo-800 transition-all">
+                        <div className="flex items-center gap-2 hover:text-indigo-800 dark:hover:text-indigo-600 transition-all">
                             <p>Star us</p>
                             <BsStar />
                         </div>
                     </Link>
                     <Link href={'/'}>
-                        <div className="flex items-center gap-2 hover:text-indigo-800 transition-all">
+                        <div className="flex items-center gap-2 hover:text-indigo-800 dark:hover:text-indigo-600 transition-all">
                             <p>Contribute</p>
                             <HiArrowLongRight />
                         </div>
