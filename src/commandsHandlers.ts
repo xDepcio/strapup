@@ -66,8 +66,8 @@ export async function save({ templateName, sourceRelativePaths, withGitignore, t
 
             if (!fs.existsSync(`${templatePath}/${dirStructure}`)) {
                 await afs.mkdir(`${templatePath}/${dirStructure}`, { recursive: true })
-                fs.writeFileSync(`${templatePath}/${sourceRelativePath}`, fileContent, 'utf8')
             }
+            fs.writeFileSync(`${templatePath}/${sourceRelativePath}`, fileContent, 'utf8')
         }
         else {
             await afs.mkdir(`${templatePath}/${sourceRelativePath}`, { recursive: true })

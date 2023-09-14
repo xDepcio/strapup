@@ -69,6 +69,15 @@ export const scriptsContent = `export const scripts = {
             \`strapup paste next13-app-auth-paste-from-root ./\`,
             \`strapup paste next-redux-ts redux\`,
         ]
+    },
+    "contentlayer-docs-nav-template": {
+        description: "Add working contentlayer MDX template to existing NextJS project",
+        command: () => [
+            \`npm i contentlayer next-contentlayer react-icons react-hot-toast remark-gfm rehype-slug rehype-autolink-headings rehype-pretty-code\`,
+            \`npx strapup paste contentlayer-config ./\`,
+            \`npx strapup paste contentlayer-next-styled-mdx-components ./\`,
+            \`npx strapup paste contentlayer-next-docs-page-with-nav ./\`,
+        ]
     }
     // Create a new script by adding a key-value pair based on examples above.
 }`
