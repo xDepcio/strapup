@@ -24,15 +24,14 @@ export default async function Home() {
                 <h1 id="header-main" className={cn("", "text-5xl font-semibold tracking-tight text-center")}>Stop wasting time setting up your projects, <span className="block text-center"><span>use</span> <span className={cn(ProximaSoft.className, "text-6xl text-indigo-600 font-bold")}>Strapup</span></span>
                 </h1>
                 <p className={cn(robotoMono.className, "mt-6 font-medium bg-zinc-800 text-zinc-100 py-2 px-2 shadow-lg rounded-sm")}><span className="dark:bg-green-500">$</span> customizable template-cli<span className="bg-zinc-100">.</span></p>
-                <div id="bg-geo" className="">
-                    <div id="innger-bg-geo"></div>
+                <div className="bg-geo">
+                    <div className="innger-bg-geo dark:[background:_radial-gradient(circle,_rgba(9,_9,_11,_0)_0%,_rgba(9,_9,_11,_1)_100%),_linear-gradient(180deg,_rgba(9,_9,_11,_1)_0%,_rgba(9,_9,_11,_0)_100%);]"></div>
                 </div>
             </section>
             <section className="relative top-7 bg-zinc-800 text-zinc-100 shadow-xl rounded-lg w-[400px]">
                 <div className=" flex items-center justify-between">
                     <p className="text-xl py-4 px-5">$ npx strapup</p>
                     <CopyBtnMain />
-                    {/* <Copy className="hover:bg-zinc-700 cursor-pointer p-3 mr-2 rounded-lg box-content" /> */}
                 </div>
             </section>
             <section className="bg-indigo-800 w-full py-20 flex items-center justify-center flex-col">
@@ -101,8 +100,8 @@ export default async function Home() {
                         <FaNpm className="text-5xl flex-grow" />
                     </div>
                 </div>
-                <div id="bg-geo-2" className="">
-                    <div id="innger-bg-geo-2"></div>
+                <div className="bg-geo-2">
+                    <div className="innger-bg-geo-2 dark:[background:_radial-gradient(circle,_rgba(9,_9,_11,_0)_0%,_rgba(9,_9,_11,_1)_100%),_linear-gradient(0deg,_rgba(9,_9,_11,_1)_0%,_rgba(0,_212,_255,_0)_100%),_linear-gradient(0deg,_rgba(9,_9,_11,_0.281)_0%,_rgb(9,_9,_11)_100%);]"></div>
                 </div>
             </section>
         </main>
