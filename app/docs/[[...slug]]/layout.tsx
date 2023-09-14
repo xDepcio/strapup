@@ -1,5 +1,6 @@
 import DocsSideNav from "@/components/DocsSideNav";
 import PageContentNav from "@/components/PageContentNav";
+import '../../../styles/docs.css'
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
     return (
