@@ -19,7 +19,9 @@ export default function Navigation() {
                     </div>
                     <div className="flex items-center justify-center">
                         <Button variant={"ghost"} className="flex items-center justify-center">
-                            <BsGithub className="text-[1rem]" />
+                            <Link href={"https://github.com/xDepcio/strapup"}>
+                                <BsGithub className="text-[1rem]" />
+                            </Link>
                         </Button>
                         <ModeToggle />
                     </div>
