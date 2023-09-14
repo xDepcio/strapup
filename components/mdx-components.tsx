@@ -1,16 +1,14 @@
 'use client'
 
-import * as React from "react"
-import Image from "next/image"
-import { useMDXComponent } from "next-contentlayer/hooks"
-import { BsLink45Deg } from 'react-icons/bs'
-import { IoArrowForwardOutline } from 'react-icons/io5'
 import { cn } from "@/lib/utils"
-import { ArrowBigRight, Copy } from "lucide-react"
-import { FiCopy } from "react-icons/fi"
-import { FiBookOpen } from "react-icons/fi"
+import { useMDXComponent } from "next-contentlayer/hooks"
+import Image from "next/image"
 import Link from "next/link"
+import * as React from "react"
 import toast from "react-hot-toast"
+import { BsLink45Deg } from 'react-icons/bs'
+import { FiBookOpen, FiCopy } from "react-icons/fi"
+import { IoArrowForwardOutline } from 'react-icons/io5'
 
 interface NextCardHolderProps {
     cards: {

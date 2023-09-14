@@ -1,6 +1,5 @@
 import { allDocs } from "@/.contentlayer/generated"
 import { Mdx } from "@/components/mdx-components"
-import { useMDXComponent } from 'next-contentlayer/hooks'
 import { redirect } from 'next/navigation'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
