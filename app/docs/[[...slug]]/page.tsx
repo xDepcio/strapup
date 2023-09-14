@@ -23,7 +23,7 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
             <div className="flex mb-4 gap-1 items-center text-sm">
                 <p className="text-muted-foreground">{doc._raw.sourceFileDir}</p>
                 <MdKeyboardArrowRight className="text-muted-foreground" />
-                <p className="font-medium text-indigo-800 bg-indigo-100 px-2 rounded-full">{doc.title}</p>
+                <p className="font-medium text-indigo-800 dark:bg-zinc-900 dark:text-indigo-600 bg-indigo-100 px-2 rounded-full">{doc.title}</p>
             </div>
             <Mdx code={doc?.body.code!} />
         </article>

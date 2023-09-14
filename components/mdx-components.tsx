@@ -175,7 +175,7 @@ const components = {
         // @ts-ignore
         if (props['data-language'] === 'command') return <pre
             className={cn(
-                "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50",
+                "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50 dark:bg-zinc-900 dark:text-zinc-50",
                 className
             )}
             {...props}
@@ -183,7 +183,7 @@ const components = {
 
         return <pre
             className={cn(
-                "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50 py-4",
+                "mb-4 mt-6 overflow-x-auto rounded-lg bg-indigo-50 py-4 dark:bg-zinc-900 dark:text-zinc-50",
                 className
             )}
             {...props}
@@ -193,7 +193,7 @@ const components = {
         // @ts-ignore
         if (props['data-language'] === 'command') return <code
             className={cn(
-                "relative rounded px-[1rem] py-[0.5rem] font-mono bg-indigo-50",
+                "relative rounded px-[1rem] py-[0.5rem] font-mono bg-indigo-50 dark:bg-zinc-900",
                 className
             )}
             {...props}
@@ -204,7 +204,7 @@ const components = {
 
         return <code
             className={cn(
-                "relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm bg-indigo-50",
+                "relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm bg-indigo-50 dark:bg-zinc-900",
                 className
             )}
             {...props}
