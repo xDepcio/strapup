@@ -168,7 +168,22 @@ div[data-rehype-pretty-code-title] {
     & pre::-webkit-scrollbar-thumb:hover {
         background-color: #3f3f46;
     }
+
+    & div[data-rehype-pretty-code-fragment] {
+        & [data-theme="light"] {
+            display: none;
+        }
+    }
 }
+
+.light {
+    div[data-rehype-pretty-code-fragment] {
+        & [data-theme="dark"] {
+            display: none;
+        }
+    }
+}
+
 
 #grid-card {
     direction: rtl;

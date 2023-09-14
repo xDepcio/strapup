@@ -28,7 +28,10 @@ export default makeSource({
             [
                 rehypePreetyCode,
                 {
-                    theme: 'github-light',
+                    theme: {
+                        light: 'github-light',
+                        dark: 'github-dark'
+                    },
                     keepBackground: false,
                     onVisitLine: (node: any) => {
                         if (node.children.length === 0) {
