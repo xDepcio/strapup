@@ -30,15 +30,15 @@ export default function MobileDocsNav() {
                             <p>All Docs</p>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side={'left'} className='flex flex-col w-2/3 px-2 py-1 overflow-y-auto'>
-                        <SheetHeader>
+                    <SheetContent side={'left'} className='flex flex-col w-2/3 px-2 py-1 overflow-y-auto justify-between'>
+                        {/* <SheetHeader>
                             <SheetTitle></SheetTitle>
                             <SheetDescription>
 
                             </SheetDescription>
-                        </SheetHeader>
+                        </SheetHeader> */}
 
-                        <DocsSideNav className='block h-full w-full' />
+                        <DocsSideNav className='block h-full w-full mt-6' />
 
                         <SheetFooter>
                             <SheetClose asChild>

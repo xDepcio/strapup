@@ -20,7 +20,7 @@ export default function DocsSideNav({ className }: { className?: string }) {
 
     return (
         <div className='docs-side-nav'>
-            <div className={cn("border-r docs-side-nav relative pr-6 sm:pr-0 hidden sm:block sm:top-[7.04rem] sm:sticky sm:w-[256px]", className)}>
+            <div className={cn("sm:border-r docs-side-nav relative pr-6 sm:pr-0 hidden sm:block sm:top-[7.04rem] sm:sticky sm:w-[256px]", className)}>
                 <div className='docs-side-nav text-sm sm:overflow-y-auto sm:w-[256px] sm:h-[calc(100vh-7.04rem)] sm:pr-6'>
                     {Object.entries(categorizedDocs).map(([cat, docs], i) => {
                         return (
