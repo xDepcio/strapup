@@ -25,23 +25,25 @@ export default async function Home() {
     })
 
     return (
-        <main className="min-h-screen flex items-center flex-col h-[200vh] overflow-hidden">
-            <section className="w-full flex justify-start h-64 mt-32 flex-col items-center relative">
+        <main className="min-h-screen flex items-center flex-col overflow-hidden">
+            <section className="w-full flex justify-start h-64 sm:mt-32 flex-col items-center relative mt-16 mb-12 sm:mb-0">
                 <h1 id="header-main" className={cn("", "text-5xl font-semibold tracking-tight text-center")}>Stop wasting time setting up your projects, <span className="block text-center"><span>use</span> <span className={cn(ProximaSoft.className, "text-6xl text-indigo-600 font-bold")}>Strapup</span></span>
                 </h1>
-                <p className={cn(robotoMono.className, "mt-6 font-medium bg-zinc-800 text-zinc-100 py-2 px-2 shadow-lg rounded-sm")}><span className="dark:bg-green-500">$</span> customizable template-cli<span className="bg-zinc-100">.</span></p>
+                <p className={cn(robotoMono.className, "mt-6 font-medium bg-zinc-800 text-zinc-100 py-2 px-2 shadow-lg rounded-sm")}><span className="">$</span> customizable template-cli<span className="bg-zinc-100">.</span></p>
                 <div className="bg-geo">
                     <div className="innger-bg-geo dark:[background:_radial-gradient(circle,_rgba(9,_9,_11,_0)_0%,_rgba(9,_9,_11,_1)_100%),_linear-gradient(180deg,_rgba(9,_9,_11,_1)_0%,_rgba(9,_9,_11,_0)_100%);]"></div>
                 </div>
             </section>
-            <section className="relative top-7 bg-zinc-800 text-zinc-100 shadow-xl rounded-lg w-[400px]">
-                <div className=" flex items-center justify-between">
-                    <p className="text-xl py-4 px-5">$ npx strapup</p>
-                    <CopyBtnMain />
+            <section className="box-content max-w-[400px] w-full flex items-center justify-center" >
+                <div className="relative top-7 bg-zinc-800 text-zinc-100 shadow-xl rounded-lg max-w-[400px] sm:w-full w-[90%]">
+                    <div className=" flex items-center justify-between">
+                        <p className="text-xl py-4 px-5">$ npx strapup</p>
+                        <CopyBtnMain />
+                    </div>
                 </div>
             </section>
             <section className="bg-indigo-800 w-full py-20 flex items-center justify-center flex-col">
-                <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center">
+                <div className="max-w-screen-xl sm:grid sm:grid-cols-2 sm:justify-items-center sm:items-center flex flex-col px-4 gap-4 sm:px-0 sm:gap-0">
                     <div className="">
                         <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
                             Start creating faster
@@ -60,7 +62,7 @@ export default async function Home() {
                     </div>
                     <Image alt="" src="/paste-and-save.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                 </div>
-                <div className="max-w-screen-xl grid grid-cols-2 justify-items-center items-center mt-20">
+                <div className="max-w-screen-xl sm:grid sm:grid-cols-2 sm:justify-items-center sm:items-center flex flex-col-reverse px-4 gap-4 sm:px-0 sm:gap-0 mt-20">
                     <Image alt="" src="/running-scripts.gif" className="rounded-xl shadow-lg" width={700} height={350} />
                     <div className="">
                         <h3 className="text-3xl text-zinc-100 mb-10 font-medium">
@@ -84,7 +86,7 @@ export default async function Home() {
                 <div>
                     <h3 className="text-center mb-12 text-3xl font-medium relative w-fit mx-auto">Community stats 🎉</h3>
                 </div>
-                <div className="flex gap-12 items-stretch justify-center">
+                <div className="flex gap-12 items-stretch justify-center flex-wrap sm:flex-nowrap">
                     <div className="flex items-center justify-center p-2 rounded-lg flex-col">
                         <p className="text-lg font-medium">templates saved</p>
                         <p className={cn("text-4xl font-bold text-indigo-600", ProximaSoft.className)} >{stats?.templatesSaved || '917'}</p>
