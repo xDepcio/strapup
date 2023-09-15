@@ -31,7 +31,7 @@ export default function PageContentNav({ className }: { className?: string }) {
     }, [])
 
     return (
-        <div style={{ contain: 'strict' }} className={cn("sm:block hidden", className)}>
+        <div style={{ contain: 'strict' }} className={cn("sm:block hidden w-[256px]", className)}>
             <div className="sm:sticky sm:top-[7.04rem]">
                 <h3 className="text-sm font-semibold mb-2">On this page</h3>
                 <div className=" flex flex-col gap-1">

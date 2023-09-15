@@ -30,7 +30,7 @@ export default function MobileDocsNav() {
                             <p>All Docs</p>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side={'left'} className='flex flex-col w-2/3 px-2 py-1'>
+                    <SheetContent side={'left'} className='flex flex-col w-2/3 px-2 py-1 overflow-y-auto'>
                         <SheetHeader>
                             <SheetTitle></SheetTitle>
                             <SheetDescription>
