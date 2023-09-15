@@ -11,20 +11,24 @@ export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
 export const statsUrl = "https://strapup-web.vercel.app"
 
 export const scriptsContent = `export const scripts = {
-    nextshadreduxts: {
-        description: "Create new Next.js app dir, Tailwind, Typescript, Shadcn UI, Redux Toolkit",
-        command: (projectName) => [
-            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
-            \`cd \${projectName}\`,
-            \`npx shadcn-ui@latest init -y\`,
-            \`strapup paste next-redux-ts redux\`
-        ],
-    },
-    nextjsshadcn: {
+    "Create-Next-ShadcnUI-TS": {
         description: "New Next.js app, Shadcn UI add (button, input, skeleton, dropdown), darkmode",
         command: (projectName) => [
             \`npx create-next-app \${projectName}\`,
             \`cd \${projectName}\`,
+            \`npx strapup run-script Add-ShadcnUI-TS\`,
+        ],
+    },
+    "Add-Next-RTK-TS": {
+        description: "Add TS RTK to existing NextJS app",
+        command: (pasteDir) => [
+            \`npm i @reduxjs/toolkit react-redux\`
+            \`npx strapup paste next-redux-ts \${pasteDir}\`
+        ],
+    },
+    "Add-ShadcnUI-TS": {
+        description: "To existing next app, Shadcn UI add (button, input, skeleton, dropdown), darkmode",
+        command: () => [
             \`npx shadcn-ui@latest init -y\`,
             \`npx shadcn-ui@latest add button -y\`,
             \`npx shadcn-ui@latest add input -y\`,
@@ -34,43 +38,14 @@ export const scriptsContent = `export const scripts = {
             \`npx strapup paste next-shad-darkmode ./\`,
         ],
     },
-    shadcn: {
-        description: "Add Shadcn UI to existing project with basic components (button, input, skeleton)",
+    "Add-Next-Auth.js-TS": {
+        description: "To existing next app, add basic next-auth",
         command: () => [
-            \`npx shadcn-ui@latest init -y\`,
-            \`npx shadcn-ui@latest add button -y\`,
-            \`npx shadcn-ui@latest add input -y\`,
-            \`npx shadcn-ui@latest add skeleton -y\`,
+            \`npm i next-auth\`,
+            \`npx strapup paste next13-app-auth-paste-from-root ./\`,
         ],
     },
-    nextJsShadcnAuthJs: {
-        description: "Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js",
-        command: (projectName) => [
-            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
-            \`cd \${projectName}\`,
-            \`npx shadcn-ui@latest init -y\`,
-            \`npx shadcn-ui@latest add button -y\`,
-            \`npx shadcn-ui@latest add input -y\`,
-            \`npx shadcn-ui@latest add skeleton -y\`,
-            \`npm i next-auth\`,
-            \`strapup paste next13-app-auth-paste-from-root ./\`,
-        ]
-    },
-    nextJsShadcnAuthJsRTKTS: {
-        description: "Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js, basic redux-toolkit",
-        command: (projectName) => [
-            \`npx create-next-app \${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"\`,
-            \`cd \${projectName}\`,
-            \`npx shadcn-ui@latest init -y\`,
-            \`npx shadcn-ui@latest add button -y\`,
-            \`npx shadcn-ui@latest add input -y\`,
-            \`npx shadcn-ui@latest add skeleton -y\`,
-            \`npm i next-auth\`,
-            \`strapup paste next13-app-auth-paste-from-root ./\`,
-            \`strapup paste next-redux-ts redux\`,
-        ]
-    },
-    "contentlayer-docs-nav-template": {
+    "Add-Contentlayer-docs-nav-template-TS": {
         description: "Add working contentlayer MDX template to existing NextJS project",
         command: () => [
             \`npm i contentlayer next-contentlayer react-icons react-hot-toast remark-gfm rehype-slug rehype-autolink-headings rehype-pretty-code\`,

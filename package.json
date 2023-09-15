@@ -24,6 +24,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> cb2667a (renamed from templato to strapup)
   "version": "0.1.0",
 =======
@@ -74,6 +75,9 @@
 =======
   "version": "0.3.0",
 >>>>>>> 6d6de80 (v0.3.0)
+=======
+  "version": "0.4.0",
+>>>>>>> 2ec9a2b (changed existing templates and scripts v0.4.0)
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
@@ -188,6 +192,7 @@
 >>>>>>> 80c411f (made better code seperation for clack extended classes)
 =======
     "is-unicode-supported": "^1.3.0",
+    "next-themes": "^0.2.1",
     "node-fetch": "^3.3.2"
 >>>>>>> b6dcaef (small fix to v0.2.11)
   }

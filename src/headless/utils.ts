@@ -78,3 +78,12 @@ export const loadSettings = () => {
     }
     return JSON.parse(fs.readFileSync(__dirname + '/settings.json', { encoding: 'utf-8' })) as StrapupSettings
 }
+
+export function getParameterNames(func: Function) {
+    const funcString = func.toString();
+    const parameterNames = funcString
+        .slice(funcString.indexOf('(') + 1, funcString.indexOf(')'))
+        .split(',')
+        .map((param) => param.trim());
+    return parameterNames.filter(Boolean); // Removes empty strings
+}
