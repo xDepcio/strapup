@@ -22,8 +22,8 @@ export const scriptsContent = `export const scripts = {
     "Add-Next-RTK-TS": {
         description: "Add TS RTK to existing NextJS app",
         command: (pasteDir) => [
-            \`npm i @reduxjs/toolkit react-redux\`
-            \`npx strapup paste next-redux-ts \${pasteDir}\`
+            \`npm i @reduxjs/toolkit react-redux\`,
+            \`npx strapup paste next-redux-ts \${pasteDir}\`,
         ],
     },
     "Add-ShadcnUI-TS": {
