@@ -10,6 +10,12 @@ import { FiCopy } from "react-icons/fi"
 import { RiSave3Line } from "react-icons/ri"
 import CopyBtnMain from "@/components/CopyBtnMain";
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: 'Strapup',
+    description: 'Stop wasting time setting up your projects, use Strapup',
+}
 
 export default async function Home() {
     const stats = await prisma.strapupStats.findFirst({

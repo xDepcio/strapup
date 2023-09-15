@@ -1,5 +1,6 @@
 import { allDocs } from "@/.contentlayer/generated"
 import { Mdx } from "@/components/mdx-components"
+import { Metadata } from "next"
 import { redirect } from 'next/navigation'
 import { MdKeyboardArrowRight } from 'react-icons/md'
 
@@ -8,6 +9,19 @@ const getDocBySlugs = (slugs: string[]) => {
     const doc = allDocs.find((doc) => doc._raw.flattenedPath === pathFromSlugs)
     if (!doc) return redirect('/docs/Basic use/Save and Paste')
     return doc
+}
+
+export function generateMetadata({ params }: { params: { slug?: string[] } }): Metadata {
+    if (!params.slug) return {
+        title: 'Strapup - Docs',
+    }
+    params.slug = params.slug?.map((slug) => decodeURI(slug))
+    const doc = getDocBySlugs(params.slug)
+
+    return {
+        title: `Strapup - ${doc.title} - Docs`,
+        description: `Explore documentation for ${doc.title}`
+    }
 }
 
 export default function DocsPage({ params }: { params: { slug?: string[] } }) {
