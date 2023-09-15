@@ -4,7 +4,7 @@ import { FaGithub, FaNpm } from "react-icons/fa";
 export default function Footer() {
     return (
         <footer className="border-t-[1px] flex items-center justify-center gap-14 p-4 text-muted-foreground">
-            <p>Created by <Link href={'/'} className="text-foreground underline">xDepcio</Link>, source code avalible on <Link href={'/'} className="text-foreground underline">Github</Link>.</p>
+            <p>Created by <Link href={'https://github.com/xDepcio'} className="text-foreground underline">xDepcio</Link>, source code avalible on <Link href={'https://github.com/xDepcio/strapup'} className="text-foreground underline">Github</Link>.</p>
         </footer>
     )
 }

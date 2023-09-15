@@ -103,7 +103,7 @@ ${codeBlocks || ''}
 }
 
 function getTreeString(dirPath: string) {
-    const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*\n|.*directories.*files.*|\n\n|.*${dirPath}.*\n`, "g")
+    const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*\n|.*directories.*files.*|\n\n|.*${dirPath}.*\n|0 directories, 1 file`, "g")
 
     return new Promise<string>((resolve, reject) => {
         const shell = spawn("tree", [dirPath])
