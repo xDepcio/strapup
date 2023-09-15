@@ -6,7 +6,7 @@ import Link from "next/link";
 import { cn } from '@/lib/utils';
 
 
-export default function DocsSideNav() {
+export default function DocsSideNav({ className }: { className?: string }) {
     const sortedArr = allDocs.sort((a, b) => a.sortNum - b.sortNum)
     const path = decodeURI(usePathname())
 
@@ -19,8 +19,8 @@ export default function DocsSideNav() {
     }, {})
 
     return (
-        <div className="relative pr-6">
-            <div className='sticky top-[7.04rem] text-sm'>
+        <div className={cn("relative pr-6 hidden sm:block", className)}>
+            <div className='sm:sticky sm:top-[7.04rem] text-sm'>
                 {Object.entries(categorizedDocs).map(([cat, docs], i) => {
                     return (
                         <div key={i} className="mb-4">

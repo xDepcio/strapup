@@ -3,13 +3,12 @@
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Separator } from "./ui/separator"
-import { FaStar } from 'react-icons/fa'
 import { BsStar } from 'react-icons/bs'
 import { HiArrowLongRight } from 'react-icons/hi2'
+import { Separator } from "./ui/separator"
 
 
-export default function PageContentNav() {
+export default function PageContentNav({ className }: { className?: string }) {
     const [linkedHeadings, setLinkedHeadings] = useState<HTMLAnchorElement[]>([])
     const [highlitedHeading, setHighlitedHeading] = useState<HTMLAnchorElement | null>(null)
 
@@ -32,8 +31,8 @@ export default function PageContentNav() {
     }, [])
 
     return (
-        <div style={{ contain: 'strict' }}>
-            <div className="sticky top-[7.04rem]">
+        <div style={{ contain: 'strict' }} className={cn("sm:block hidden", className)}>
+            <div className="sm:sticky sm:top-[7.04rem]">
                 <h3 className="text-sm font-semibold mb-2">On this page</h3>
                 <div className=" flex flex-col gap-1">
                     {linkedHeadings?.map((heading, i) => {
