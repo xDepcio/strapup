@@ -27,6 +27,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> cb2667a (renamed from templato to strapup)
   "version": "0.1.0",
 =======
@@ -86,6 +87,9 @@
 =======
   "version": "0.4.2",
 >>>>>>> 00aa862 (updated readme v0.4.2)
+=======
+  "version": "0.4.3",
+>>>>>>> eedae65 (added options to handle file names colision)
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
