@@ -30,16 +30,16 @@ export const copyDirectoryContents = async ({ fromPath, toPath, validate = () =>
             const writePath = path.normalize(`${toPath}/${file}`)
 
             if (!validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
-                return
+                continue
             }
 
             if (file === '_strapupmetadata.json' && skipMetadataFile) {
-                return
+                continue
             }
 
             if (!fs.existsSync(writePath)) {
                 fs.writeFileSync(writePath, contents, 'utf8')
-                return
+                continue
             }
             const overwrite = await p.select({
                 message: `File ${color.dim(file)} already exists.`,
@@ -52,27 +52,27 @@ export const copyDirectoryContents = async ({ fromPath, toPath, validate = () =>
             if (forceOverwriteFiles || overwrite === 'overwrite') {
                 fs.writeFileSync(writePath, contents, 'utf8')
                 p.log.info(`Overwriting ${color.dim(file)}`)
-                return
+                continue
             }
             if (overwrite === 'shadow') {
                 const shadowWritePath = path.normalize(`${toPath}/shadow-${file}`)
                 fs.writeFileSync(shadowWritePath, contents, 'utf8')
                 p.log.info(`Created shadow ${color.dim(file)}`)
-                return
+                continue
             }
             p.log.info(`Skipping ${color.dim(file)}. File already exists.`)
         }
         else if (stats.isDirectory()) {
             if (!validate({ createName: file, createPath: `${toPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
-                return
+                continue
             }
 
             try {
                 fs.mkdirSync(`${toPath}/${file}`)
-                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
+                await copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
             } catch (e: any) {
                 if (e.code === 'EEXIST') {
-                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
+                    await copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
                 }
             }
         }
@@ -157,22 +157,23 @@ export const setSystemEnv = (key: string, value: string) => {
     }
 }
 
-export const addPremadeTemplatesToExistingTemplatesDir = (existingDirPath: string) => {
+export const addPremadeTemplatesToExistingTemplatesDir = async (existingDirPath: string) => {
     const templatesPath = `${__dirname}/premade-templates`
     const templates = fs.readdirSync(templatesPath)
-    templates.forEach(template => {
+    for (const template of templates) {
+        // templates.forEach(template => {
         fs.rmSync(`${existingDirPath}/${template}`, { recursive: true, force: true })
         fs.mkdirSync(`${existingDirPath}/${template}`, { recursive: true })
         const templatePath = path.normalize(`${templatesPath}/${template}`)
-        copyDirectoryContents({ fromPath: templatePath, toPath: `${existingDirPath}/${template}`, forceOverwriteFiles: false, skipMetadataFile: false })
-    })
+        await copyDirectoryContents({ fromPath: templatePath, toPath: `${existingDirPath}/${template}`, forceOverwriteFiles: false, skipMetadataFile: false })
+    }
 }
 
 /**
  * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
  * @param dirPath - absolute path to strapup directory contents (.../strapup)
  */
-export const createStrapupDirectory = (dirPath: string) => {
+export const createStrapupDirectory = async (dirPath: string) => {
     try {
         fs.mkdirSync(dirPath)
         p.log.info(`Created strapup directory at ${color.dim(normalize(dirPath))}`)
@@ -185,13 +186,13 @@ export const createStrapupDirectory = (dirPath: string) => {
 
     try {
         fs.mkdirSync(TEMPLATES_PATH())
-        copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
+        await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
         p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
     } catch (e: any) {
         if (e.code === "EEXIST") {
             p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
             p.log.message(`Syncing premade templates...`)
-            addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
+            await addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
         }
         else throw e
     }

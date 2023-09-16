@@ -50,12 +50,12 @@ async function main() {
         saveSettings(settings)
         setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
 
-        createStrapupDirectory(settings.strapupDirPath)
+        await createStrapupDirectory(settings.strapupDirPath)
     }
 
     if (!fs.existsSync(settings.strapupDirPath)) {
         p.log.warn(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}. Creating one...`)
-        createStrapupDirectory(settings.strapupDirPath)
+        await createStrapupDirectory(settings.strapupDirPath)
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
@@ -165,7 +165,7 @@ async function main() {
                 }
             }) as string
 
-            paste({
+            await paste({
                 templateName: templateName,
                 destinationRelativePath: destinationRelativePath
             })
