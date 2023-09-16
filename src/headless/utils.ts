@@ -10,14 +10,15 @@ export interface CopyDirectoryContentsParams {
     fromPath: string
     toPath: string
     validate?: ({ createName, createPath, sourcePath, isFile }: { createName: string, createPath: string, sourcePath: string, isFile: boolean }) => boolean
-    overwriteFiles?: boolean
+    forceOverwriteFiles?: boolean
     skipMetadataFile?: boolean
 }
 
-export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true, overwriteFiles = true, skipMetadataFile = true }: CopyDirectoryContentsParams) => {
+export const copyDirectoryContents = async ({ fromPath, toPath, validate = () => true, forceOverwriteFiles = false, skipMetadataFile = true }: CopyDirectoryContentsParams) => {
     const filesToCreate = fs.readdirSync(fromPath)
 
-    filesToCreate.forEach(file => {
+    for (const file of filesToCreate) {
+        // filesToCreate.forEach(file => {
         const origFilePath = path.normalize(`${fromPath}/${file}`)
 
         const stats = fs.statSync(origFilePath)
@@ -39,9 +40,23 @@ export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true,
                 fs.writeFileSync(writePath, contents, 'utf8')
                 return
             }
-            if (overwriteFiles) {
+            const overwrite = await p.select({
+                message: `File ${color.dim(file)} already exists.`,
+                options: [
+                    { label: 'Overwrite It', value: 'overwrite' },
+                    { label: 'Skip It', value: 'skip' },
+                    { label: 'Create shadow', value: 'shadow', hint: 'Both creates new and leaves original file untouched, to resolve conflitcs manually.' },
+                ],
+            }) as 'overwrite' | 'skip' | 'shadow'
+            if (forceOverwriteFiles || overwrite === 'overwrite') {
                 fs.writeFileSync(writePath, contents, 'utf8')
                 p.log.info(`Overwriting ${color.dim(file)}`)
+                return
+            }
+            if (overwrite === 'shadow') {
+                const shadowWritePath = path.normalize(`${toPath}/shadow-${file}`)
+                fs.writeFileSync(shadowWritePath, contents, 'utf8')
+                p.log.info(`Created shadow ${color.dim(file)}`)
                 return
             }
             p.log.info(`Skipping ${color.dim(file)}. File already exists.`)
@@ -53,14 +68,14 @@ export const copyDirectoryContents = ({ fromPath, toPath, validate = () => true,
 
             try {
                 fs.mkdirSync(`${toPath}/${file}`)
-                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate, skipMetadataFile })
+                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
             } catch (e: any) {
                 if (e.code === 'EEXIST') {
-                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, overwriteFiles, validate, skipMetadataFile })
+                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
                 }
             }
         }
-    })
+    }
 }
 
 export type TelemetryStat = "templateSaved" | "templatePasted" | "scriptRan"
