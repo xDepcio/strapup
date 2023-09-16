@@ -1,0 +1,66 @@
+---
+title: Scripts
+sortNum: 2
+---
+
+#### Introduction
+Scripts in Strapup are just lists of strings representing shell commands. These commands can also be Strapup instructions like `paste` and `save`. These feature make them very powerfull and can help you automate the process of setting up your projects.
+
+Take one of built-in scripts `nextJsShadcnAuthJs` for example. It setups NextJS 13 app with shadcnUI and Auth.js. You can run It from Strapup CLI (`npx strapup`). Under the hood it will run these commands:
+
+```bash {"1"}
+npx create-next-app ${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"
+cd ${projectName}
+npx shadcn-ui@latest init -y
+npx shadcn-ui@latest add button -y
+npx shadcn-ui@latest add input -y
+npx shadcn-ui@latest add skeleton -y
+npm i next-auth
+npx strapup paste next13-app-auth-paste-from-root ./
+```
+`projectName` is entered by user before commands are executed.\
+Take a look at the last line, which pastes Strapup template to root directory. One script can paste multiple templates or run other Strapup scripts, thus making it possible to create complex projects with one command.
+
+#### Creating scripts
+Scripts can be modified and added by editing `scripts.mjs` file located in Strapup directory. You can see its path whenever your running `npx strapup`.
+{/* ![Scripts location](/scripts.png) */}
+
+Take a look at `scripts.mjs` contents:
+```js {"1"}
+export const scripts = {
+    nextJsShadcnAuthJs: {
+        description: "Create new Next.js typescript, app dir, tailwind, no src dir, shadcn, basic Auth.js",
+        command: (projectName) => [
+            `npx create-next-app ${projectName} --typescript --tailwind --eslint --app --no-src-dir --import-alias "@/*"`,
+            `cd ${projectName}`,
+            `npx shadcn-ui@latest init -y`,
+            `npx shadcn-ui@latest add button -y`,
+            `npx shadcn-ui@latest add input -y`,
+            `npx shadcn-ui@latest add skeleton -y`,
+            `npm i next-auth`,
+            `strapup paste next13-app-auth-paste-from-root ./`,
+        ]
+    },
+    // Create a new script by adding a key-value pair based on examples above.
+}
+```
+It exports POJO object where `keys` - are scripts names, and `values` - script informations:
+- `description` - string displayed in Strapup CLI for identification.
+- `command` - function, which returns array of strings, which will be executed as shell commands.
+  This function can have any number of parameters and user will be automatically prompted to enter them before script is executed. Parameter name will be displayed in CLI in the prompt.
+
+#### Next steps
+<NextCardHolder cards={[
+    {
+        title: "Premade scripts",
+        description: "Use built-in scripts to quickly bootstrap your project",
+        link: "/docs/Included scripts/nextshadreduxts",
+        iconType: 'book'
+    },
+        {
+        title: "Premade templates",
+        description: "Use built-in templates as building blocks for your project",
+        link: "/docs/Included templates/next-redux-ts",
+        iconType: 'book'
+    }
+]} />

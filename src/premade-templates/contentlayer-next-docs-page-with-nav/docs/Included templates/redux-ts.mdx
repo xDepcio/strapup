@@ -1,0 +1,99 @@
+---
+title: "next-redux-ts"
+sortNum: 4
+---
+
+### Redux Toolkit Typescript template for NextJS 13.
+Consists of basic RTK setup with Typescript.
+- Typesafe hooks
+- Store setup
+- Basic slice setup
+- Basic API setup
+
+#### Pasted files straucture
+```bash
+├── features
+│   └── counterSlice.ts
+├── services
+│   └── userApi.ts
+├── store.ts
+├── hooks.ts
+```
+
+#### Files contents
+```ts title="./features/counterSlice.ts"
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./features/counterSlice";
+import { userApi } from "./services/userApi";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+
+export const store = configureStore({
+    reducer: {
+        counterReducer,
+        [userApi.reducerPath]: userApi.reducer,
+    },
+    devTools: process.env.NODE_ENV !== "production",
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({}).concat([userApi.middleware]),
+});
+
+setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+```
+```ts title="./services/userApi.ts"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+type User = {
+    id: number;
+    name: string;
+    email: number;
+};
+
+export const userApi = createApi({
+    reducerPath: "userApi",
+    refetchOnFocus: true,
+    baseQuery: fetchBaseQuery({
+        baseUrl: "https://your-api-url.com/",
+    }),
+    endpoints: (builder) => ({
+        getUsers: builder.query<User[], null>({
+            query: () => "users",
+        }),
+        getUserById: builder.query<User, { id: string }>({
+            query: ({ id }) => `users/${id}`,
+        }),
+    }),
+});
+
+export const { useGetUsersQuery, useGetUserByIdQuery } = userApi;
+```
+```ts title="./store.ts"
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./features/counterSlice";
+import { userApi } from "./services/userApi";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+
+export const store = configureStore({
+    reducer: {
+        counterReducer,
+        [userApi.reducerPath]: userApi.reducer,
+    },
+    devTools: process.env.NODE_ENV !== "production",
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({}).concat([userApi.middleware]),
+});
+
+setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+```
+```tsx title="./hooks.tsx"
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+```
