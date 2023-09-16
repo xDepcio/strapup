@@ -29,16 +29,16 @@ export const copyDirectoryContents = async ({ fromPath, toPath, validate = () =>
             const writePath = path.normalize(`${toPath}/${file}`)
 
             if (!validate({ createName: file, createPath: writePath, isFile: true, sourcePath: origFilePath })) {
-                return
+                continue
             }
 
             if (file === '_strapupmetadata.json' && skipMetadataFile) {
-                return
+                continue
             }
 
             if (!fs.existsSync(writePath)) {
                 fs.writeFileSync(writePath, contents, 'utf8')
-                return
+                continue
             }
             const overwrite = await p.select({
                 message: `File ${color.dim(file)} already exists.`,
@@ -51,27 +51,27 @@ export const copyDirectoryContents = async ({ fromPath, toPath, validate = () =>
             if (forceOverwriteFiles || overwrite === 'overwrite') {
                 fs.writeFileSync(writePath, contents, 'utf8')
                 p.log.info(`Overwriting ${color.dim(file)}`)
-                return
+                continue
             }
             if (overwrite === 'shadow') {
                 const shadowWritePath = path.normalize(`${toPath}/shadow-${file}`)
                 fs.writeFileSync(shadowWritePath, contents, 'utf8')
                 p.log.info(`Created shadow ${color.dim(file)}`)
-                return
+                continue
             }
             p.log.info(`Skipping ${color.dim(file)}. File already exists.`)
         }
         else if (stats.isDirectory()) {
             if (!validate({ createName: file, createPath: `${toPath}/${file}`, isFile: false, sourcePath: origFilePath })) {
-                return
+                continue
             }
 
             try {
                 fs.mkdirSync(`${toPath}/${file}`)
-                copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
+                await copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
             } catch (e: any) {
                 if (e.code === 'EEXIST') {
-                    copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
+                    await copyDirectoryContents({ fromPath: `${fromPath}/${file}`, toPath: `${toPath}/${file}`, forceOverwriteFiles, validate, skipMetadataFile })
                 }
             }
         }

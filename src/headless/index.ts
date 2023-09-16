@@ -23,7 +23,7 @@ async function main() {
             const templateName = args[3]
             const destinationRelativePath = args[4] || '.'
 
-            paste({
+            await paste({
                 templateName: templateName,
                 destinationRelativePath: destinationRelativePath
             })

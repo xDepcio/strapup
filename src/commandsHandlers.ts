@@ -72,7 +72,7 @@ export async function save({ templateName, sourceRelativePaths, withGitignore, t
         else {
             await afs.mkdir(`${templatePath}/${sourceRelativePath}`, { recursive: true })
             copyArgs.toPath = `${templatePath}/${sourceRelativePath}`
-            copyDirectoryContents(copyArgs)
+            await copyDirectoryContents(copyArgs)
             createMetadataFile({ directoryPath: templatePath, templateDesc: templateDescription })
         }
     }
@@ -86,7 +86,7 @@ interface PasteOptions {
     destinationRelativePath: string
 }
 
-export function paste({ templateName, destinationRelativePath }: PasteOptions) {
+export async function paste({ templateName, destinationRelativePath }: PasteOptions) {
     const templatePath = path.normalize(`${TEMPLATES_PATH()}/${templateName}`)
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
@@ -100,7 +100,7 @@ export function paste({ templateName, destinationRelativePath }: PasteOptions) {
         p.log.info(`Directory ${color.dim(destinationAbsolutePath)} does not exists. Creating it...`)
     }
 
-    copyDirectoryContents({ fromPath: templatePath, toPath: destinationAbsolutePath })
+    await copyDirectoryContents({ fromPath: templatePath, toPath: destinationAbsolutePath })
     p.log.success(`Pasted ${templateName} template to ${color.dim(destinationAbsolutePath)}`)
     sendTelemetryStats("templatePasted")
 }
