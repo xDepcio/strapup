@@ -29,6 +29,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 >>>>>>> cb2667a (renamed from templato to strapup)
   "version": "0.1.0",
 =======
@@ -94,6 +95,9 @@
 =======
   "version": "0.4.4",
 >>>>>>> 3b4fe18 (fixed error with async handling of prompt inside copyDirectoryContents to accept oveewrite of file v0.4.4)
+=======
+  "version": "0.4.5",
+>>>>>>> 3cae4e4 (added core templates and core scripts.)
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",

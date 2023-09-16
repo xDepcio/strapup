@@ -45,7 +45,7 @@ export const copyDirectoryContents = async ({ fromPath, toPath, validate = () =>
                 options: [
                     { label: 'Overwrite It', value: 'overwrite' },
                     { label: 'Skip It', value: 'skip' },
-                    { label: 'Create shadow', value: 'shadow', hint: 'Both creates new and leaves original file untouched, to resolve conflitcs manually.' },
+                    { label: 'Create shadow', value: 'shadow', hint: 'Both creates new and leaves original file untouched, to resolve conflicts manually.' },
                 ],
             }) as 'overwrite' | 'skip' | 'shadow'
             if (forceOverwriteFiles || overwrite === 'overwrite') {

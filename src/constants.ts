@@ -19,6 +19,15 @@ export const scriptsContent = `export const scripts = {
             \`npx strapup run-script Add-ShadcnUI-TS\`,
         ],
     },
+    "Create-Next-Kirimase-Contenlayer": {
+        description: "New Next.js app made with kirimase, and contentlayer docs template",
+        command: (projectName) => [
+            \`npx create-next-app \${projectName}\`,
+            \`cd \${projectName}\`,
+            \`npx kirimase init\`,
+            \`npx strapup run-script Add-Contentlayer-docs-nav-template-TS\`,
+        ],
+    },
     "Add-Next-RTK-TS": {
         description: "Add TS RTK to existing NextJS app",
         command: (pasteDir) => [
