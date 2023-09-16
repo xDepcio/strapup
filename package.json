@@ -1,6 +1,6 @@
 {
   "name": "strapup",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "CLI for quickly setting up any project from pre-made templates. Paste, save templates, and execute scripts to get your project up and running in seconds.",
   "main": "index.js",
   "type": "module",
@@ -15,6 +15,11 @@
     "type": "git",
     "url": "https://github.com/xDepcio/strapup"
   },
+  "bugs": {
+    "url": "https://github.com/xDepcio/strapup/issues",
+    "email": "olek.drwal@gmail.com"
+  },
+  "homepage": "https://strapup.vercel.app/",
   "author": "",
   "license": "ISC",
   "keywords": [
