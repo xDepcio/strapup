@@ -30,7 +30,7 @@ export default async function Home() {
                 <h1 id="header-main" className={cn("", "text-5xl font-semibold tracking-tight text-center")}>Stop wasting time setting up your projects, <span className="block text-center"><span>use</span> <span className={cn(ProximaSoft.className, "text-6xl text-indigo-600 font-bold")}>Strapup</span></span>
                 </h1>
                 <p className={cn(robotoMono.className, "mt-6 font-medium bg-zinc-800 text-zinc-100 py-2 px-2 shadow-lg rounded-sm")}><span className="">$</span> customizable template-cli<span className="bg-zinc-100">.</span></p>
-                <div className="bg-geo">
+                <div className="bg-geo" style={{ backgroundImage: `url(/hero-geo.svg)` }}>
                     <div className="innger-bg-geo dark:[background:_radial-gradient(circle,_rgba(9,_9,_11,_0)_0%,_rgba(9,_9,_11,_1)_100%),_linear-gradient(180deg,_rgba(9,_9,_11,_1)_0%,_rgba(9,_9,_11,_0)_100%);]"></div>
                 </div>
             </section>
@@ -108,7 +108,7 @@ export default async function Home() {
                         <FaNpm className="text-5xl flex-grow" />
                     </div>
                 </div>
-                <div className="bg-geo-2">
+                <div className="bg-geo-2" style={{ backgroundImage: `url(/hero-geo.svg)` }}>
                     <div className="innger-bg-geo-2 dark:[background:_radial-gradient(circle,_rgba(9,_9,_11,_0)_0%,_rgba(9,_9,_11,_1)_100%),_linear-gradient(0deg,_rgba(9,_9,_11,_1)_0%,_rgba(0,_212,_255,_0)_100%),_linear-gradient(0deg,_rgba(9,_9,_11,_0.281)_0%,_rgb(9,_9,_11)_100%);]"></div>
                 </div>
             </section>

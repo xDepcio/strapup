@@ -81,7 +81,7 @@
 }
 
 .bg-geo {
-    background-image: url("http://localhost:3000/hero-geo.svg");
+    /* background-image: url("http://localhost:3000/hero-geo.svg"); */
     position: absolute;
     width: 1920px;
     height: 580px;
@@ -100,7 +100,7 @@
 }
 
 .bg-geo-2 {
-    background-image: url("http://localhost:3000/hero-geo.svg");
+    /* background-image: url("http://localhost:3000/hero-geo.svg"); */
     position: absolute;
     width: 1920px;
     height: 580px;
