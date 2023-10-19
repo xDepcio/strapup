@@ -1,0 +1,15 @@
+---
+title: Create-Python-Project
+sortNum: 1006
+---
+### Create-Python-Project
+Create python project with setuptools.
+### Executed commands
+```bash
+npx strapup paste python_project ./${projectName}
+find . -type f -exec sed -i 's/python_project/${projectName}/g' {} +
+find . -depth -name "python_project" -execdir mv {} ${projectName} \;
+cd ${projectName}
+pip install -e .
+git init
+```
