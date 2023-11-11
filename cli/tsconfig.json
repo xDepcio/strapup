@@ -103,5 +103,6 @@
   ],
   "exclude": [
     "./src/premade-templates/**/*",
+    "./src/tests/**/*",
   ]
 }
