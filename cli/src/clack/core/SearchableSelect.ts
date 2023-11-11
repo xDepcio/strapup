@@ -1,74 +1,26 @@
+// @ts-nocheck
 import color from 'picocolors';
-import { SelectPrompt } from '@clack/core';
-import { select } from '@clack/prompts';
-import { Readable, Writable } from 'stream';
+import { Prompt, PromptOptions } from '@clack/core'
 
-// export interface SelectSearchOptions extends SelectOptions<{ value: string; label: string; hint?: string }[], string> {
-//     searchPlaceholder?: string;
-//     options: { value: string; label: string; hint?: string }[];
-// }
-
-// select
-
-interface PromptOptions<Self extends Prompt> {
-    render(this: Omit<Self, 'prompt'>): string | void;
-    placeholder?: string;
-    initialValue?: any;
-    validate?: ((value: any) => string | void) | undefined;
-    input?: Readable;
-    output?: Writable;
-    debug?: boolean;
-}
-type State = 'initial' | 'active' | 'cancel' | 'submit' | 'error';
-declare class Prompt {
-    protected input: Readable;
-    protected output: Writable;
-    private rl;
-    private opts;
-    private _track;
-    private _render;
-    protected _cursor: number;
-    state: State;
-    value: any;
-    error: string;
-    constructor({ render, input, output, ...opts }: PromptOptions<Prompt>, trackValue?: boolean);
-    prompt(): Promise<string | symbol>;
-    private subscribers;
-    on(event: string, cb: (...args: any) => any): void;
-    once(event: string, cb: (...args: any) => any): void;
-    emit(event: string, ...data: any[]): void;
-    private unsubscribe;
-    private onKeypress;
-    protected close(): void;
-    private restoreCursor;
-    private _prevFrame;
-    private render;
+export interface SelectSearchOptions extends PromptOptions<SelectSearch> {
+    searchPlaceholder?: string;
+    options: { value: string; label: string; hint?: string }[];
 }
 
-export interface SelectSearchOptions<T extends { value: string, label: string, hint?: string }> extends PromptOptions<SelectSearchPrompt<T>> {
-    options: T[];
-    initialValue?: T['value'];
-}
-
-export default class SelectSearchPrompt<T extends {
-    value: string
-    label: string
-    hint?: string
-}> extends Prompt {
+export default class SelectSearch extends Prompt {
     searchValueRaw = '';
     searchValueStyled = '';
     selectedOptionIndex = 0;
-    matchingOptions: T[];
-    selectedOption: T;
-    // matchingOptions: { value: string; label: string; hint?: string }[];
-    // selectedOption: { value: string; label: string; hint?: string };
+    matchingOptions: { value: string; label: string; hint?: string }[];
+    selectedOption: { value: string; label: string; hint?: string };
 
     get cursor() {
         return this._cursor;
     }
 
-    constructor(opts: SelectSearchOptions<T>) {
+    constructor(opts: SelectSearchOptions) {
         super(opts);
+
         this.matchingOptions = [...opts.options];
         this.selectedOption = this.matchingOptions[0];
 
