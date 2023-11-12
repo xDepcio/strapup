@@ -105,6 +105,6 @@
 , "tests"  ],
   "exclude": [
     "./src/premade-templates/**/*",
-    "tests/**/*",
+    // "tests/**/*",
   ]
 }
