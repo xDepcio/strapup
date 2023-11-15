@@ -1,0 +1,38 @@
+---
+title: python_project
+sortNum: 107
+---
+### python_project
+
+#### Pasted files structure
+```bash
+├── python_project
+│   ├── main.py
+│   └── tests
+│       └── test1.py
+└── setup.py
+```
+#### Files contents
+``` title="./.gitignore"
+python_project.egg-info/
+```
+```py title="./python_project/main.py"
+def fun(x):
+    return x+2
+```
+```py title="./python_project/tests/test1.py"
+from python_project.main import fun
+
+fun(2)
+```
+```py title="./setup.py"
+from setuptools import setup
+
+setup(
+    name='python_project',
+    packages=['python_project'],
+    include_package_data=True,
+    install_requires=[
+    ],
+)
+```

@@ -1,0 +1,44 @@
+---
+title: Save and Paste
+sortNum: 1
+---
+#### How to run It?
+To run the Strapup CLI from anywhere on your system, just use:
+```command
+npx strapup
+```
+This will install required dependencies and correctly setup your enviroment on the first run.
+
+#### Running for the first time
+When you run Strapup for the first time, it will need to perform some setup. For this, you will be asked to provide:
+- Path where to create Strapup directory - used to store templates and scripts.
+
+Strapup saves those values in enviroment variables, so on next runs you don't have to provide them again.
+
+#### Saving and pasting templates
+You can save and create templates from within interactive CLI (`npx strapup`).
+
+When you **paste** a template, you will be asked to:
+- Choose a template.
+- Provide path where to paste - template content will be paste there. Must be a relative path to a directory. If a directory doesn't exist, strapup will be created.
+
+When you **save** a template, you will be asked to provide:
+- Template name and description - used solely for identification purpose.
+- Relative path or paths to source directories or files.
+- Choose additional `options`:
+    - `with gitignore` - If selected, files ignored by git will not be included in the template.
+
+#### Next steps
+<NextCardHolder cards={[
+    {
+        title: "Running scripts",
+        description: "Leverage the power of scripts to automate your workflow",
+        link: "/docs/Basic use/Scripts"
+    },
+        {
+        title: "Premade templates",
+        description: "Use built-in templates to quickly bootstrap your project",
+        link: "/docs/Included templates/next-redux-ts",
+        iconType: 'book'
+    }
+]} />
