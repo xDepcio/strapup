@@ -76,7 +76,7 @@ export default async function Home() {
                     </div>
                 </div>
             </section>
-            <section className="mt-16 relative w-full">
+            <section className="mt-16 relative w-full mb-12">
                 <div>
                     <h3 className="text-center mb-12 text-3xl font-medium relative w-fit mx-auto">Community stats 🎉</h3>
                 </div>
