@@ -87,8 +87,8 @@ export function getParameterNames(func: Function) {
     return parameterNames.filter(Boolean); // Removes empty strings
 }
 
-export const getFilesIgnoredByGit = () => {
-    const shell = spawn('git', ['ls-files', '-o', '--directory'], { stdio: 'pipe' })
+export const getFilesIgnoredByGit = (dir: string = './') => {
+    const shell = spawn('git', ['ls-files', '-o', '--directory'], { stdio: 'pipe', cwd: dir })
     const ignoredAdditionaly = ['.git']
     return new Promise<string[]>((resolve, reject) => {
         let result = ''
