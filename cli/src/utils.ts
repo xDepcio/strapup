@@ -4,8 +4,9 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import path, { normalize } from 'path'
 import color from 'picocolors'
-import { SCRIPTS_PATH, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
+import { SCRIPTS_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
 import { __dirname } from './index.js'
+import { DirectoryNotExists } from './errors.js'
 
 export interface CopyDirectoryContentsParams {
     fromPath: string
@@ -106,10 +107,18 @@ export const getFilesIgnoredByGit = (dir: string = './') => {
 }
 
 export const loadSettings = () => {
-    if (!fs.existsSync(__dirname + '/settings.json')) {
-        fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
+    if (!fs.existsSync(STRAPUP_DIR_PATH)) {
+        throw new DirectoryNotExists(STRAPUP_DIR_PATH)
     }
-    return JSON.parse(fs.readFileSync(__dirname + '/settings.json', { encoding: 'utf-8' })) as StrapupSettings
+
+    const file = fs.readFileSync(STRAPUP_DIR_PATH + '/.settings.json', { encoding: 'utf-8' })
+
+    return JSON.parse(file) as StrapupSettings
+
+    // if (!fs.existsSync(__dirname + '/settings.json')) {
+    //     fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
+    // }
+    // return JSON.parse(fs.readFileSync(__dirname + '/settings.json', { encoding: 'utf-8' })) as StrapupSettings
 }
 
 export const saveSettings = (settings: StrapupSettings) => {
@@ -165,6 +174,15 @@ export const addPremadeTemplatesToExistingTemplatesDir = async (existingDirPath:
         const templatePath = path.normalize(`${templatesPath}/${template}`)
         await copyDirectoryContents({ fromPath: templatePath, toPath: `${existingDirPath}/${template}`, forceOverwriteFiles: false, skipMetadataFile: false })
     }
+}
+
+export async function initializeStrapupDir() {
+    fs.mkdirSync(STRAPUP_DIR_PATH)
+    fs.mkdirSync(TEMPLATES_PATH())
+    fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+    fs.writeFileSync(SETTINGS_PATH, JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
+
+    await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
 }
 
 /**

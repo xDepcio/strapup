@@ -1,14 +1,18 @@
 import color from 'picocolors'
 import { loadSettings } from './utils.js'
-import { normalize } from 'path'
+import { dirname, normalize } from 'path'
 import { __dirname } from './index.js'
+import { fileURLToPath } from 'url'
 
-export const STRAPUP_DIR_NAME = 'strapup'
-export const TEMPLATES_PATH = () => normalize(loadSettings().strapupDirPath + `/templates`)
-export const SCRIPTS_PATH = () => normalize(loadSettings().strapupDirPath + `/scripts.mjs`)
-export const premadeTemplatesDirPath = () => normalize(`${__dirname}/premade-templates`)
+export const STRAPUP_DIR_NAME = '.strapup'
+export const STRAPUP_DIR_PATH = normalize((process.platform === 'win32' ? process.env.HOMEPATH : process.env.HOME) + '/' + STRAPUP_DIR_NAME)
+export const SETTINGS_PATH = normalize(STRAPUP_DIR_PATH + '/.settings.json')
+export const TEMPLATES_PATH = () => normalize(STRAPUP_DIR_PATH + `/templates`)
+export const SCRIPTS_PATH = () => normalize(STRAPUP_DIR_PATH + `/scripts.mjs`)
+export const premadeTemplatesDirPath = () => normalize(`${ROOT_PATH}/premade-templates`)
 export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
 export const statsUrl = "https://strapup-web.vercel.app"
+export const ROOT_PATH = normalize(dirname(fileURLToPath(import.meta.url)) + '/..')
 
 export const scriptsContent = `export const scripts = {
     "Create-Next-ShadcnUI-TS": {
@@ -73,11 +77,13 @@ ${color.yellow("-")} ${color.dim("Strapup has updated and erased its settings fi
 ${color.yellow("-")} ${color.dim("You have deleted strapup directory.")}`
 
 export type StrapupSettings = {
-    strapupDirPath: string | null
+    // strapupDirPath: string | null
+    githubToken: string | null
 }
 
 export const inintialSettings: StrapupSettings = {
-    strapupDirPath: null
+    // strapupDirPath: null
+    githubToken: null
 }
 
 export type ScriptsFunction = (...args: string[]) => string[]

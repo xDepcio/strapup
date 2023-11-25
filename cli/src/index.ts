@@ -1,16 +1,17 @@
 #!/usr/bin/env node
-
+//@ts-nocheck
 import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
-import { dirname, normalize } from 'path';
+import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save } from './commandsHandlers.js';
-import { SCRIPTS_PATH, STRAPUP_DIR_NAME, STRAPUP_DIR_PATH_ENV_NAME, Scripts, TEMPLATES_PATH, dirNotSpecifiedStartupWarning } from './constants.js';
-import { createStrapupDirectory, getParameterNames, loadSettings, readMetadataFile, saveSettings, setSystemEnv } from './utils.js';
+import { SCRIPTS_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
+import { DirectoryNotExists } from './errors.js';
+import { getParameterNames, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
 
 export const args = process.argv
 
@@ -26,35 +27,46 @@ async function main() {
     console.clear();
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
-    const settings = loadSettings()
-    settings.strapupDirPath = process.env[STRAPUP_DIR_PATH_ENV_NAME] || settings.strapupDirPath
-    saveSettings(settings)
-    if (!settings.strapupDirPath) {
-        p.log.warn(dirNotSpecifiedStartupWarning)
-        const providedPath = await p.text({
-            message: 'Specify absolute path where to save strapup files.',
-            validate: (value) => {
-                if (!value) return 'Please enter a path.'
-                if (!fs.existsSync(value)) return 'Directory does not exist.'
-                try {
-                    fs.accessSync(value, fs.constants.R_OK | fs.constants.W_OK);
-                } catch (err) {
-                    return 'Specified directory is read/write protected.'
-                }
-            },
-            initialValue: process.platform === 'win32' ? process.env.HOMEPATH : process.env.HOME,
-        }) as string
-        settings.strapupDirPath = normalize(providedPath + '/' + STRAPUP_DIR_NAME)
-        saveSettings(settings)
-        setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
-
-        await createStrapupDirectory(settings.strapupDirPath)
+    let settings: StrapupSettings
+    try {
+        settings = loadSettings()
+    } catch (error) {
+        if (error instanceof DirectoryNotExists) {
+            p.log.warn(`Strapup directory was not found. Creating one...`)
+            await initializeStrapupDir()
+        }
+    } finally {
+        settings = loadSettings()
     }
 
-    if (!fs.existsSync(settings.strapupDirPath)) {
-        p.log.warn(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}. Creating one...`)
-        await createStrapupDirectory(settings.strapupDirPath)
-    }
+    // settings.strapupDirPath = process.env[STRAPUP_DIR_PATH_ENV_NAME] || settings.strapupDirPath
+    // saveSettings(settings)
+    // if (!settings.strapupDirPath) {
+    //     p.log.warn(dirNotSpecifiedStartupWarning)
+    //     const providedPath = await p.text({
+    //         message: 'Specify absolute path where to save strapup files.',
+    //         validate: (value) => {
+    //             if (!value) return 'Please enter a path.'
+    //             if (!fs.existsSync(value)) return 'Directory does not exist.'
+    //             try {
+    //                 fs.accessSync(value, fs.constants.R_OK | fs.constants.W_OK);
+    //             } catch (err) {
+    //                 return 'Specified directory is read/write protected.'
+    //             }
+    //         },
+    //         initialValue: process.platform === 'win32' ? process.env.HOMEPATH : process.env.HOME,
+    //     }) as string
+    //     settings.strapupDirPath = normalize(providedPath + '/' + STRAPUP_DIR_NAME)
+    //     saveSettings(settings)
+    //     setSystemEnv(STRAPUP_DIR_PATH_ENV_NAME, settings.strapupDirPath)
+
+    //     await createStrapupDirectory(settings.strapupDirPath)
+    // }
+
+    // if (!fs.existsSync(settings.strapupDirPath)) {
+    //     p.log.warn(`Strapup directory does not exist at ${color.dim(settings.strapupDirPath)}. Creating one...`)
+    //     await createStrapupDirectory(settings.strapupDirPath)
+    // }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
     console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH())}`)
