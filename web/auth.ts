@@ -9,5 +9,8 @@ const pool = new Pool({
 
 export const { handlers, auth } = NextAuth({
     providers: [GitHub],
-    adapter: PostgresAdapter(pool)
+    adapter: PostgresAdapter(pool),
+    session: {
+        strategy: 'jwt'
+    }
 })
