@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sql-schema-create": "node -r dotenv/config ./db/schema.mjs"
+    "sql-next-auth-schema": "node -r dotenv/config ./db/next-auth-schema.mjs"
   },
   "dependencies": {
     "@auth/pg-adapter": "^0.2.6",
