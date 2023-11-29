@@ -15,23 +15,26 @@ const (
 	dbname   = "verceldb"
 )
 
-func Connect() (*sql.DB, error) {
+var DB *sql.DB
+
+func Connect() error {
+	var err error
 	psqlInfo := fmt.Sprintf(
 		"host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname,
 	)
 
-	db, err := sql.Open("postgres", psqlInfo)
+	DB, err = sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
-	if err = db.Ping(); err != nil {
-		return nil, err
+	if err = DB.Ping(); err != nil {
+		return err
 	}
 
 	fmt.Println("Successfully connected to database!")
-	return db, nil
+	return nil
 	// rows, err := DB.Query("SELECT name, email, login FROM users")
 	// if err != nil {
 	// 	log.Fatal(err)

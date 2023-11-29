@@ -14,28 +14,9 @@ func main() {
 		return c.SendString("OK")
 	})
 
-	db, err := database.Connect()
-	if err != nil {
+	if err := database.Connect(); err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
-
-	// rows, err := db.Query("SELECT name, email, login FROM users")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer rows.Close()
-
-	// fmt.Println(rows)
-	// for rows.Next() {
-	// 	var name string
-	// 	var email string
-	// 	var login string
-	// 	if err := rows.Scan(&name, &email, &login); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	fmt.Printf("Name: %s, Email: %s, Login: %s\n", name, email, login)
-	// }
 
 	log.Fatal(app.Listen(":3000"))
 }
