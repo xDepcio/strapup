@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	database "strapup-files/internal"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,7 +14,16 @@ func main() {
 		return c.SendString("OK")
 	})
 
-	fmt.Println("Hello, World!")
+	if err := database.Connect(); err != nil {
+		log.Fatal(err)
+	}
+
+	// rows, err := database.DB.Query("SELECT name FROM users")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// fmt.Println(rows)
 
 	log.Fatal(app.Listen(":3000"))
 }
