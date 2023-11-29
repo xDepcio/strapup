@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"log"
 
 	_ "github.com/lib/pq"
 )
@@ -16,39 +15,39 @@ const (
 	dbname   = "verceldb"
 )
 
-var DB *sql.DB
-
-func Connect() error {
+func Connect() (*sql.DB, error) {
 	psqlInfo := fmt.Sprintf(
 		"host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname,
 	)
 
-	DB, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if err = DB.Ping(); err != nil {
-		return err
-	}
-
-	rows, err := DB.Query("SELECT name, email, login FROM users")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	fmt.Println(rows)
-	for rows.Next() {
-		var name string
-		var email string
-		var login string
-		if err := rows.Scan(&name, &email, &login); err != nil {
-			log.Fatal(err)
-		}
-		fmt.Printf("Name: %s, Email: %s, Login: %s\n", name, email, login)
+	if err = db.Ping(); err != nil {
+		return nil, err
 	}
 
 	fmt.Println("Successfully connected to database!")
-	return nil
+	return db, nil
+	// rows, err := DB.Query("SELECT name, email, login FROM users")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// defer rows.Close()
+	// fmt.Println(rows)
+	// for rows.Next() {
+	// 	var name string
+	// 	var email string
+	// 	var login string
+	// 	if err := rows.Scan(&name, &email, &login); err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// 	fmt.Printf("Name: %s, Email: %s, Login: %s\n", name, email, login)
+	// }
+
+	// fmt.Println("Successfully connected to database!")
+	// return nil
 }
