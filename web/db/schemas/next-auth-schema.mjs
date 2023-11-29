@@ -52,6 +52,7 @@ async function createUsersTable() {
       email VARCHAR(255),
       "emailVerified" TIMESTAMPTZ,
       image TEXT,
+      login VARCHAR(255),
 
       PRIMARY KEY (id)
     );`

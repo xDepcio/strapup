@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import CopyBtnMain from "@/components/CopyBtnMain";
 import { Button } from "@/components/ui/button";
 import { ProximaSoft, robotoMono } from "@/lib/fonts";
@@ -17,7 +18,8 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-
+    const u = await auth()
+    console.log('us main', u)
     return (
         <main className="min-h-screen flex items-center flex-col overflow-hidden">
             <section className="w-full flex justify-start h-64 sm:mt-32 flex-col items-center relative mt-16 mb-12 sm:mb-0">
