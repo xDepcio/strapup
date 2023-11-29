@@ -7,7 +7,7 @@ async function createTemplatesTable() {
         id SERIAL,
         name VARCHAR(255) NOT NULL,
         public BOOLEAN NOT NULL,
-        owner INTEGER NOT NULL REFERENCES users(id),
+        owner_id INTEGER NOT NULL REFERENCES users(id),
 
         PRIMARY KEY (id)
     );`
