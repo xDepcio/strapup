@@ -3,6 +3,8 @@ package utils
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type FileNode struct {
@@ -48,4 +50,8 @@ func GetDirectoryStructure(rootPath string) (FileNode, error) {
 	}
 
 	return result, nil
+}
+
+func AuthUser(c *fiber.Ctx) {
+
 }

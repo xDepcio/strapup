@@ -8,6 +8,7 @@ import { S_BAR } from './clack/styled/utils.js'
 import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
 import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, sendTelemetryStats } from "./utils.js"
+import { authorizeDevice } from './auth/device.js'
 
 interface SaveOptions {
     templateName: string
@@ -139,4 +140,9 @@ export async function runScript({ functionParams = [], functionToRun }: RunScrip
 
     p.log.success(`Script ${functionToRun.name} finished successfully.`)
     sendTelemetryStats("scriptRan")
+}
+
+export async function signIn() {
+    const token = await authorizeDevice()
+    console.log("Token:", token)
 }

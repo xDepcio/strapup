@@ -7,6 +7,7 @@ import color from 'picocolors'
 import { SCRIPTS_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
 import { __dirname } from './index.js'
 import { DirectoryNotExists } from './errors.js'
+import { S_BAR } from './clack/styled/utils.js'
 
 export interface CopyDirectoryContentsParams {
     fromPath: string
@@ -229,4 +230,8 @@ export const sendTelemetryStats = async (stat: TelemetryStat) => {
         method: 'POST',
         body: JSON.stringify({ stat }),
     })
+}
+
+export const pLog = {
+    message: (str: string) => console.log(`${color.gray(S_BAR)}  ${str}`)
 }

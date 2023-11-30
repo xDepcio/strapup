@@ -1,4 +1,9 @@
+import { log } from "@clack/prompts"
+import fetch from "node-fetch"
 import { setTimeout } from "timers/promises"
+import { S_BAR } from "../clack/styled/utils.js"
+import color from 'picocolors'
+import { pLog } from "../utils.js"
 
 const CLIENT_ID = "9f1f54f61275359d7cea"
 
@@ -22,7 +27,7 @@ async function startDeviceAuth(): Promise<DeviceResponse> {
             scope: "user:email"
         })
     })
-    const data = await res.json();
+    const data = await res.json() as DeviceResponse
     return data
 }
 
@@ -39,7 +44,7 @@ async function checkUserAuthorized(deviceCode: string) {
             grant_type: "urn:ietf:params:oauth:grant-type:device_code"
         })
     })
-    const data = await res.json();
+    const data = await res.json() as any
     return data
 }
 
@@ -48,15 +53,21 @@ type TokenResponse = {
     token_type: string | 'bearer'
     scope: string
 }
-async function authorizeDevice(): Promise<TokenResponse> {
+export async function authorizeDevice(): Promise<TokenResponse> {
     const deviceRes = await startDeviceAuth()
     console.log(deviceRes)
     let isAuthorized = false
 
+    log.info(`Open ${color.dim(deviceRes.verification_uri)} and type the code below to authorize`)
+    pLog.message('')
+    pLog.message(color.bgCyan(new Array(deviceRes.user_code.length + 4).fill(" ").join('')))
+    pLog.message(`${color.bgCyan("  " + color.bold(deviceRes.user_code) + "  ")}`)
+    pLog.message(color.bgCyan(new Array(deviceRes.user_code.length + 4).fill(" ").join('')))
+
     let tokenData
     while (!isAuthorized) {
         tokenData = await checkUserAuthorized(deviceRes.device_code)
-        console.log(tokenData)
+        // console.log(tokenData)
         if (tokenData.error) {
             await setTimeout(deviceRes.interval * 1000 + 500)
         } else {
