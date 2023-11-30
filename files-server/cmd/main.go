@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"strapup-files/internal/database"
+	"strapup-files/internal/router"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,9 +15,11 @@ func main() {
 		return c.SendString("OK")
 	})
 
+	router.SetupRoutes(app)
+
 	if err := database.Connect(); err != nil {
 		log.Fatal(err)
 	}
 
-	log.Fatal(app.Listen(":3000"))
+	app.Listen(":5000")
 }
