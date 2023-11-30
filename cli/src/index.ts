@@ -154,6 +154,7 @@ async function main() {
         }
         case 'sign-in': {
             await signIn()
+            break
         }
         case 'list': {
             list()

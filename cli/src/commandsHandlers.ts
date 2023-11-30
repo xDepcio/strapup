@@ -7,7 +7,7 @@ import color from 'picocolors'
 import { S_BAR } from './clack/styled/utils.js'
 import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
-import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, sendTelemetryStats } from "./utils.js"
+import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, saveSettings, sendTelemetryStats } from "./utils.js"
 import { authorizeDevice } from './auth/device.js'
 
 interface SaveOptions {
@@ -144,5 +144,6 @@ export async function runScript({ functionParams = [], functionToRun }: RunScrip
 
 export async function signIn() {
     const token = await authorizeDevice()
-    console.log("Token:", token)
+    saveSettings({ githubToken: token.access_token })
+    p.log.success(`Signed in successfully.`)
 }

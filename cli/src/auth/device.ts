@@ -55,7 +55,7 @@ type TokenResponse = {
 }
 export async function authorizeDevice(): Promise<TokenResponse> {
     const deviceRes = await startDeviceAuth()
-    console.log(deviceRes)
+    // console.log(deviceRes)
     let isAuthorized = false
 
     log.info(`Open ${color.dim(deviceRes.verification_uri)} and type the code below to authorize`)
