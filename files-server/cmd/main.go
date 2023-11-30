@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	database "strapup-files/internal"
+	"strapup-files/internal/database"
 
 	"github.com/gofiber/fiber/v2"
 )
