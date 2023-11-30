@@ -121,9 +121,10 @@ export const loadSettings = () => {
     // }
     // return JSON.parse(fs.readFileSync(__dirname + '/settings.json', { encoding: 'utf-8' })) as StrapupSettings
 }
-
-export const saveSettings = (settings: StrapupSettings) => {
-    fs.writeFileSync(__dirname + '/settings.json', JSON.stringify(settings, null, 4), { encoding: 'utf-8' })
+export const saveSettings = (settings: Partial<StrapupSettings>) => {
+    const currentSettings = loadSettings()
+    const newSettings = { ...currentSettings, ...settings }
+    fs.writeFileSync(SETTINGS_PATH, JSON.stringify(settings, null, 4), { encoding: 'utf-8' })
 }
 
 export type Metadata = {
@@ -146,25 +147,25 @@ export const readMetadataFile = (directoryPath: string) => {
     return JSON.parse(fs.readFileSync(`${directoryPath}/_strapupmetadata.json`, { encoding: 'utf-8' })) as Metadata
 }
 
-export const setSystemEnv = (key: string, value: string) => {
-    if (process.platform === 'win32') {
-        spawnSync('setx', [key, value], { stdio: 'inherit' })
-    }
-    else if (process.platform === 'linux' || process.platform === 'darwin') {
-        let bashrcContent = fs.readFileSync(`${process.env.HOME}/.bashrc`, { encoding: 'utf-8' })
-        if (bashrcContent.includes(`export ${key}=`)) {
-            const regex = new RegExp(`export ${key}=(.*)`, 'g')
-            bashrcContent = bashrcContent.replace(regex, `export ${key}=${value}`)
-            fs.writeFileSync(`${process.env.HOME}/.bashrc`, bashrcContent, { encoding: 'utf-8' })
-        }
-        else {
-            fs.appendFileSync(`${process.env.HOME}/.bashrc`, `\nexport ${key}=${value}`, { encoding: 'utf-8' })
-        }
-    }
-    else {
-        throw new Error('Unsupported platform: ' + process.platform)
-    }
-}
+// export const setSystemEnv = (key: string, value: string) => {
+//     if (process.platform === 'win32') {
+//         spawnSync('setx', [key, value], { stdio: 'inherit' })
+//     }
+//     else if (process.platform === 'linux' || process.platform === 'darwin') {
+//         let bashrcContent = fs.readFileSync(`${process.env.HOME}/.bashrc`, { encoding: 'utf-8' })
+//         if (bashrcContent.includes(`export ${key}=`)) {
+//             const regex = new RegExp(`export ${key}=(.*)`, 'g')
+//             bashrcContent = bashrcContent.replace(regex, `export ${key}=${value}`)
+//             fs.writeFileSync(`${process.env.HOME}/.bashrc`, bashrcContent, { encoding: 'utf-8' })
+//         }
+//         else {
+//             fs.appendFileSync(`${process.env.HOME}/.bashrc`, `\nexport ${key}=${value}`, { encoding: 'utf-8' })
+//         }
+//     }
+//     else {
+//         throw new Error('Unsupported platform: ' + process.platform)
+//     }
+// }
 
 export const addPremadeTemplatesToExistingTemplatesDir = async (existingDirPath: string) => {
     const templatesPath = `${__dirname}/premade-templates`
