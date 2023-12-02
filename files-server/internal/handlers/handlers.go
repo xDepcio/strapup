@@ -30,10 +30,26 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 	}
 
 	escapedName := strings.Replace(name, "/", "_|_", -1)
+	if strings.Contains(escapedName, "..") {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid template name")
+	}
+
+	if template.Public {
+		templateStructure, err := utils.GetDirectoryStructure("./files/templates/" + escapedName)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString("Error parsing template structure")
+		}
+
+		return c.JSON(templateStructure)
+	}
+
+	if !utils.IsAuthorized(c) {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
 
 	templateStructure, err := utils.GetDirectoryStructure("./files/templates/" + escapedName)
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).SendString("Error parsing template structure")
+		return c.Status(fiber.StatusBadRequest).SendString("Error parsing private template structure")
 	}
 
 	return c.JSON(templateStructure)

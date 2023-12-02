@@ -52,6 +52,6 @@ func GetDirectoryStructure(rootPath string) (FileNode, error) {
 	return result, nil
 }
 
-func AuthUser(c *fiber.Ctx) {
+func IsAuthorized(c *fiber.Ctx) bool {
 
 }
