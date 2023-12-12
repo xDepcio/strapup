@@ -14,7 +14,7 @@ export const { handlers, auth } = NextAuth({
             clientId: process.env.AUTH_GITHUB_ID,
             clientSecret: process.env.AUTH_GITHUB_SECRET,
             profile(profile) {
-                // console.log(profile)
+                console.log('prof', profile)
                 return {
                     id: profile.id.toString(),
                     name: profile.name || profile.login,
@@ -31,9 +31,14 @@ export const { handlers, auth } = NextAuth({
     },
     events: {
         async linkAccount(e) {
-            // console.log('linkAccount', e)
+            console.log('linkAccount', e)
             // @ts-ignore
-            pool.query(`UPDATE users SET login = '${e.profile.login}' WHERE id = '${e.user.id}'`)
+            pool.query(
+                // @ts-ignore
+                `UPDATE users SET login = $1, github_id = $2 WHERE id = $3`,
+                // @ts-ignore
+                [e.profile.login, e.profile.id, e.user.id]
+            )
         }
     },
     callbacks: {

@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"strapup-files/internal/database"
 	"strapup-files/internal/utils"
 	"strings"
@@ -43,9 +44,16 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 		return c.JSON(templateStructure)
 	}
 
-	if !utils.IsAuthorized(c) {
+	isValid, user, err := utils.Authorize(c)
+	if !isValid || err != nil {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
+
+	if user.ID != template.OwnerID {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	fmt.Println(user)
 
 	templateStructure, err := utils.GetDirectoryStructure("./files/templates/" + escapedName)
 	if err != nil {

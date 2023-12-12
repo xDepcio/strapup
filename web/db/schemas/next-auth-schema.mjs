@@ -53,6 +53,7 @@ async function createUsersTable() {
       "emailVerified" TIMESTAMPTZ,
       image TEXT,
       login VARCHAR(255),
+      github_id INTEGER,
 
       PRIMARY KEY (id)
     );`
