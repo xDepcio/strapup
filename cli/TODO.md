@@ -16,7 +16,7 @@
 [TODO] #3
     Można sobie wkleić template którego się nie ma lokalnie.
     Pod spodem działa to tak:
-    - Najpierw leci zapytanie do backendu w GO `/api/templates/structure?name=@userName/some-template`. Zwraca strukturę plików schematu. Taka, odpowiedź jak się powiedzie, będzie wyglądać np. tak:
+    - Najpierw leci zapytanie GET do backendu w GO `/api/templates/structure?name=@userName/some-template`. Zwraca strukturę plików schematu. Taka, odpowiedź jak się powiedzie, będzie wyglądać np. tak:
     ```json
     {
         "Name": "@xDepcio/template2",
@@ -47,7 +47,7 @@
     }
     ```
     Jeśli chcemy użyć swój schemat, którego nie mamy lokalnie, a jest on ustawiony jako prywatny to w headerze zapytania trzeba dodać `Authorization` i jako wartość podać token z GitHuba. Ten token jest zapisywany w pliku z ustawieniami, gdy użytkownik zaloguje sie przez githuba.
-    - Potem lecą zapytania do backendu w GO w stylu: `api/templates/file?name=@xDepcio/template2/_strapupmetadata.json`
+    - Potem lecą zapytania GET do backendu w GO w stylu: `api/templates/file?name=@xDepcio/template2/_strapupmetadata.json`
     Czyli pytamy o każdy plik z tego schematu, odpowiedzią na te zapytanie będzie PLAIN TEXT (NIE JSON Z CZYMŚ TAM), z contentem danego pliku. W tym przypadku też może być potrzebna autoryzacja.
     - Na bierząco musimy budować strukturę schematu u użytkownika na urządzeniu. Potem będzie mógł go widzieć w schematach na urządzeniu.
 
@@ -57,7 +57,7 @@
 [TODO] #4
     Można sobie uruchomić skrypt którego nie mamy lokalnie.
     Pod spodem działa to tak:
-    - Leci zapytanie do backendu w GO: `/api/scripts?name=@userName/some-script`
+    - Leci zapytanie GET do backendu w GO: `/api/scripts?name=@userName/some-script`
     `name` jest nazwą skryptu jaki chcemy wykonać. Jeśli skrypt jest nasz, ale ustawiony na prywatny, to w zapytaniu trzeba dodać header `Authorization` z wartością tokena GitHub. Ten token jest zapisywany w pliku z ustawieniami, gdy użytkownik zaloguje sie przez githuba. Zapytanie te zwróci PLAIN TEXT (NIE JSON Z CZYMŚ TAM), z contentem danego skryptu. Otrzymane text musimy zapisać jako nowy plik w folderze roboczym CLI w ścieżce `$HOME/.strapup/scripts/`. Nazwa tego pliku musi być taka sama jak nazwa skryptu. UWAGA nie można zapisać pliku z "/" w nazwie, więc zamieniamy "/" na "_|_". Z poziomu użytkownika to nie może być widoczne. Następnie normalnie wykonujemy ten skrypt.
 
 [TODO] #6
@@ -68,23 +68,27 @@
     Jako body zapytania podajemy json o takiej strukturze:
     ```json
     {
-        "name": "@username/template-name",
-        "isDir": true,
-        "content": null,
-        "children": [
-            {
-                "name": "some-file.ts",
-                "isDir": false
-                "content": "Tu dajemy zawartość konkretnego pliku."
-                "children": null,
-            },
-            {
-                "name": "nested-dir",
-                "isDir": true
-                "content": null
-                "children": [...],
-            }
-        ]
+        isPublic: false,
+        tags: ["Next", "JavaScript", "TypeScript"],
+        files: {
+            "name": "@username/template-name",
+            "isDir": true,
+            "content": null,
+            "children": [
+                {
+                    "name": "some-file.ts",
+                    "isDir": false
+                    "content": "Tu dajemy zawartość konkretnego pliku."
+                    "children": null,
+                },
+                {
+                    "name": "nested-dir",
+                    "isDir": true
+                    "content": null
+                    "children": [...],
+                }
+            ]
+        }
     }
     ```
     Sprawdzamy, czy jest error w odpowiedzi czy nie i coś tam z nim robimy. Całe dodawanie schematu do bazy danych itd... załatwia server w GO dzięki naszemu zapytaniu.
@@ -99,6 +103,8 @@
     ```json
     {
         "name": "@userName/my-script",
+        "isPublic": true,
+        "tags": ["Next", "Javascript", "Typescript"]
         "content": "Tu jest zawartość pliku .mjs ze skryptem."
     }
     ```
