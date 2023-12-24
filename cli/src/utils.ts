@@ -2,9 +2,9 @@ import * as p from '@clack/prompts'
 import { spawn, spawnSync } from 'child_process'
 import fs from 'fs'
 import fetch from 'node-fetch'
-import path, { normalize } from 'path'
+import path, { basename, normalize } from 'path'
 import color from 'picocolors'
-import { SCRIPTS_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, StrapupSettings, TEMPLATES_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
+import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, USER_SCRIPTS_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, userScriptsContent } from './constants.js'
 import { __dirname } from './index.js'
 import { DirectoryNotExists } from './errors.js'
 import { S_BAR } from './clack/styled/utils.js'
@@ -181,47 +181,68 @@ export const addPremadeTemplatesToExistingTemplatesDir = async (existingDirPath:
 export async function initializeStrapupDir() {
     fs.mkdirSync(STRAPUP_DIR_PATH)
     fs.mkdirSync(TEMPLATES_PATH())
-    fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+    fs.mkdirSync(SCRIPTS_DIR_PATH)
+    fs.writeFileSync(MAIN_SCRIPT_PATH, scriptsContent, { encoding: 'utf-8' })
+    fs.writeFileSync(USER_SCRIPTS_PATH, userScriptsContent, { encoding: 'utf-8' })
     fs.writeFileSync(SETTINGS_PATH, JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
 
     await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
 }
 
-/**
- * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
- * @param dirPath - absolute path to strapup directory contents (.../strapup)
- */
-export const createStrapupDirectory = async (dirPath: string) => {
-    try {
-        fs.mkdirSync(dirPath)
-        p.log.info(`Created strapup directory at ${color.dim(normalize(dirPath))}`)
-    } catch (e: any) {
-        if (e.code === "EEXIST") {
-            p.log.info(`Existing strapup directory found at ${color.dim(normalize(dirPath))}`)
-        }
-        else throw e
+// /**
+//  * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
+//  * @param dirPath - absolute path to strapup directory contents (.../strapup)
+//  */
+// export const createStrapupDirectory = async (dirPath: string) => {
+//     try {
+//         fs.mkdirSync(dirPath)
+//         p.log.info(`Created strapup directory at ${color.dim(normalize(dirPath))}`)
+//     } catch (e: any) {
+//         if (e.code === "EEXIST") {
+//             p.log.info(`Existing strapup directory found at ${color.dim(normalize(dirPath))}`)
+//         }
+//         else throw e
+//     }
+
+//     try {
+//         fs.mkdirSync(TEMPLATES_PATH())
+//         await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
+//         p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
+//     } catch (e: any) {
+//         if (e.code === "EEXIST") {
+//             p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
+//             p.log.message(`Syncing premade templates...`)
+//             await addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
+//         }
+//         else throw e
+//     }
+
+//     if (fs.existsSync(SCRIPTS_PATH())) {
+//         p.log.info(`Existing scripts file found at ${color.dim(SCRIPTS_PATH())}`)
+//     }
+//     else {
+//         fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
+//         p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
+//     }
+// }
+
+export async function importScripts(path: string) {
+    const mainScripts = await import(MAIN_SCRIPT_PATH).then(module => module.scripts) as Scripts
+    const userScripts = await import(USER_SCRIPTS_PATH).then(module => module.scripts) as Scripts
+
+    const downloadedSCripts: Scripts = {}
+    const files = fs.readdirSync(path)
+    for (const file of files) {
+        if (file === basename(MAIN_SCRIPT_PATH)) continue
+        if (file === basename(USER_SCRIPTS_PATH)) continue
+        const scriptContent = await import(`${path}/${file}`).then(module => module.default)
+        console.log(scriptContent)
+
+        const unEscapedFileNameNoExt = file.replace(/\.[^/.]+$/, "").replace("_|_", "/")
+        downloadedSCripts[unEscapedFileNameNoExt] = scriptContent
     }
 
-    try {
-        fs.mkdirSync(TEMPLATES_PATH())
-        await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
-        p.log.info(`Created templates directory at ${color.dim(TEMPLATES_PATH())}`)
-    } catch (e: any) {
-        if (e.code === "EEXIST") {
-            p.log.info(`Existing templates directory found at ${color.dim(TEMPLATES_PATH())}`)
-            p.log.message(`Syncing premade templates...`)
-            await addPremadeTemplatesToExistingTemplatesDir(TEMPLATES_PATH())
-        }
-        else throw e
-    }
-
-    if (fs.existsSync(SCRIPTS_PATH())) {
-        p.log.info(`Existing scripts file found at ${color.dim(SCRIPTS_PATH())}`)
-    }
-    else {
-        fs.writeFileSync(SCRIPTS_PATH(), scriptsContent, { encoding: 'utf-8' })
-        p.log.info(`Created scripts file at ${color.dim(SCRIPTS_PATH())}`)
-    }
+    return { ...mainScripts, ...userScripts, ...downloadedSCripts }
 }
 
 export type TelemetryStat = "templateSaved" | "templatePasted" | "scriptRan"

@@ -8,9 +8,9 @@ import { fileURLToPath } from 'url';
 import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
-import { SCRIPTS_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
+import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
-import { getParameterNames, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
+import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
 
 export const args = process.argv
 
@@ -39,7 +39,7 @@ async function main() {
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
-    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_PATH())}`)
+    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_DIR_PATH)}`)
     console.log(`${color.gray(S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
     const command = await p.select({
@@ -55,7 +55,8 @@ async function main() {
 
     switch (command) {
         case 'run-script': {
-            const scripts: Scripts = await import(SCRIPTS_PATH()).then(module => module.scripts)
+            const scripts = await importScripts(SCRIPTS_DIR_PATH)
+            // const scripts: Scripts = await import(MAIN_SCRIPT_PATH).then(module => module.scripts)
             const scriptName = await selectsearch({
                 searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
