@@ -288,7 +288,7 @@ export const selectsearch = <Value>(opts: SelectOptions<Value>) => {
 						'cancelled'
 					)}\n${color.gray(S_BAR)}`;
 				default: {
-					return `${title}${color.cyan(S_BAR)}  ${limitOptions({
+					return `${title}${color.cyan(S_BAR)}  ${color.dim(this.prevData || "Type to narrow results...")}\n${color.cyan(S_BAR)}  ${limitOptions({
 						cursor: this.cursor,
 						options: this.options,
 						maxItems: opts.maxItems,

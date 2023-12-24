@@ -8,7 +8,7 @@ export default class SearchSelectPrompt<T extends { value: any }> extends Prompt
     options: T[];
     cursor: number = 0;
     baseOptions: T[];
-    private prevData: string = '';
+    prevData: string = '';
 
     private get _value() {
         return this.options[this.cursor];
