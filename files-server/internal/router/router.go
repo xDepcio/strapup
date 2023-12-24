@@ -11,4 +11,5 @@ func SetupRoutes(app *fiber.App) {
 	api := app.Group("/api", logger.New())
 
 	api.Get("/templates/structure", handlers.GetTemplateStructure)
+	api.Get("/templates/file", handlers.GetFileHandler)
 }

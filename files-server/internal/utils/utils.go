@@ -56,6 +56,45 @@ func GetDirectoryStructure(rootPath string) (FileNode, error) {
 	return result, nil
 }
 
+func GetTemlateFile(filePath string) (string, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return "", err
+	}
+
+	defer file.Close()
+
+	stat, err := file.Stat()
+	if err != nil {
+		return "", err
+	}
+
+	var result string
+	buf := make([]byte, stat.Size())
+	count, err := file.Read(buf)
+	if err != nil {
+		return "", err
+	}
+	fmt.Println(count, buf[:count])
+	result += string(buf[:count])
+	fmt.Println(result)
+	// for {
+	// 	n, err := file.Read(buf)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
+
+	// 	result += string(buf[:n])
+
+	// 	if n == 0 {
+	// 		break
+	// 	}
+	// }
+	return result, nil
+
+	// return result, nil
+}
+
 // type GithubUserData struct {
 // 	GithubID int `json:"github_id"`
 // }
@@ -93,7 +132,11 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	// }
 
 	// Decode the JSON response
-	var data map[string]interface{}
+	data := struct {
+		Id int `json:"id"`
+	}{
+		Id: 0,
+	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		fmt.Println("Error decoding JSON:", err)
 		return false, User{}, err
@@ -111,7 +154,7 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	// Print the entire response for reference
 	fmt.Println("Response:", data)
 
-	userGithubID := int(data["id"].(float64))
+	userGithubID := int(data.Id)
 	user, err := DbGetUserByGithubID(userGithubID)
 	if err != nil {
 		return false, User{}, err
@@ -129,11 +172,12 @@ type User struct {
 }
 
 func DbGetUserByGithubID(githubID int) (User, error) {
-	row := database.DB.QueryRow("SELECT id FROM users WHERE github_id = $1", githubID)
+	row := database.DB.QueryRow("SELECT id, name, email, login, github_id FROM users WHERE github_id = $1", githubID)
 
 	var user User
 	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Login, &user.GithubID)
 	if err != nil {
+		fmt.Println("Error while getting user by github id")
 		return User{}, err
 	}
 

@@ -1,4 +1,4 @@
-[TODO]
+[TODO] DONE
     endpoint GET `/api/templates/file?name=`
     `name` - parametr oznaczający pełną scieżkę do pliku w obrębie schemaatu (np. `@userName/some-template/_strapupmetadata.json`)
     Endpoint ten musi zwracać PLAIN TEXT wskazanego pliku. Musi też walidować, czy nie chcemy np. czytać plik do którego nie mamy dostępu. Do tego służy header `Authorization`, który musi się znaleźć wtedy w zapytaniu. Posiada on Github token użytkownika.
