@@ -1,4 +1,5 @@
-import * as p from '@clack/prompts'
+// import * as p from '@clack/prompts'
+import * as p from '../clack-lib/prompts/index.js'
 import fs from 'fs'
 import path from 'path'
 import color from 'picocolors'

@@ -1,14 +1,13 @@
-import * as p from '@clack/prompts'
 import { execSync } from "child_process"
 import * as fs from 'fs'
 import * as afs from 'node:fs/promises'
 import path from "path"
 import color from 'picocolors'
-import { S_BAR } from './clack/styled/utils.js'
+import { authorizeDevice } from './auth/device.js'
+import * as p from './clack-lib/prompts/index.js'
 import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
 import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, saveSettings, sendTelemetryStats } from "./utils.js"
-import { authorizeDevice } from './auth/device.js'
 
 interface SaveOptions {
     templateName: string
@@ -117,7 +116,7 @@ export function list() {
 
     p.log.success(`Your templates:`)
     templates.forEach(template => {
-        console.log(`${color.gray(S_BAR)}  ${color.dim(template)}`)
+        console.log(`${color.gray(p.S_BAR)}  ${color.dim(template)}`)
     })
 }
 
@@ -133,7 +132,7 @@ export async function runScript({ functionParams = [], functionToRun }: RunScrip
 
     p.log.info(`Running following commands, follow on-screen prompts.`)
     commands.forEach(command => {
-        console.log(`${color.gray(S_BAR)}  ${color.green(command)}`)
+        console.log(`${color.gray(p.S_BAR)}  ${color.green(command)}`)
     })
 
     execSync(concatedCommands, { stdio: 'inherit' })

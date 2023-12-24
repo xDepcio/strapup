@@ -1,4 +1,4 @@
-import * as p from '@clack/prompts'
+import * as p from "./clack-lib/prompts/index.js"
 import { spawn, spawnSync } from 'child_process'
 import fs from 'fs'
 import fetch from 'node-fetch'
@@ -7,7 +7,8 @@ import color from 'picocolors'
 import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, EXAMPLE_SCRIPT_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, exampleScriptContent } from './constants.js'
 import { __dirname } from './index.js'
 import { DirectoryNotExists } from './errors.js'
-import { S_BAR } from './clack/styled/utils.js'
+import { S_BAR } from './clack-lib/prompts/index.js'
+// import { S_BAR } from './clack/styled/utils.js'
 
 export interface CopyDirectoryContentsParams {
     fromPath: string

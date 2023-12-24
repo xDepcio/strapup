@@ -1,17 +1,14 @@
 #!/usr/bin/env node
-import * as p from '@clack/prompts';
 import { execSync } from 'child_process';
 import * as fs from 'fs';
 import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
-// import { selectsearch } from './clack/styled/SearchableSelect.js';
-import { S_BAR } from './clack/styled/utils.js';
+import * as p from './clack-lib/prompts/index.js';
 import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
-import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
+import { SCRIPTS_DIR_PATH, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
 import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
-import { select, selectsearch } from './clack-lib/prompts/index.js';
 
 export const args = process.argv
 
@@ -40,10 +37,10 @@ async function main() {
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
-    console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_DIR_PATH)}`)
-    console.log(`${color.gray(S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
+    console.log(`${color.gray(p.S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_DIR_PATH)}`)
+    console.log(`${color.gray(p.S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
-    const command = await select({
+    const command = await p.select({
         message: 'What do you want to do?',
         options: [
             { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
@@ -53,23 +50,11 @@ async function main() {
             { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
         ],
     })
-    // const command = await p.select({
-    //     message: 'What do you want to do?',
-    //     options: [
-    //         { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
-    //         { value: 'save', label: `${color.underline(color.cyan('save'))} - save a new template.` },
-    //         { value: 'paste', label: `${color.underline(color.cyan('paste'))} - paste saved template.` },
-    //         { value: 'sign-in', label: `${color.underline(color.cyan('sign-in'))} - sign in using Github.` },
-    //         { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
-    //     ],
-    // })
 
     switch (command) {
         case 'run-script': {
             const scripts = await importScripts(SCRIPTS_DIR_PATH)
-            // const scripts: Scripts = await import(MAIN_SCRIPT_PATH).then(module => module.scripts)
-            const scriptName = await selectsearch({
-                // searchPlaceholder: 'Search to narrow results.',
+            const scriptName = await p.selectsearch({
                 message: 'What script do you want to run?',
                 options: Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description })),
             }) as string

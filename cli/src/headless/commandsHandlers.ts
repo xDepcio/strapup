@@ -1,4 +1,5 @@
-import * as p from '@clack/prompts'
+// import * as p from '@clack/prompts'
+import * as p from '../clack-lib/prompts/index.js'
 import * as fs from 'fs'
 import path from 'path'
 import color from 'picocolors'
@@ -6,7 +7,7 @@ import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from "./index.js"
 import { copyDirectoryContents, sendTelemetryStats } from "./utils.js"
 import { execSync } from 'child_process'
-import { S_BAR } from '../clack/styled/utils.js'
+// import { S_BAR } from '../clack/styled/utils.js'
 
 interface PasteOptions {
     templateName: string,
@@ -43,7 +44,7 @@ export async function runScript({ functionParams = [], functionToRun }: RunScrip
 
     p.log.info(`Running following commands, follow on-screen prompts.`)
     commands.forEach(command => {
-        console.log(`${color.gray(S_BAR)}  ${color.green(command)}`)
+        console.log(`${color.gray(p.S_BAR)}  ${color.green(command)}`)
     })
 
     execSync(concatedCommands, { stdio: 'inherit' })

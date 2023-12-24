@@ -1,7 +1,6 @@
-import { log } from "@clack/prompts"
+import * as p from "../clack-lib/prompts/index.js"
 import fetch from "node-fetch"
 import { setTimeout } from "timers/promises"
-import { S_BAR } from "../clack/styled/utils.js"
 import color from 'picocolors'
 import { pLog } from "../utils.js"
 
@@ -58,7 +57,7 @@ export async function authorizeDevice(): Promise<TokenResponse> {
     // console.log(deviceRes)
     let isAuthorized = false
 
-    log.info(`Open ${color.dim(deviceRes.verification_uri)} and type the code below to authorize`)
+    p.log.info(`Open ${color.dim(deviceRes.verification_uri)} and type the code below to authorize`)
     pLog.message('')
     pLog.message(color.bgCyan(new Array(deviceRes.user_code.length + 4).fill(" ").join('')))
     pLog.message(`${color.bgCyan("  " + color.bold(deviceRes.user_code) + "  ")}`)

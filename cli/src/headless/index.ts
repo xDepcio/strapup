@@ -1,11 +1,9 @@
 #!/usr/bin/env node
 
+import { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
 import { paste, runScript } from './commandsHandlers.js'
-import { dirname, normalize } from 'path'
 import { SCRIPTS_PATH, Scripts } from './constants.js'
-import { selectsearch } from '../clack/styled/SearchableSelect.js'
-import * as p from '@clack/prompts'
 import { getParameterNames } from './utils.js'
 
 export const STRAPUP_DIR_NAME = 'strapup'

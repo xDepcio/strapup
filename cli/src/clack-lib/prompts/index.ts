@@ -15,7 +15,7 @@ import color from 'picocolors';
 import { cursor, erase } from 'sisteransi';
 import { ConfirmPrompt, GroupMultiSelectPrompt, MultiSelectPrompt, PasswordPrompt, SearchSelectPrompt, SelectKeyPrompt, SelectPrompt, State, TextPrompt, block, isCancel } from '../core/index.js';
 
-export { isCancel } from '@clack/core';
+// export { isCancel } from '@clack/core';
 
 const unicode = isUnicodeSupported();
 const s = (c: string, fallback: string) => (unicode ? c : fallback);
@@ -25,7 +25,7 @@ const S_STEP_ERROR = s('▲', 'x');
 const S_STEP_SUBMIT = s('◇', 'o');
 
 const S_BAR_START = s('┌', 'T');
-const S_BAR = s('│', '|');
+export const S_BAR = s('│', '|');
 const S_BAR_END = s('└', '—');
 
 const S_RADIO_ACTIVE = s('●', '>');
