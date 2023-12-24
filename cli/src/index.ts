@@ -11,11 +11,10 @@ import { DirectoryNotExists } from './errors.js';
 import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
 
 export const args = process.argv
-
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(fileURLToPath(import.meta.url));
-
 export const WORK_DIR = process.cwd()
+
 async function main() {
     if (args.length > 2) {
         execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
