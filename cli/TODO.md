@@ -1,4 +1,4 @@
-[TODO] #1
+[TODO] #1 DONE
     Zmiana struktury składowania skrytów. Aktualnie jest to plik `scripts.mjs` w folderze `$HOME/.strapup/`.
     Musimy zrobić tak aby zamiast tego był folder `scripts/` a w nim pliki zawierające skrypty. `scripts.mjs` będzie zarezerwowaną nazwą, gdzię będą się znajdowały skrypty "biblioteczne". Zmiana ta jest potrzebna, bo skrypty są kodem ładowanym podczas wykonywania programu, w związku z tym błąd np. składniowy z jednym z nich wywalił by nam całą aplikację gdyby wszystkie znajdowały by się w jednym pliku. Taka zmiana też ułatwi nam życie gdy będziemy pobierać skrypty innych użytkowników.
     Czyli trzeba zmienić aktualną logikę ładowania skryptów o to, aby załadowała wszystkie z folderu `$HOME/.strapup/scripts/`.
