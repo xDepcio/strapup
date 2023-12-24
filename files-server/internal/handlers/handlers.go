@@ -30,7 +30,7 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Error while getting templates")
 	}
 
-	escapedName := strings.Replace(name, "/", "_|_", -1)
+	escapedName := strings.Replace(name, "/", "_-_", -1)
 	if strings.Contains(escapedName, "..") {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid template name")
 	}
@@ -83,7 +83,7 @@ func GetFileHandler(c *fiber.Ctx) error {
 	}
 	fmt.Println(3)
 
-	escapedName := strings.Replace(name, "/", "_|_", 1)
+	escapedName := strings.Replace(name, "/", "_-_", 1)
 	if strings.Contains(escapedName, "..") {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid template name")
 	}

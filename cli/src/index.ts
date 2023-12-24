@@ -8,7 +8,7 @@ import * as p from './clack-lib/prompts/index.js';
 import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
 import { SCRIPTS_DIR_PATH, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
-import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
+import { downloadScript, escape, getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
 
 export const args = process.argv
 export const __filename = fileURLToPath(import.meta.url);
@@ -53,11 +53,21 @@ async function main() {
     switch (command) {
         case 'run-script': {
             const scripts = await importScripts(SCRIPTS_DIR_PATH)
+            const options = Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description }))
             const scriptName = await p.selectsearch({
                 message: 'What script do you want to run?',
-                options: Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description })),
+                options: options,
             }) as string
-            const script = scripts[scriptName]
+
+            let script = scripts[scriptName]
+            if (!options.map(({ value }) => value).includes(scriptName)) {
+                p.log.info(`Script ${color.dim(scriptName)} not found at local machine. Trying to fetch it...`)
+                await downloadScript(scriptName)
+                script = await import(`${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`).then(module => module.default)
+            }
+            else {
+                script = scripts[scriptName]
+            }
             const scriptParams = getParameterNames(script.command)
             const scriptArguments: string[] = []
 

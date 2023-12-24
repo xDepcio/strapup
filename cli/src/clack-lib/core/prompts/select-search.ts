@@ -46,6 +46,10 @@ export default class SearchSelectPrompt<T extends { value: any }> extends Prompt
             this.changeValue();
         });
 
+        this.on('finalize', (data) => {
+            this.changeValue()
+        })
+
         this.on('value', (data) => {
             // if (!data) return
             if (this.prevData === data) return

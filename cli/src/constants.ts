@@ -16,6 +16,7 @@ export const premadeTemplatesDirPath = () => normalize(`${ROOT_PATH}/premade-tem
 export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
 export const statsUrl = "https://strapup-web.vercel.app"
 export const ROOT_PATH = normalize(dirname(fileURLToPath(import.meta.url)) + '/..')
+export const GO_BACKEND_URL = "http://localhost:5000"
 
 export const scriptsContent = `export const scripts = {
     "Create-Next-ShadcnUI-TS": {

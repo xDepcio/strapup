@@ -4,7 +4,7 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import path, { basename, normalize } from 'path'
 import color from 'picocolors'
-import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, EXAMPLE_SCRIPT_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, exampleScriptContent } from './constants.js'
+import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, EXAMPLE_SCRIPT_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, exampleScriptContent, GO_BACKEND_URL } from './constants.js'
 import { __dirname } from './index.js'
 import { DirectoryNotExists } from './errors.js'
 import { S_BAR } from './clack-lib/prompts/index.js'
@@ -190,6 +190,26 @@ export async function initializeStrapupDir() {
     await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
 }
 
+export async function downloadScript(scriptName: string) {
+    // const res = await fetch(`${GO_BACKEND_URL}/api/scripts/?name=${scriptName}`)
+    // const scriptContent = await res.text()
+    const scriptContent = `export default {
+        description: "Example script",
+        command: (animal, food) => [
+            \`echo "\${animal} eats \${food}"\`
+        ]
+    }` // This is dummy response
+    fs.writeFileSync(`${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`, scriptContent, { encoding: 'utf-8' })
+}
+
+export function escape(fileName: string) {
+    return fileName.replace(/\//g, '_-_')
+}
+
+export function unEscape(fileName: string) {
+    return fileName.replace(/_-_/g, '/')
+}
+
 // /**
 //  * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
 //  * @param dirPath - absolute path to strapup directory contents (.../strapup)
@@ -236,7 +256,7 @@ export async function importScripts(path: string) {
         if (file === basename(MAIN_SCRIPT_PATH)) continue
         const scriptContent = await import(`${path}/${file}`).then(module => module.default)
 
-        const unEscapedFileNameNoExt = file.replace(/\.[^/.]+$/, "").replace("_|_", "/")
+        const unEscapedFileNameNoExt = file.replace(/\.[^/.]+$/, "").replace("_-_", "/")
         customScripts[unEscapedFileNameNoExt] = scriptContent
     }
 
