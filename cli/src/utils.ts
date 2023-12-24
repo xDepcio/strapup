@@ -1,13 +1,13 @@
-import * as p from "./clack-lib/prompts/index.js"
-import { spawn, spawnSync } from 'child_process'
+import { spawn } from 'child_process'
 import fs from 'fs'
 import fetch from 'node-fetch'
-import path, { basename, normalize } from 'path'
+import path, { basename } from 'path'
 import color from 'picocolors'
-import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, EXAMPLE_SCRIPT_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, exampleScriptContent, GO_BACKEND_URL } from './constants.js'
-import { __dirname } from './index.js'
-import { DirectoryNotExists } from './errors.js'
+import * as p from "./clack-lib/prompts/index.js"
 import { S_BAR } from './clack-lib/prompts/index.js'
+import { EXAMPLE_SCRIPT_PATH, GO_BACKEND_URL, MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, exampleScriptContent, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl } from './constants.js'
+import { DirectoryNotExists } from './errors.js'
+import { __dirname } from './index.js'
 // import { S_BAR } from './clack/styled/utils.js'
 
 export interface CopyDirectoryContentsParams {
@@ -191,14 +191,21 @@ export async function initializeStrapupDir() {
 }
 
 export async function downloadScript(scriptName: string) {
-    // const res = await fetch(`${GO_BACKEND_URL}/api/scripts/?name=${scriptName}`)
-    // const scriptContent = await res.text()
-    const scriptContent = `export default {
-        description: "Example script",
-        command: (animal, food) => [
-            \`echo "\${animal} eats \${food}"\`
-        ]
-    }` // This is dummy response
+    const res = await fetch(`${GO_BACKEND_URL}/api/scripts/?name=${scriptName}`, {
+        headers: {
+            "Authorization": loadSettings().githubToken || ''
+        }
+    })
+    if (!res.ok) {
+        throw new Error(scriptName)
+    }
+    const scriptContent = await res.text()
+    // const scriptContent = `export default {
+    //     description: "Example script",
+    //     command: (animal, food) => [
+    //         \`echo "\${animal} eats \${food}"\`
+    //     ]
+    // }` // This is dummy response
     fs.writeFileSync(`${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`, scriptContent, { encoding: 'utf-8' })
 }
 

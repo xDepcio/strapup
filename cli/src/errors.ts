@@ -20,3 +20,13 @@ export class DirectoryNotExists extends TypedError<{ path: string }> {
         })
     }
 }
+
+export class ToDownloadScriptNotFound extends TypedError<{ scriptName: string }> {
+    constructor(scriptName: string) {
+        super({
+            message: `Script ${scriptName} not found.`,
+            name: 'DownloadError',
+            data: { scriptName }
+        })
+    }
+}

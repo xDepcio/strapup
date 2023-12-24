@@ -62,7 +62,12 @@ async function main() {
             let script = scripts[scriptName]
             if (!options.map(({ value }) => value).includes(scriptName)) {
                 p.log.info(`Script ${color.dim(scriptName)} not found at local machine. Trying to fetch it...`)
-                await downloadScript(scriptName)
+                try {
+                    await downloadScript(scriptName)
+                } catch (error) {
+                    p.log.error(`Something went wrong while fetching the script.`)
+                    return
+                }
                 script = await import(`${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`).then(module => module.default)
             }
             else {
