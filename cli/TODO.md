@@ -58,12 +58,12 @@
     Można sobie uruchomić skrypt którego nie mamy lokalnie.
     Pod spodem działa to tak:
     - Leci zapytanie GET do backendu w GO: `/api/scripts?name=@userName/some-script`
-    `name` jest nazwą skryptu jaki chcemy wykonać. Jeśli skrypt jest nasz, ale ustawiony na prywatny, to w zapytaniu trzeba dodać header `Authorization` z wartością tokena GitHub. Ten token jest zapisywany w pliku z ustawieniami, gdy użytkownik zaloguje sie przez githuba. Zapytanie te zwróci PLAIN TEXT (NIE JSON Z CZYMŚ TAM), z contentem danego skryptu. Otrzymane text musimy zapisać jako nowy plik w folderze roboczym CLI w ścieżce `$HOME/.strapup/scripts/`. Nazwa tego pliku musi być taka sama jak nazwa skryptu. UWAGA nie można zapisać pliku z "/" w nazwie, więc zamieniamy "/" na "_|_". Z poziomu użytkownika to nie może być widoczne. Następnie normalnie wykonujemy ten skrypt.
+    `name` jest nazwą skryptu jaki chcemy wykonać. Jeśli skrypt jest nasz, ale ustawiony na prywatny, to w zapytaniu trzeba dodać header `Authorization` z wartością tokena GitHub. Ten token jest zapisywany w pliku z ustawieniami, gdy użytkownik zaloguje sie przez githuba. Zapytanie te zwróci PLAIN TEXT (NIE JSON Z CZYMŚ TAM), z contentem danego skryptu. Otrzymane text musimy zapisać jako nowy plik w folderze roboczym CLI w ścieżce `$HOME/.strapup/scripts/`. Nazwa tego pliku musi być taka sama jak nazwa skryptu. UWAGA nie można zapisać pliku z "/" w nazwie, więc zamieniamy `/` na `_|_`. Z poziomu użytkownika to nie może być widoczne. Następnie normalnie wykonujemy ten skrypt.
 
 [TODO] #6
     Schemat który utworzyliśmy lokalnie, można zapisać sobie na naszym "cloudzie".
     Wygląda to tak, jeśli jesteśmy zalogowaniu przez GitHuba (valid token w pliku z ustawieniami), to mamy dostęp do opcji "post template".
-    Po wejściu w nią, wybieramy schemat, który musimy chcemy wrzucić na server. Następnie podajemy jak chcemy go nazwać (bo np. inaczej niż zapisaliśmy lokalnie), nazwa MUSI zaczynać się w taki sposób `@userName/`. Potem wybieramy, czy ma on być publiczny czy prywatny. Dalej wpisujemy tagi jakie chcemy do niego dodać. Np. dla schematu `@userName/Create-Flask-Postgres` damy `python flask postgres` - jest to ważne, bo będą one używane do wyszukiwania schematów.
+    Po wejściu w nią, wybieramy schemat, który chcemy wrzucić na server. Następnie podajemy jak chcemy go nazwać (bo np. inaczej niż zapisaliśmy lokalnie), nazwa MUSI zaczynać się w taki sposób `@userName/`. Potem wybieramy, czy ma on być publiczny czy prywatny. Dalej wpisujemy tagi jakie chcemy do niego dodać. Np. dla schematu `@userName/Create-Flask-Postgres` damy `python flask postgres` - jest to ważne, bo będą one używane do wyszukiwania schematów.
     Klikamy enter i idzie zapytanie POST na server w GO: `api/templates`. W headerze `Authorization` zawsze musi znaleźć się ważny token Github, albo ta operacja sie nie uda.
     Jako body zapytania podajemy json o takiej strukturze:
     ```json
