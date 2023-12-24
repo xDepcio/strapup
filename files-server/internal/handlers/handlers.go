@@ -116,6 +116,13 @@ func GetFileHandler(c *fiber.Ctx) error {
 	return c.Send(b)
 }
 
+type Script struct {
+	ID      int    `json:"id"`
+	Name    string `json:"name"`
+	Public  bool   `json:"public"`
+	OwnerID int    `json:"owner_id"`
+}
+
 func GetScriptsHandler(c *fiber.Ctx) error {
 	name := c.Query("name")
 
@@ -123,5 +130,42 @@ func GetScriptsHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Name is not specified")
 	}
 
-	return nil
+	row := database.DB.QueryRow("SELECT id, name, public, owner_id FROM scripts WHERE name = $1", name)
+
+	var script Script
+	err := row.Scan(&script.ID, &script.Name, &script.Public, &script.OwnerID)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error while getting scripts")
+	}
+
+	escapedName := strings.Replace(name, "/", "_-_", -1)
+	if strings.Contains(escapedName, "..") {
+		return c.Status(fiber.StatusBadRequest).SendString("Invalid script name")
+	}
+
+	if script.Public {
+		scriptFile, err := utils.GetTemlateFile("./files/scripts/" + escapedName + ".mjs")
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).SendString("Error getting script file")
+		}
+		b := []byte(scriptFile)
+		return c.Send(b)
+	}
+
+	isValid, user, err := utils.Authorize(c)
+	if !isValid || err != nil {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	if user.ID != script.OwnerID {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized - not owner")
+	}
+
+	file, err := utils.GetTemlateFile("./files/scripts/" + escapedName + ".mjs")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).SendString("Error getting script file")
+	}
+
+	b := []byte(file)
+	return c.Send(b)
 }
