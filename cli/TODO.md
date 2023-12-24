@@ -54,7 +54,7 @@
     Użytkownik nie widzi tych wszystkich kroków (no chyba że jakiś błąd typu autoryzacja), więc ma to dalej działać tak jak wklejanie zwykłego schematu. Komentarz: Inne podejście pewnie miałoby lepszą wydajność, ale nie byłoby koncepcyjnie tak proste.
     UWAGA - problemem będzie zapisanie folderu którego nazwa zawiera "/" np. `@username/template` - wtedy zamieniamy "/" na taki escape string "_-_". Z poziomu użytkownika zmiana ta nie może być widoczna.
 
-[TODO] #4
+[TODO] #4 ALMOST DONE, ACTUAL FETCH LEFT TODO
     Można sobie uruchomić skrypt którego nie mamy lokalnie.
     Pod spodem działa to tak:
     - Leci zapytanie GET do backendu w GO: `/api/scripts?name=@userName/some-script`
