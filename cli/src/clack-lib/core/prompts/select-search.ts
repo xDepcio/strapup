@@ -7,19 +7,26 @@ interface SelectOptions<T extends { value: any }> extends PromptOptions<SearchSe
 export default class SearchSelectPrompt<T extends { value: any }> extends Prompt {
     options: T[];
     cursor: number = 0;
+    baseOptions: T[];
 
     private get _value() {
         return this.options[this.cursor];
     }
 
-    private changeValue() {
+    private changeValue(fallback: string = '') {
+        if (!this._value) {
+            this.value = fallback;
+            this.options[this.cursor] = { label: fallback, value: fallback } as any
+            return;
+        }
         this.value = this._value.value;
     }
 
     constructor(opts: SelectOptions<T>) {
-        super(opts, false);
+        super(opts, true);
 
         this.options = opts.options;
+        this.baseOptions = [...this.options]
         this.cursor = this.options.findIndex(({ value }) => value === opts.initialValue);
         if (this.cursor === -1) this.cursor = 0;
         this.changeValue();
@@ -39,10 +46,13 @@ export default class SearchSelectPrompt<T extends { value: any }> extends Prompt
         });
 
         this.on('value', (data) => {
-            console.log("VALUE", data)
-            console.log("VALUE", data)
-            console.log("VALUE", data)
-            console.log("VALUE", data)
+            const filtered = this.baseOptions.filter((option) => {
+                return option.value.toLowerCase().includes(data.toLowerCase());
+            });
+            // this.cursor = filtered.length > 0 ? this.options.indexOf(filtered[0]) : 0;
+            this.cursor = 0;
+            this.options = [...filtered]
+            this.changeValue(data);
         })
     }
 }
