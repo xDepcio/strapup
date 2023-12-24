@@ -4,7 +4,7 @@ import fs from 'fs'
 import fetch from 'node-fetch'
 import path, { basename, normalize } from 'path'
 import color from 'picocolors'
-import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, USER_SCRIPTS_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, userScriptsContent } from './constants.js'
+import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, SETTINGS_PATH, STRAPUP_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH, EXAMPLE_SCRIPT_PATH, inintialSettings, premadeTemplatesDirPath, scriptsContent, statsUrl, exampleScriptContent } from './constants.js'
 import { __dirname } from './index.js'
 import { DirectoryNotExists } from './errors.js'
 import { S_BAR } from './clack/styled/utils.js'
@@ -86,7 +86,7 @@ export function getParameterNames(func: Function) {
         .slice(funcString.indexOf('(') + 1, funcString.indexOf(')'))
         .split(',')
         .map((param) => param.trim());
-    return parameterNames.filter(Boolean); // Removes empty strings
+    return parameterNames.filter(Boolean)
 }
 
 export const getFilesIgnoredByGit = (dir: string = './') => {
@@ -183,7 +183,7 @@ export async function initializeStrapupDir() {
     fs.mkdirSync(TEMPLATES_PATH())
     fs.mkdirSync(SCRIPTS_DIR_PATH)
     fs.writeFileSync(MAIN_SCRIPT_PATH, scriptsContent, { encoding: 'utf-8' })
-    fs.writeFileSync(USER_SCRIPTS_PATH, userScriptsContent, { encoding: 'utf-8' })
+    fs.writeFileSync(EXAMPLE_SCRIPT_PATH, exampleScriptContent, { encoding: 'utf-8' })
     fs.writeFileSync(SETTINGS_PATH, JSON.stringify(inintialSettings, null, 4), { encoding: 'utf-8' })
 
     await copyDirectoryContents({ fromPath: premadeTemplatesDirPath(), toPath: TEMPLATES_PATH(), skipMetadataFile: false })
@@ -228,21 +228,18 @@ export async function initializeStrapupDir() {
 
 export async function importScripts(path: string) {
     const mainScripts = await import(MAIN_SCRIPT_PATH).then(module => module.scripts) as Scripts
-    const userScripts = await import(USER_SCRIPTS_PATH).then(module => module.scripts) as Scripts
 
-    const downloadedSCripts: Scripts = {}
+    const customScripts: Scripts = {}
     const files = fs.readdirSync(path)
     for (const file of files) {
         if (file === basename(MAIN_SCRIPT_PATH)) continue
-        if (file === basename(USER_SCRIPTS_PATH)) continue
         const scriptContent = await import(`${path}/${file}`).then(module => module.default)
-        console.log(scriptContent)
 
         const unEscapedFileNameNoExt = file.replace(/\.[^/.]+$/, "").replace("_|_", "/")
-        downloadedSCripts[unEscapedFileNameNoExt] = scriptContent
+        customScripts[unEscapedFileNameNoExt] = scriptContent
     }
 
-    return { ...mainScripts, ...userScripts, ...downloadedSCripts }
+    return { ...mainScripts, ...customScripts }
 }
 
 export type TelemetryStat = "templateSaved" | "templatePasted" | "scriptRan"

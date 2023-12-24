@@ -10,7 +10,7 @@ export const SETTINGS_PATH = normalize(STRAPUP_DIR_PATH + '/.settings.json')
 export const TEMPLATES_PATH = () => normalize(STRAPUP_DIR_PATH + `/templates`)
 export const SCRIPTS_DIR_PATH = normalize(STRAPUP_DIR_PATH + `/scripts`)
 export const MAIN_SCRIPT_PATH = normalize(SCRIPTS_DIR_PATH + `/scripts.mjs`)
-export const USER_SCRIPTS_PATH = normalize(SCRIPTS_DIR_PATH + `/user-scripts.mjs`)
+export const EXAMPLE_SCRIPT_PATH = normalize(SCRIPTS_DIR_PATH + `/Example-Custom-Script.mjs`)
 // export const SCRIPTS_PATH = () => normalize(STRAPUP_DIR_PATH + `/scripts.mjs`)
 export const premadeTemplatesDirPath = () => normalize(`${ROOT_PATH}/premade-templates`)
 export const STRAPUP_DIR_PATH_ENV_NAME = 'STRAPUP_DIR_PATH'
@@ -73,23 +73,11 @@ export const scriptsContent = `export const scripts = {
     // Create a new script by adding a key-value pair based on examples above.
 }`
 
-export const userScriptsContent = `export const scripts = {
-    // "@userName/scriptsName": {
-    //     description: "This will be show as scripts description",
-    //     command: () => [
-    //         \`npx some-command\`,
-    //         \`npx some-other-command\`,
-    //     ],
-    // },
-    // "@userName/scriptsName-ThatTakesSomeParams": {
-    //     description: "This will be show as scripts description",
-    //     command: (projectName) => [
-    //         \`npx some-command \${projectName}\`,
-    //         \`cd \${projectName}\`,
-    //         \`npm install\`,
-    //     ],
-    // }
-    // Create a new script by adding a key-value pair based on examples above.
+export const exampleScriptContent = `export default {
+    description: "This will be shown as scripts description",
+    command: () => [
+        \`echo "Change contents of this commands array"\`,
+    ],
 }`
 
 export const dirNotSpecifiedStartupWarning = `Path to save strapup files is not specified. This may happen when:
