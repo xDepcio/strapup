@@ -3,7 +3,7 @@
     `name` - parametr oznaczający pełną scieżkę do pliku w obrębie schemaatu (np. `@userName/some-template/_strapupmetadata.json`)
     Endpoint ten musi zwracać PLAIN TEXT wskazanego pliku. Musi też walidować, czy nie chcemy np. czytać plik do którego nie mamy dostępu. Do tego służy header `Authorization`, który musi się znaleźć wtedy w zapytaniu. Posiada on Github token użytkownika.
 
-[TODO] #2
+[TODO] #2 DONE
     endpoint GET `/api/scripts?name=`
     `name` - parametr oznaczający nazwę skryptu jaki schecemy zobaczyć.
     Endpoint ten musi zwracać PLAIN TEXT wskazanego skryptu. Musi też walidować, czy nie chcemy np. czytać plik do którego nie mamy dostępu. Do tego służy header `Authorization`, który musi się znaleźć wtedy w zapytaniu. Posiada on Github token użytkownika.
