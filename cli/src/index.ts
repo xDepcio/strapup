@@ -11,6 +11,7 @@ import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
 import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
 import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
+import { select } from './clack-lib/prompts/index.js';
 
 export const args = process.argv
 
@@ -42,7 +43,7 @@ async function main() {
     console.log(`${color.gray(S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_DIR_PATH)}`)
     console.log(`${color.gray(S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
-    const command = await p.select({
+    const command = await select({
         message: 'What do you want to do?',
         options: [
             { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
@@ -52,6 +53,16 @@ async function main() {
             { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
         ],
     })
+    // const command = await p.select({
+    //     message: 'What do you want to do?',
+    //     options: [
+    //         { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
+    //         { value: 'save', label: `${color.underline(color.cyan('save'))} - save a new template.` },
+    //         { value: 'paste', label: `${color.underline(color.cyan('paste'))} - paste saved template.` },
+    //         { value: 'sign-in', label: `${color.underline(color.cyan('sign-in'))} - sign in using Github.` },
+    //         { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
+    //     ],
+    // })
 
     switch (command) {
         case 'run-script': {
