@@ -8,6 +8,7 @@ export default class SearchSelectPrompt<T extends { value: any }> extends Prompt
     options: T[];
     cursor: number = 0;
     baseOptions: T[];
+    private prevData: string = '';
 
     private get _value() {
         return this.options[this.cursor];
@@ -46,11 +47,15 @@ export default class SearchSelectPrompt<T extends { value: any }> extends Prompt
         });
 
         this.on('value', (data) => {
+            // if (!data) return
+            if (this.prevData === data) return
+            this.prevData = data
+            // console.log("VALUE", data, !!data)
             const filtered = this.baseOptions.filter((option) => {
                 return option.value.toLowerCase().includes(data.toLowerCase());
             });
             // this.cursor = filtered.length > 0 ? this.options.indexOf(filtered[0]) : 0;
-            this.cursor = 0;
+            this.cursor = this.cursor > filtered.length - 1 ? 0 : this.cursor;
             this.options = [...filtered]
             this.changeValue(data);
         })
