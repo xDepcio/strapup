@@ -5,13 +5,13 @@ import * as fs from 'fs';
 import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
-import { selectsearch } from './clack/styled/SearchableSelect.js';
+// import { selectsearch } from './clack/styled/SearchableSelect.js';
 import { S_BAR } from './clack/styled/utils.js';
 import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
 import { MAIN_SCRIPT_PATH, SCRIPTS_DIR_PATH, Scripts, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
 import { getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
-import { select } from './clack-lib/prompts/index.js';
+import { select, selectsearch } from './clack-lib/prompts/index.js';
 
 export const args = process.argv
 
@@ -69,7 +69,7 @@ async function main() {
             const scripts = await importScripts(SCRIPTS_DIR_PATH)
             // const scripts: Scripts = await import(MAIN_SCRIPT_PATH).then(module => module.scripts)
             const scriptName = await selectsearch({
-                searchPlaceholder: 'Search to narrow results.',
+                // searchPlaceholder: 'Search to narrow results.',
                 message: 'What script do you want to run?',
                 options: Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description })),
             }) as string
