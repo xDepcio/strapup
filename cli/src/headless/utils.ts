@@ -1,11 +1,11 @@
 // import * as p from '@clack/prompts'
-import * as p from '../clack-lib/prompts/index.js'
 import fs from 'fs'
+import fetch from 'node-fetch'
 import path from 'path'
 import color from 'picocolors'
+import * as p from '../clack-lib/prompts/index.js'
 import { StrapupSettings, inintialSettings, statsUrl } from './constants.js'
 import { __dirname } from './index.js'
-import fetch from 'node-fetch'
 
 export interface CopyDirectoryContentsParams {
     fromPath: string
