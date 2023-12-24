@@ -115,3 +115,13 @@ func GetFileHandler(c *fiber.Ctx) error {
 	b := []byte(file)
 	return c.Send(b)
 }
+
+func GetScriptsHandler(c *fiber.Ctx) error {
+	name := c.Query("name")
+
+	if name == "" {
+		return c.Status(fiber.StatusBadRequest).SendString("Name is not specified")
+	}
+
+	return nil
+}
