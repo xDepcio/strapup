@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"fmt"
+	"os"
 	"strapup-files/internal/database"
 	"strapup-files/internal/utils"
 	"strings"
@@ -168,4 +169,79 @@ func GetScriptsHandler(c *fiber.Ctx) error {
 
 	b := []byte(file)
 	return c.Send(b)
+}
+
+type ScriptPost struct {
+	Name    string   `json:"name"`
+	Public  bool     `json:"isPublic"`
+	Tags    []string `json:"tags"`
+	Content string   `json:"content"`
+}
+
+func PostScriptsHandler(c *fiber.Ctx) error {
+	type Response struct {
+		Message string `json:"message"`
+		Success bool   `json:"success"`
+	}
+
+	isValid, user, err := utils.Authorize(c)
+	if !isValid || err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(Response{
+			Message: "Unauthorized",
+			Success: false,
+		})
+	}
+
+	var script ScriptPost
+	if err := c.BodyParser(&script); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error parsing body",
+			Success: false,
+		})
+	}
+
+	if "@"+user.Login != strings.Split(script.Name, "/")[0] {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Name does not match",
+			Success: false,
+		})
+	}
+
+	if script.Name == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Name is not specified",
+			Success: false,
+		})
+	}
+
+	_, dbErr := database.DB.Exec("INSERT INTO scripts (name, public, owner_id) VALUES ($1, $2, $3)", script.Name, script.Public, user.ID)
+	if dbErr != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error while saving script in db",
+			Success: false,
+		})
+	}
+
+	escapedName := strings.Replace(script.Name, "/", "_-_", -1)
+	if strings.Contains(escapedName, "..") {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Invalid script name",
+			Success: false,
+		})
+	}
+
+	f, err := os.Create("./files/scripts/" + escapedName + ".mjs")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error creating file",
+			Success: false,
+		})
+	}
+	defer f.Close()
+	fmt.Println(f.Name())
+
+	return c.JSON(Response{
+		Message: "Script created",
+		Success: true,
+	})
 }
