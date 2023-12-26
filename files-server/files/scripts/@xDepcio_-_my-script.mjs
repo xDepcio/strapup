@@ -1,0 +1,1 @@
+Tu jest zawartość pliku .mjs ze skryptem. xdddd

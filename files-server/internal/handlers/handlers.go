@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"fmt"
 	"os"
 	"strapup-files/internal/database"
@@ -214,6 +215,21 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 		})
 	}
 
+	row := database.DB.QueryRow("SELECT name FROM scripts WHERE name = $1", script.Name)
+	var scriptName string
+	errScan := row.Scan(&scriptName)
+	if errScan == nil {
+		_, dbErr := database.DB.Exec("DELETE FROM scripts WHERE name=$1", script.Name)
+		if dbErr != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(Response{
+				Message: "Error while deleting old script entry",
+				Success: false,
+			})
+		}
+	} else if errScan != sql.ErrNoRows {
+		return c.Status(fiber.StatusBadRequest).SendString("Error while getting scripts")
+	}
+
 	_, dbErr := database.DB.Exec("INSERT INTO scripts (name, public, owner_id) VALUES ($1, $2, $3)", script.Name, script.Public, user.ID)
 	if dbErr != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
@@ -238,7 +254,7 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 		})
 	}
 	defer f.Close()
-	fmt.Println(f.Name())
+	f.Write([]byte(script.Content))
 
 	return c.JSON(Response{
 		Message: "Script created",
