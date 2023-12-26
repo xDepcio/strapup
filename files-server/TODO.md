@@ -42,7 +42,7 @@
     - Dalej zapisujemy w plikach servera ten schemat.
     - Zwracamy odpowiedź czy wszytko się powiodło lub też nie.
 
-[TODO] #4
+[TODO] #4 DONE
     endpoint POST `/api/scripts`
     W headerze `Authorization` musi być ważny token Github.
     Body wygląda np. tak:
