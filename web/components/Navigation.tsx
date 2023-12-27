@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BsGithub } from 'react-icons/bs';
 import { ModeToggle } from "./ui/ModeToggle";
 import { Button } from "./ui/button";
+import Search from "./Search";
 
 export default function Navigation() {
 
@@ -14,6 +15,7 @@ export default function Navigation() {
                     <Link href={'/'} className={cn(ProximaSoft.className, "font-bold text-2xl bg-clip-text text-transparent bg-[rgba(67,_56,_202,_1)]")}>Strapup</Link>
                 </div>
                 <div className="flex items-center justify-center gap-8">
+                    <Search />
                     <div className="font-medium flex items-center justify-center">
                         <Link href={'/docs'}>Docs</Link>
                     </div>
