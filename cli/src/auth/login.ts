@@ -1,3 +1,5 @@
+import { loadSettings } from "../utils"
+
 type GithubUser = {
     login: string
     id: number
@@ -33,13 +35,14 @@ type GithubUser = {
     updated_at: string
 }
 
-export async function loginToGithub(token: string | null) {
-    if (!token) return null
+export async function loginToGithub() {
+    const { githubToken } = loadSettings()
+    if (!githubToken) return null
 
     const res = await fetch(`https://api.github.com/user`, {
         headers: {
             "Accept": "application/vnd.github+json",
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${githubToken}`,
             "X-GitHub-Api-Version": "2022-11-28"
         },
     })

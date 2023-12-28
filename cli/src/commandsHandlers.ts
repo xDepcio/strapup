@@ -5,7 +5,7 @@ import path from "path"
 import color from 'picocolors'
 import { authorizeDevice } from './auth/device.js'
 import * as p from './clack-lib/prompts/index.js'
-import { ScriptsFunction, TEMPLATES_PATH } from './constants.js'
+import { Script, ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
 import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, saveSettings, sendTelemetryStats } from "./utils.js"
 
@@ -145,4 +145,8 @@ export async function signIn() {
     const token = await authorizeDevice()
     saveSettings({ githubToken: token.access_token })
     p.log.success(`Signed in successfully.`)
+}
+
+export async function saveScriptAtRemote({ scriptName, script }: { scriptName: string, script: Script }) {
+
 }

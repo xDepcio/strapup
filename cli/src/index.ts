@@ -5,16 +5,17 @@ import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import * as p from './clack-lib/prompts/index.js';
-import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
+import { list, paste, runScript, save, saveScriptAtRemote, signIn } from './commandsHandlers.js';
 import { SCRIPTS_DIR_PATH, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
-import { downloadScript, escape, getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
+import { downloadScript, escape, getParameterNames, importScripts, initializeStrapupDir, loadSettings, parseName, readMetadataFile } from './utils.js';
 import { loginToGithub } from './auth/login.js';
 
 export const args = process.argv
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const WORK_DIR = process.cwd()
+export const GITHUB_USER = await loginToGithub()
 
 async function main() {
     if (args.length > 2) {
@@ -36,9 +37,8 @@ async function main() {
         settings = loadSettings()
     }
 
-    const githubUser = await loginToGithub(settings?.githubToken)
-    if (githubUser) {
-        p.log.message(`Signed in as ${color.cyan(githubUser.login)}`)
+    if (GITHUB_USER) {
+        p.log.message(`Signed in as ${color.cyan(GITHUB_USER.login)}`)
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
@@ -53,6 +53,7 @@ async function main() {
             { value: 'paste', label: `${color.underline(color.cyan('paste'))} - paste saved template.` },
             { value: 'sign-in', label: `${color.underline(color.cyan('sign-in'))} - sign in using Github.` },
             { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
+            { value: 'push-script', label: `${color.underline(color.cyan('push-script'))} - save choosen script at remote.` },
         ],
     })
 
@@ -175,6 +176,33 @@ async function main() {
         }
         case 'list': {
             list()
+            break
+        }
+        case 'push-script': {
+            if (!GITHUB_USER) {
+                p.log.error(`You need to be logged in to save script at remote.`)
+                return
+            }
+
+            const scripts = await importScripts(SCRIPTS_DIR_PATH)
+            const options = Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description }))
+            const scriptName = await p.selectsearch({
+                message: 'Choose script to save at remote.',
+                options: options,
+            }) as string
+
+            let script = scripts[scriptName]
+            const { name } = parseName(scriptName)
+
+            const nameToSave = await p.text({
+                message: 'What should be the name of the script?',
+                defaultValue: '@' + GITHUB_USER.login + '/' + name,
+                validate: (value) => {
+                    if (!value.startsWith(`@${GITHUB_USER.login}/`)) return `Saved script name must start with @${GITHUB_USER.login}/`
+                }
+            })
+
+            await saveScriptAtRemote({ scriptName: nameToSave as string, script: script })
             break
         }
         default: {

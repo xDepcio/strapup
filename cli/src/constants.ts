@@ -105,3 +105,5 @@ export type Scripts = {
         command: ScriptsFunction
     }
 }
+
+export type Script = Scripts[keyof Scripts]

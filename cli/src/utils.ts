@@ -217,6 +217,29 @@ export function unEscape(fileName: string) {
     return fileName.replace(/_-_/g, '/')
 }
 
+/**
+ *
+ * @param name - name of template/script in format: @user/name or name
+ * @returns - { user: a user part, name: a script/template name part }
+ * @throws - Error when name is invalid
+ */
+export function parseName(name: string) {
+    const splitted = name.split('/')
+    if (splitted.length == 1) {
+        return {
+            user: null,
+            name: splitted[0]
+        }
+    }
+    if (splitted.length == 2 && splitted[0].startsWith('@')) {
+        return {
+            user: splitted[0],
+            name: splitted[1]
+        }
+    }
+    throw new Error('Invalid name')
+}
+
 // /**
 //  * Creates strapup directory at specified path if it doesn't exist. Or is responsible for syncing premade templates and scripts file, when it exists.
 //  * @param dirPath - absolute path to strapup directory contents (.../strapup)
