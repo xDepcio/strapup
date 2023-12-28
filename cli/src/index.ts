@@ -9,6 +9,7 @@ import { list, paste, runScript, save, signIn } from './commandsHandlers.js';
 import { SCRIPTS_DIR_PATH, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
 import { downloadScript, escape, getParameterNames, importScripts, initializeStrapupDir, loadSettings, readMetadataFile } from './utils.js';
+import { loginToGithub } from './auth/login.js';
 
 export const args = process.argv
 export const __filename = fileURLToPath(import.meta.url);
@@ -33,6 +34,11 @@ async function main() {
         }
     } finally {
         settings = loadSettings()
+    }
+
+    const githubUser = await loginToGithub(settings?.githubToken)
+    if (githubUser) {
+        p.log.message(`Signed in as ${color.cyan(githubUser.login)}`)
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
