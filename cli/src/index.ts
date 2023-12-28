@@ -15,7 +15,6 @@ export const args = process.argv
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const WORK_DIR = process.cwd()
-export const GITHUB_USER = await loginToGithub()
 
 async function main() {
     if (args.length > 2) {
@@ -37,8 +36,9 @@ async function main() {
         settings = loadSettings()
     }
 
-    if (GITHUB_USER) {
-        p.log.message(`Signed in as ${color.cyan(GITHUB_USER.login)}`)
+    const githubUser = await loginToGithub()
+    if (githubUser) {
+        p.log.message(`Signed in as ${color.cyan(githubUser.login)}`)
     }
 
     p.log.message(`Templates are saved here -> ${color.dim(TEMPLATES_PATH())}`)
@@ -179,7 +179,7 @@ async function main() {
             break
         }
         case 'push-script': {
-            if (!GITHUB_USER) {
+            if (!githubUser) {
                 p.log.error(`You need to be logged in to save script at remote.`)
                 return
             }
@@ -196,9 +196,9 @@ async function main() {
 
             const nameToSave = await p.text({
                 message: 'What should be the name of the script?',
-                defaultValue: '@' + GITHUB_USER.login + '/' + name,
+                defaultValue: '@' + githubUser.login + '/' + name,
                 validate: (value) => {
-                    if (!value.startsWith(`@${GITHUB_USER.login}/`)) return `Saved script name must start with @${GITHUB_USER.login}/`
+                    if (!value.startsWith(`@${githubUser.login}/`)) return `Saved script name must start with @${githubUser.login}/`
                 }
             })
 
