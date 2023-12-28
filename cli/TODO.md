@@ -108,3 +108,6 @@
         "content": "Tu jest zawartość pliku .mjs ze skryptem."
     }
     ```
+
+[TODO] #8
+    Naprawienie tryby headless - aktualnie kopia kodu z poprawkami w katalogu `/headless` - rozwiązanie na tyle biedne że należy to zmienić. Przy odpalaniu programu z jakimkolwiek argumentem, flaga `HEADLESS` musi zostać ustawiona na `true`, a wykonanie programu uzależnione od wartości tej flagi.
