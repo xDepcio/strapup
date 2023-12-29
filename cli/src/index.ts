@@ -202,7 +202,15 @@ async function main() {
                 }
             })
 
-            await saveScriptAtRemote({ scriptName: nameToSave as string, script: script })
+            const isPublic = await p.confirm({
+                message: 'Should the script be public?',
+            })
+
+            await saveScriptAtRemote({
+                scriptName: nameToSave as string,
+                isPublic: isPublic as boolean,
+                scriptPath: `${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`
+            })
             break
         }
         default: {

@@ -5,9 +5,9 @@ import path from "path"
 import color from 'picocolors'
 import { authorizeDevice } from './auth/device.js'
 import * as p from './clack-lib/prompts/index.js'
-import { Script, ScriptsFunction, TEMPLATES_PATH } from './constants.js'
+import { GO_BACKEND_URL, Script, ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
-import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, saveSettings, sendTelemetryStats } from "./utils.js"
+import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, loadSettings, saveSettings, sendTelemetryStats } from "./utils.js"
 
 interface SaveOptions {
     templateName: string
@@ -147,6 +147,32 @@ export async function signIn() {
     p.log.success(`Signed in successfully.`)
 }
 
-export async function saveScriptAtRemote({ scriptName, script }: { scriptName: string, script: Script }) {
+type saveScriptParams = {
+    scriptName: string
+    scriptPath: string
+    isPublic: boolean
+}
+export async function saveScriptAtRemote({ scriptName, isPublic, scriptPath }: saveScriptParams) {
+    const scriptInterpreted = await import(scriptPath).then(moduleExport => moduleExport.default) as Script
+    const scriptFile = fs.readFileSync(scriptPath, 'utf8')
 
+    const res = await fetch(`${GO_BACKEND_URL}/api/scripts`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `${loadSettings().githubToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: scriptName,
+            isPublic: isPublic,
+            tags: [],
+            content: scriptFile
+        }),
+    })
+    if (!res.ok) {
+        p.log.error(`Failed to save script at remote.`)
+        return
+    }
+
+    p.log.success(`Script saved at remote.`)
 }

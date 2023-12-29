@@ -94,7 +94,7 @@
     Sprawdzamy, czy jest error w odpowiedzi czy nie i coś tam z nim robimy. Całe dodawanie schematu do bazy danych itd... załatwia server w GO dzięki naszemu zapytaniu.
     Czemu te podejście tutaj a w #3 odwotne? - Tutaj jest to prostsze koncepcyjnie gdy zrobimy w taki sposób, i nie chcemy też aby wsytąpiłą sytuacja, że zapiszemy tylko część schematu, a nie całość.
 
-[TODO] #7
+[TODO] #7 DONE
     Popatrz na #6. Tutaj robimy to samo (prawie, szczegóły niżej), tylko że dla skryptu.
     UWAGA skrypty są zapisywane jako pliki z kodem JS, czyli aby miało to ręcę i nogi to każdy taki skrypt musi znajdywać się w odzielnym pliku i w jednym pliku może być MAX 1 skrypt (patrz #1).
     Czyli do zapisania na "chmurze" użytkownik będzie miał do wyboru tylko te skrypty, które przejdą powyższą walidację.
