@@ -7,7 +7,8 @@ import { authorizeDevice } from './auth/device.js'
 import * as p from './clack-lib/prompts/index.js'
 import { GO_BACKEND_URL, Script, ScriptsFunction, TEMPLATES_PATH } from './constants.js'
 import { WORK_DIR } from './index.js'
-import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, loadSettings, saveSettings, sendTelemetryStats } from "./utils.js"
+import { CopyDirectoryContentsParams, copyDirectoryContents, createMetadataFile, getFilesIgnoredByGit, loadSettings, saveSettings, sendTelemetryStats, walkDir } from "./utils.js"
+import { inspect } from "util"
 
 interface SaveOptions {
     templateName: string
@@ -147,12 +148,12 @@ export async function signIn() {
     p.log.success(`Signed in successfully.`)
 }
 
-type saveScriptParams = {
+type SaveScriptParams = {
     scriptName: string
     scriptPath: string
     isPublic: boolean
 }
-export async function saveScriptAtRemote({ scriptName, isPublic, scriptPath }: saveScriptParams) {
+export async function saveScriptAtRemote({ scriptName, isPublic, scriptPath }: SaveScriptParams) {
     const scriptInterpreted = await import(scriptPath).then(moduleExport => moduleExport.default) as Script
     const scriptFile = fs.readFileSync(scriptPath, 'utf8')
 
@@ -175,4 +176,86 @@ export async function saveScriptAtRemote({ scriptName, isPublic, scriptPath }: s
     }
 
     p.log.success(`Script saved at remote.`)
+}
+
+type TemplateEntry = {
+    name: string,
+    isDir: true,
+    content: null,
+    children: TemplateEntry[],
+} | {
+    name: string,
+    isDir: false,
+    content: string,
+    children: null,
+}
+type SaveTemplateReqBody = {
+    isPublic: boolean
+    tags: string[]
+    files: {
+        name: string
+        content: null
+        isDir: true
+        children: TemplateEntry[]
+    }
+}
+type SaveTemplateParams = {
+    templateName: string
+    templatePath: string
+    isPublic: boolean
+}
+
+function buildTemplateFilesTree(templatePath: string): TemplateEntry[] {
+    const files = fs.readdirSync(templatePath)
+    const templateFiles: TemplateEntry[] = []
+    for (const file of files) {
+        const stat = fs.statSync(`${templatePath}/${file}`)
+        if (stat.isFile()) {
+            const fileContent = fs.readFileSync(`${templatePath}/${file}`, 'utf8')
+            templateFiles.push({
+                name: file,
+                isDir: false,
+                content: fileContent,
+                children: null,
+            })
+        } else {
+            const children = buildTemplateFilesTree(`${templatePath}/${file}`)
+            templateFiles.push({
+                name: file,
+                isDir: true,
+                content: null,
+                children: children,
+            })
+        }
+    }
+    return templateFiles
+}
+
+export async function saveTemplateAtRemote({ isPublic, templateName, templatePath }: SaveTemplateParams) {
+    const reqBody: SaveTemplateReqBody = {
+        isPublic: isPublic,
+        tags: [],
+        files: {
+            name: templateName,
+            content: null,
+            isDir: true,
+            children: buildTemplateFilesTree(templatePath),
+        },
+    }
+
+    console.log(inspect(reqBody, { depth: null }))
+    const res = await fetch(`${GO_BACKEND_URL}/api/templates`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `${loadSettings().githubToken}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reqBody),
+    })
+    if (!res.ok) {
+        p.log.error(`Failed to save template at remote.`)
+        return
+    }
+
+    p.log.success(`Template saved at remote.`)
 }

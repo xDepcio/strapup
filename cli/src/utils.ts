@@ -305,3 +305,17 @@ export const sendTelemetryStats = async (stat: TelemetryStat) => {
 export const pLog = {
     message: (str: string) => console.log(`${color.gray(S_BAR)}  ${str}`)
 }
+
+export const walkDir = (dir: string, callback: (path: string) => void, recursive: boolean = false) => {
+    const files = fs.readdirSync(dir)
+    for (const file of files) {
+        const filePath = path.normalize(`${dir}/${file}`)
+        const stats = fs.statSync(filePath)
+        if (stats.isFile()) {
+            callback(filePath)
+        }
+        else if (recursive && stats.isDirectory()) {
+            walkDir(filePath, callback)
+        }
+    }
+}

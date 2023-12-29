@@ -5,7 +5,7 @@ import { dirname } from 'path';
 import color from 'picocolors';
 import { fileURLToPath } from 'url';
 import * as p from './clack-lib/prompts/index.js';
-import { list, paste, runScript, save, saveScriptAtRemote, signIn } from './commandsHandlers.js';
+import { list, paste, runScript, save, saveScriptAtRemote, saveTemplateAtRemote, signIn } from './commandsHandlers.js';
 import { SCRIPTS_DIR_PATH, StrapupSettings, TEMPLATES_PATH } from './constants.js';
 import { DirectoryNotExists } from './errors.js';
 import { downloadScript, escape, getParameterNames, importScripts, initializeStrapupDir, loadSettings, parseName, readMetadataFile } from './utils.js';
@@ -54,6 +54,7 @@ async function main() {
             { value: 'sign-in', label: `${color.underline(color.cyan('sign-in'))} - sign in using Github.` },
             { value: 'list', label: `${color.underline(color.cyan('list'))} - list saved templates.` },
             { value: 'push-script', label: `${color.underline(color.cyan('push-script'))} - save choosen script at remote.` },
+            { value: 'push-template', label: `${color.underline(color.cyan('push-template'))} - save choosen template at remote.` },
         ],
     })
 
@@ -191,7 +192,6 @@ async function main() {
                 options: options,
             }) as string
 
-            let script = scripts[scriptName]
             const { name } = parseName(scriptName)
 
             const nameToSave = await p.text({
@@ -210,6 +210,51 @@ async function main() {
                 scriptName: nameToSave as string,
                 isPublic: isPublic as boolean,
                 scriptPath: `${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`
+            })
+            break
+        }
+        case 'push-template': {
+            if (!githubUser) {
+                p.log.error(`You need to be logged in to save template at remote.`)
+                return
+            }
+
+            const templates = fs.readdirSync(TEMPLATES_PATH()).map(template => {
+                const metdata = readMetadataFile(`${TEMPLATES_PATH()}/${template}`)
+                return {
+                    name: template,
+                    description: metdata?.templateDesc
+                }
+            })
+
+            if (templates.length == 0) {
+                p.log.error(`You don't have any templates saved.`)
+                return
+            }
+
+            const templateName = await p.select({
+                message: 'Choose template to save at remote.',
+                options: templates.map(({ name, description }) => ({ value: name, label: name, hint: description })),
+            }) as string
+
+            const { name } = parseName(templateName)
+
+            const nameToSave = await p.text({
+                message: 'What should be the name of the template?',
+                initialValue: '@' + githubUser.login + '/' + name,
+                validate: (value) => {
+                    if (!value.startsWith(`@${githubUser.login}/`)) return `Saved template name must start with @${githubUser.login}/`
+                }
+            })
+
+            const isPublic = await p.confirm({
+                message: 'Should the template be public?',
+            })
+
+            await saveTemplateAtRemote({
+                templateName: nameToSave as string,
+                isPublic: isPublic as boolean,
+                templatePath: `${TEMPLATES_PATH()}/${escape(templateName)}`
             })
             break
         }
