@@ -9,6 +9,8 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { CiHashtag } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { Skeleton } from "./ui/skeleton";
+import { Switch } from "./ui/switch";
+import { Label } from "./ui/label";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
@@ -36,6 +38,16 @@ export default function Search() {
                         <input className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
                     </div>
                     <div className="p-4">
+                        <div className="mb-4 flex items-center gap-4 text-muted-foreground">
+                            <Label className="flex items-center gap-2">
+                                <Switch defaultChecked />
+                                <p>Search scripts</p>
+                            </Label>
+                            <Label className="flex items-center gap-2">
+                                <Switch />
+                                <p>Search templates</p>
+                            </Label>
+                        </div>
                         <div>
                             <p className="font-bold text-xs mb-2">Results</p>
                             <div className="flex flex-col gap-2">
