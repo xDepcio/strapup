@@ -1,4 +1,4 @@
-import { loadSettings } from "../utils"
+import { loadSettings } from "../utils.js"
 
 type GithubUser = {
     login: string

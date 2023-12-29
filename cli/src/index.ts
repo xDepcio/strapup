@@ -196,7 +196,7 @@ async function main() {
 
             const nameToSave = await p.text({
                 message: 'What should be the name of the script?',
-                defaultValue: '@' + githubUser.login + '/' + name,
+                initialValue: '@' + githubUser.login + '/' + name,
                 validate: (value) => {
                     if (!value.startsWith(`@${githubUser.login}/`)) return `Saved script name must start with @${githubUser.login}/`
                 }
