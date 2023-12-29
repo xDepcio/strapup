@@ -8,6 +8,7 @@ async function createTemplatesTable() {
         name VARCHAR(255) NOT NULL,
         public BOOLEAN NOT NULL,
         owner_id INTEGER NOT NULL REFERENCES users(id),
+        tags VARCHAR(512),
 
         PRIMARY KEY (id)
     );`
@@ -20,6 +21,7 @@ async function createScriptsTable() {
         name VARCHAR(255) NOT NULL,
         public BOOLEAN NOT NULL,
         owner_id INTEGER NOT NULL REFERENCES users(id),
+        tags VARCHAR(512),
 
         PRIMARY KEY (id)
     );`
