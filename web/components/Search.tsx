@@ -15,7 +15,7 @@ import { Label } from "./ui/label";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
-    const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout | null>(null)
+    const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const [searchScripts, setSearchScripts] = useState<boolean>(true)
     const [searchTemplates, setSearchTemplates] = useState<boolean>(false)
 
@@ -34,7 +34,7 @@ export default function Search() {
             //     searchTemplates: searchTemplates
             // })
         }, 500)
-        clearTimeout(dbSearchTimeout as NodeJS.Timeout)
+        clearTimeout(dbSearchTimeout)
         setDbSearchTimeout(timeout)
     }
 
