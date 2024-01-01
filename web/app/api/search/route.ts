@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sql } from '@vercel/postgres'
+import { Client } from "pg";
 
 export const POST = async (req: NextRequest) => {
-    const { fields, rows } = await sql`SELECT * FROM scripts;`
-    console.log('fields', fields, 'rows', rows)
+    const client = new Client({
+        connectionString: process.env.POSTGRES_URL + "?sslmode=require",
+    })
+    await client.connect()
+    const result = await client.query(`SELECT * FROM scripts`)
+    await client.end()
+    console.log('res', result)
     return NextResponse.json({ message: "Hello World" })
 }
