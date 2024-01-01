@@ -1,18 +1,18 @@
-import NextAuth from "next-auth"
-import GitHub from "next-auth/providers/github"
 import PostgresAdapter from "@auth/pg-adapter"
+import { AuthOptions } from "next-auth"
+import GithubProvider from "next-auth/providers/github"
 import { Pool } from 'pg'
-import { sql } from '@vercel/postgres'
 
 const pool = new Pool({
     connectionString: process.env.POSTGRES_URL + "?sslmode=require",
 })
 
-export const { handlers, auth } = NextAuth({
+export const authOptions: AuthOptions = {
     providers: [
-        GitHub({
-            clientId: process.env.AUTH_GITHUB_ID,
-            clientSecret: process.env.AUTH_GITHUB_SECRET,
+        // @ts-ignore
+        GithubProvider({
+            clientId: process.env.AUTH_GITHUB_ID as string,
+            clientSecret: process.env.AUTH_GITHUB_SECRET as string,
             profile(profile) {
                 console.log('prof', profile)
                 return {
@@ -25,6 +25,7 @@ export const { handlers, auth } = NextAuth({
             }
         })
     ],
+    // @ts-ignore
     adapter: PostgresAdapter(pool),
     session: {
         strategy: 'jwt'
@@ -43,7 +44,10 @@ export const { handlers, auth } = NextAuth({
     },
     callbacks: {
         async jwt({ token, profile }) {
+
+            // @ts-ignore
             if (profile?.login) {
+                // @ts-ignore
                 token.login = profile.login
             }
             return token
@@ -56,4 +60,4 @@ export const { handlers, auth } = NextAuth({
             return session
         }
     }
-})
+}

@@ -11,7 +11,6 @@ import { FaSearch } from "react-icons/fa";
 import { Skeleton } from "./ui/skeleton";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-import { serverFn } from "@/app/actions";
 
 
 export default function Search() {
@@ -28,7 +27,7 @@ export default function Search() {
     function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
         const timeout = setTimeout(async () => {
             console.log('searching...')
-            await serverFn()
+            // await serverFn()
             // await fetchTemplatesScript({
             //     searchInput: e.target.value,
             //     searchScripts: searchScripts,

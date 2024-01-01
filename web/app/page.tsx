@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import CopyBtnMain from "@/components/CopyBtnMain";
 import { Button } from "@/components/ui/button";
 import { ProximaSoft, robotoMono } from "@/lib/fonts";
@@ -11,6 +10,9 @@ import { BiCodeAlt } from "react-icons/bi";
 import { FaNpm } from "react-icons/fa";
 import { FiCopy } from "react-icons/fi";
 import { RiSave3Line } from "react-icons/ri";
+import { } from 'next-auth'
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]/options";
 
 export const metadata: Metadata = {
     title: 'Strapup',
@@ -18,8 +20,8 @@ export const metadata: Metadata = {
 }
 
 export default async function Home() {
-    const u = await auth()
-    console.log('us main', u)
+    const session = await getServerSession(authOptions)
+    console.log(session)
     return (
         <main className="min-h-screen flex items-center flex-col overflow-hidden">
             <section className="w-full flex justify-start h-64 sm:mt-32 flex-col items-center relative mt-16 mb-12 sm:mb-0">
