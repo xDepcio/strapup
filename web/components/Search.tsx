@@ -4,20 +4,93 @@ import {
     DialogContent,
     DialogTrigger
 } from "@/components/ui/dialog";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { CiHashtag } from "react-icons/ci";
 import { FaSearch } from "react-icons/fa";
 import { Skeleton } from "./ui/skeleton";
 import { Switch } from "./ui/switch";
 import { Label } from "./ui/label";
-
+import { SearchResBody } from "@/app/api/search/route";
+import { FaCode } from "react-icons/fa6";
+import { MdOutlineStorage } from "react-icons/md";
+import { cn } from "@/lib/utils";
+import { FaRegStar } from "react-icons/fa";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
     const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const [searchScripts, setSearchScripts] = useState<boolean>(true)
     const [searchTemplates, setSearchTemplates] = useState<boolean>(false)
+    const [searchResults, setSearchResults] = useState<SearchResBody>()
+    useEffect(() => {
+        setSearchResults({
+            scripts: [
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                }
+            ],
+            templates: [
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                },
+                {
+                    name: 'Create-Next-App-ShadCN',
+                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
+                    stars: 0,
+                }
+            ]
+        })
+    }, [])
 
     useHotkeys('ctrl+k', (e) => {
         e.preventDefault()
@@ -25,14 +98,21 @@ export default function Search() {
     })
 
     function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
+        setSearchResults(undefined)
         const timeout = setTimeout(async () => {
             console.log('searching...')
-            // await serverFn()
-            // await fetchTemplatesScript({
-            //     searchInput: e.target.value,
-            //     searchScripts: searchScripts,
-            //     searchTemplates: searchTemplates
-            // })
+            const res = await fetch('/api/search', {
+                method: 'POST',
+                body: JSON.stringify({
+                    searchString: e.target.value,
+                    searchScripts,
+                    searchTemplates
+                })
+            })
+            const data = await res.json() as SearchResBody
+            console.log(data)
+            setSearchResults(data)
+
         }, 500)
         clearTimeout(dbSearchTimeout)
         setDbSearchTimeout(timeout)
@@ -51,7 +131,7 @@ export default function Search() {
                     </p>
                 </button>
             </DialogTrigger>
-            <DialogContent className="max-w-[624px] top-1/3 p-0 py-2 border border-zinc-200 dark:border-zinc-900">
+            <DialogContent className="max-w-[624px] top-1/2 p-0 py-2 border border-zinc-200 dark:border-zinc-900 max-h-[75vh]">
                 <div className="">
                     <div className="border-b border-zinc-200 dark:border-zinc-900">
                         <input onChange={handleSearchInput} className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
@@ -69,10 +149,40 @@ export default function Search() {
                         </div>
                         <div>
                             <p className="font-bold text-xs mb-2">Results</p>
-                            <div className="flex flex-col gap-2">
-                                <Skeleton className="h-8" />
-                                <Skeleton className="h-8" />
-                                <Skeleton className="h-8" />
+                            <div className="overflow-y-auto max-h-[32vh] flex flex-col gap-1">
+                                {searchResults ? (
+                                    <>
+                                        {
+                                            [
+                                                ...searchResults.scripts.map(e => ({ ...e, script: true })),
+                                                ...searchResults.templates.map(e => ({ ...e, template: true })),
+                                            ].map((entry, i) => (
+                                                <div key={i} className="flex flex-col dark:hover:bg-zinc-900 hover:bg-zinc-100 rounded-md p-2 cursor-pointer gap-1">
+                                                    <div className="flex gap-4 justify-start">
+                                                        <p className="text-sm">{entry.name}</p>
+                                                        <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
+                                                            {/* @ts-ignore */}
+                                                            {entry.template ? <MdOutlineStorage /> : <FaCode />}
+                                                            {/* @ts-ignore */}
+                                                            <p>{entry.template ? 'Template' : 'Script'}</p>
+                                                        </div>
+                                                        <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
+                                                            <FaRegStar />
+                                                            <p className="text-xs text-muted-foreground">{entry.stars}</p>
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-xs text-muted-foreground text-ellipsis max-w-[70%] overflow-hidden">{entry.tags.split(' ').join('\u00A0\u00A0')}</p>
+                                                </div>
+                                            ))
+                                        }
+                                    </>
+                                ) : (
+                                    <>
+                                        <Skeleton className="h-8" />
+                                        <Skeleton className="h-8" />
+                                        <Skeleton className="h-8" />
+                                    </>
+                                )}
                             </div>
                         </div>
                         <div className="text-sm">
