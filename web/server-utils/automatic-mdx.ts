@@ -24,6 +24,24 @@ console.log("__dirname", __dirname)
 console.log("__dirname", __dirname)
 console.log("__dirname", __dirname)
 
+export async function getScriptMdx(scriptPath: string) {
+    type Script = {
+        description: string
+        command: (...args: string[]) => string[]
+    }
+
+    const scripts: Script = await import(scriptPath).then(module => module.default)
+    const params = getParameterNames(scripts.command)
+    const args = params.map((param) => `\${${param}}`)
+    const script = {
+        name: path.basename(scriptPath, ".mjs"),
+        description: scripts.description,
+        command: scripts.command(...args),
+    }
+    const mdxContent = getMdxScriptsContent({ sortNum: 1, script })
+    return mdxContent
+}
+
 const createScriptsMdx = async () => {
     type Scripts = {
         [key: string]: {

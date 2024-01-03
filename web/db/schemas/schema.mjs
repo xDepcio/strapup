@@ -10,6 +10,7 @@ async function createTemplatesTable() {
         owner_id INTEGER NOT NULL REFERENCES users(id),
         tags VARCHAR(512),
         stars INTEGER DEFAULT 0,
+        synced BOOLEAN DEFAULT FALSE,
 
         PRIMARY KEY (id)
     );`
@@ -24,6 +25,7 @@ async function createScriptsTable() {
         owner_id INTEGER NOT NULL REFERENCES users(id),
         tags VARCHAR(512),
         stars INTEGER DEFAULT 0,
+        synced BOOLEAN DEFAULT FALSE,
 
         PRIMARY KEY (id)
     );`

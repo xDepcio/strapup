@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePreetyCode from 'rehype-pretty-code'
 import { spawn } from 'child_process'
+import { syncContent } from './server-utils/misc'
 
 export const Doc = defineDocumentType(() => ({
     name: 'Doc',
@@ -20,67 +21,68 @@ export const Doc = defineDocumentType(() => ({
     contentType: 'mdx'
 }))
 
-const syncContentFromGit = async (contentDir: string) => {
-    const syncRun = async () => {
-        const gitUrl = 'https://github.com/vercel/next.js.git'
-        await runBashCommand(`echo "Syncing content from git"`)
-        //     await runBashCommand(`
-        //     if [ -d  "${contentDir}" ];
-        //       then
-        //         cd "${contentDir}"; git pull;
-        //       else
-        //         git clone --depth 1 --single-branch ${gitUrl} ${contentDir};
-        //     fi
-        //   `)
-    }
+// const syncContentFromGit = async (contentDir: string) => {
+//     const syncRun = async () => {
+//         const gitUrl = 'https://github.com/vercel/next.js.git'
+//         await runBashCommand(`echo "Syncing content from git"`)
+//         //     await runBashCommand(`
+//         //     if [ -d  "${contentDir}" ];
+//         //       then
+//         //         cd "${contentDir}"; git pull;
+//         //       else
+//         //         git clone --depth 1 --single-branch ${gitUrl} ${contentDir};
+//         //     fi
+//         //   `)
+//     }
 
-    let wasCancelled = false
-    // @ts-ignore
-    let syncInterval
+//     let wasCancelled = false
+//     // @ts-ignore
+//     let syncInterval
 
-    const syncLoop = async () => {
-        console.log('Syncing content files from git')
+//     const syncLoop = async () => {
+//         console.log('Syncing content files from git')
 
-        await syncRun()
+//         await syncRun()
 
-        if (wasCancelled) return
+//         if (wasCancelled) return
 
-        syncInterval = setTimeout(syncLoop, 1000 * 60)
-    }
+//         syncInterval = setTimeout(syncLoop, 1000 * 60)
+//     }
 
-    // Block until the first sync is done
-    await syncLoop()
+//     // Block until the first sync is done
+//     await syncLoop()
 
-    return () => {
-        wasCancelled = true
-        // @ts-ignore
-        clearTimeout(syncInterval)
-    }
-}
+//     return () => {
+//         wasCancelled = true
+//         // @ts-ignore
+//         clearTimeout(syncInterval)
+//     }
+// }
 
-const runBashCommand = (command: string) =>
-    new Promise((resolve, reject) => {
-        const child = spawn(command, [], { shell: true })
+// const runBashCommand = (command: string) =>
+//     new Promise((resolve, reject) => {
+//         const child = spawn(command, [], { shell: true })
 
-        child.stdout.setEncoding('utf8')
-        child.stdout.on('data', (data) => process.stdout.write(data))
+//         child.stdout.setEncoding('utf8')
+//         child.stdout.on('data', (data) => process.stdout.write(data))
 
-        child.stderr.setEncoding('utf8')
-        child.stderr.on('data', (data) => process.stderr.write(data))
+//         child.stderr.setEncoding('utf8')
+//         child.stderr.on('data', (data) => process.stderr.write(data))
 
-        child.on('close', function (code) {
-            if (code === 0) {
-                resolve(void 0)
-            } else {
-                reject(new Error(`Command failed with exit code ${code}`))
-            }
-        })
-    })
+//         child.on('close', function (code) {
+//             if (code === 0) {
+//                 resolve(void 0)
+//             } else {
+//                 reject(new Error(`Command failed with exit code ${code}`))
+//             }
+//         })
+//     })
 
 
 
 export default makeSource({
-    syncFiles: syncContentFromGit,
+    // syncFiles: syncContentFromGit,
+    syncFiles: syncContent,
     contentDirPath: 'docs',
     documentTypes: [Doc],
     mdx: {
