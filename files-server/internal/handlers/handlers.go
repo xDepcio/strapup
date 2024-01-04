@@ -46,12 +46,8 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 		return c.JSON(templateStructure)
 	}
 
-	isValid, user, err := utils.Authorize(c)
-	if !isValid || err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
-	}
-
-	if user.ID != template.OwnerID {
+	isValid, isRoot, user, err := utils.Authorize(c)
+	if !isRoot && (!isValid || err != nil || user.ID != template.OwnerID) {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
 
@@ -100,13 +96,15 @@ func GetFileHandler(c *fiber.Ctx) error {
 		return c.Send(b)
 	}
 
-	isValid, user, err := utils.Authorize(c)
-	if !isValid || err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
-	}
+	isValid, isRoot, user, err := utils.Authorize(c)
+	if !isRoot {
+		if !isValid || err != nil {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+		}
 
-	if user.ID != template.OwnerID {
-		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized - not owner")
+		if user.ID != template.OwnerID {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized - not owner")
+		}
 	}
 
 	file, err := utils.GetTemlateFile("./files/templates/" + escapedName)
@@ -154,13 +152,15 @@ func GetScriptsHandler(c *fiber.Ctx) error {
 		return c.Send(b)
 	}
 
-	isValid, user, err := utils.Authorize(c)
-	if !isValid || err != nil {
-		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
-	}
+	isValid, isRoot, user, err := utils.Authorize(c)
+	if !isRoot {
+		if !isValid || err != nil {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+		}
 
-	if user.ID != script.OwnerID {
-		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized - not owner")
+		if user.ID != script.OwnerID {
+			return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized - not owner")
+		}
 	}
 
 	file, err := utils.GetTemlateFile("./files/scripts/" + escapedName + ".mjs")
@@ -185,7 +185,7 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 		Success bool   `json:"success"`
 	}
 
-	isValid, user, err := utils.Authorize(c)
+	isValid, _, user, err := utils.Authorize(c)
 	if !isValid || err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(Response{
 			Message: "Unauthorized",

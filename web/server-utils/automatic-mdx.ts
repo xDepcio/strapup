@@ -161,5 +161,5 @@ export function getParameterNames(func: Function) {
     return parameterNames.filter(Boolean); // Removes empty strings
 }
 
-createTemplatesMdx()
-createScriptsMdx()
+// createTemplatesMdx()
+// createScriptsMdx()

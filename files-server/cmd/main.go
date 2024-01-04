@@ -6,9 +6,14 @@ import (
 	"strapup-files/internal/router"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofor-little/env"
 )
 
 func main() {
+	if err := env.Load(".env"); err != nil {
+		log.Fatal(err)
+	}
+
 	app := fiber.New()
 
 	app.Get("/", func(c *fiber.Ctx) error {

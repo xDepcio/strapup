@@ -9,6 +9,7 @@ import (
 	"strapup-files/internal/database"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofor-little/env"
 )
 
 type FileNode struct {
@@ -99,10 +100,18 @@ func GetTemlateFile(filePath string) (string, error) {
 // 	GithubID int `json:"github_id"`
 // }
 
-func Authorize(c *fiber.Ctx) (bool, User, error) {
+func Authorize(c *fiber.Ctx) (bool, bool, User, error) {
 	token := c.Get("Authorization")
 	if token == "" {
-		return false, User{}, fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+		return false, false, User{}, fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
+	}
+
+	root_key, err := env.MustGet("API_ROOT_KEY")
+	if err != nil {
+		return false, false, User{}, err
+	}
+	if root_key == token {
+		return true, true, User{}, nil
 	}
 
 	// Specify the GitHub API endpoint you want to access
@@ -113,7 +122,7 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
-		return false, User{}, err
+		return false, false, User{}, err
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
 
@@ -121,7 +130,7 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Println("Error making request:", err)
-		return false, User{}, err
+		return false, false, User{}, err
 	}
 	defer resp.Body.Close()
 
@@ -139,7 +148,7 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		fmt.Println("Error decoding JSON:", err)
-		return false, User{}, err
+		return false, false, User{}, err
 	}
 
 	// Check if the response contains certain values
@@ -157,10 +166,10 @@ func Authorize(c *fiber.Ctx) (bool, User, error) {
 	userGithubID := int(data.Id)
 	user, err := DbGetUserByGithubID(userGithubID)
 	if err != nil {
-		return false, User{}, err
+		return false, false, User{}, err
 	}
 
-	return true, user, nil
+	return true, false, user, nil
 }
 
 type User struct {
