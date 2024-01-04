@@ -5,7 +5,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypePreetyCode from 'rehype-pretty-code'
 import { spawn } from 'child_process'
-import { syncContent } from './server-utils/misc'
+import { syncContent } from './server-utils/contentlayer-sync'
 
 export const Doc = defineDocumentType(() => ({
     name: 'Doc',
