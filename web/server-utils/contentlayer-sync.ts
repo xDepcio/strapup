@@ -52,13 +52,13 @@ async function downloadScript(scriptName: string, savePath: string) {
 }
 
 export async function syncContent(contentDir: string) {
-    await syncContentWorker(contentDir)
+    // await syncContentWorker(contentDir)
 
     let wasCancelled = false
     const interval = setInterval(async () => {
         if (wasCancelled) return
         await syncContentWorker(contentDir)
-    }, 1000 * 60)
+    }, 1000 * 60 * 60)
 
     return () => {
         wasCancelled = true

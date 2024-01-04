@@ -6,8 +6,9 @@ import { MdKeyboardArrowRight } from 'react-icons/md'
 
 const getDocBySlugs = (slugs: string[]) => {
     const pathFromSlugs = slugs.join('/')
-    const doc = allDocs.find((doc) => doc._raw.flattenedPath === pathFromSlugs)
-    if (!doc) return redirect('/docs/Basic use/Save and Paste')
+    const doc = allDocs
+        .filter((doc) => doc._raw.sourceFileDir !== 'remote-scripts' && doc._raw.sourceFileDir !== 'remote-templates')
+        .find((doc) => doc._raw.flattenedPath === pathFromSlugs)
     return doc
 }
 
@@ -17,6 +18,9 @@ export function generateMetadata({ params }: { params: { slug?: string[] } }): M
     }
     params.slug = params.slug?.map((slug) => decodeURI(slug))
     const doc = getDocBySlugs(params.slug)
+    if (!doc) return {
+        title: 'Strapup - Docs',
+    }
 
     return {
         title: `Strapup - ${doc.title} - Docs`,
@@ -30,6 +34,7 @@ export default function DocsPage({ params }: { params: { slug?: string[] } }) {
     params.slug = params.slug?.map((slug) => decodeURI(slug))
 
     const doc = getDocBySlugs(params.slug)
+    if (!doc) return redirect('/docs/Basic use/Save and Paste')
 
     return (
         <article className="min-h-screen pb-8 overflow-x-auto sm:px-8  px-4 flex-1">
