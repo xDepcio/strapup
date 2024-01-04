@@ -1,0 +1,113 @@
+---
+title: @xDepcio/template1
+sortNum: 1
+---
+### @xDepcio/template1
+Typescript redux toolkit with skeleton createApi, createSlice and TS redux hooks.
+#### Pasted files structure
+```bash
+├── features
+│   └── counterSlice.ts
+├── hooks.ts
+├── provider.tsx
+├── services
+│   └── userApi.ts
+└── store.ts
+```
+#### Files contents
+```ts title="temp/@xDepcio_-_template1/features/counterSlice.ts"
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+
+type CounterState = {
+    value: number;
+};
+
+const initialState = {
+    value: 0,
+} as CounterState;
+
+export const counter = createSlice({
+    name: "counter",
+    initialState,
+    reducers: {
+        reset: () => initialState,
+        increment: (state) => {
+            state.value += 1;
+        },
+        incrementByAmount: (state, action: PayloadAction<number>) => {
+            state.value += action.payload;
+        },
+    },
+});
+
+export const {
+    increment,
+    incrementByAmount,
+} = counter.actions;
+export default counter.reducer;
+```
+```ts title="temp/@xDepcio_-_template1/hooks.ts"
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import type { RootState, AppDispatch } from "./store";
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+```
+```tsx title="temp/@xDepcio_-_template1/provider.tsx"
+"use client";
+
+import { store } from "./store";
+import { Provider } from "react-redux";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+    return <Provider store={store}>{children}</Provider>;
+}
+```
+```ts title="temp/@xDepcio_-_template1/services/userApi.ts"
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
+type User = {
+    id: number;
+    name: string;
+    email: number;
+};
+
+export const userApi = createApi({
+    reducerPath: "userApi",
+    refetchOnFocus: true,
+    baseQuery: fetchBaseQuery({
+        baseUrl: "https://your-api-url.com/",
+    }),
+    endpoints: (builder) => ({
+        getUsers: builder.query<User[], null>({
+            query: () => "users",
+        }),
+        getUserById: builder.query<User, { id: string }>({
+            query: ({ id }) => `users/${id}`,
+        }),
+    }),
+});
+
+export const { useGetUsersQuery, useGetUserByIdQuery } = userApi;
+```
+```ts title="temp/@xDepcio_-_template1/store.ts"
+import { configureStore } from "@reduxjs/toolkit";
+import counterReducer from "./features/counterSlice";
+import { userApi } from "./services/userApi";
+import { setupListeners } from "@reduxjs/toolkit/dist/query";
+
+export const store = configureStore({
+    reducer: {
+        counterReducer,
+        [userApi.reducerPath]: userApi.reducer,
+    },
+    devTools: process.env.NODE_ENV !== "production",
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({}).concat([userApi.middleware]),
+});
+
+setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+```

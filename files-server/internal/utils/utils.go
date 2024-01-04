@@ -7,20 +7,22 @@ import (
 	"os"
 	"path/filepath"
 	"strapup-files/internal/database"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofor-little/env"
 )
 
 type FileNode struct {
-	Name     string
-	IsDir    bool
-	Children []FileNode
+	Name     string     `json:"name"`
+	IsDir    bool       `json:"isDir"`
+	Children []FileNode `json:"children"`
 }
 
 func GetDirectoryStructure(rootPath string) (FileNode, error) {
 	var result FileNode
-	result.Name = filepath.Base(rootPath)
+	baseNameUnescaped := strings.Replace(filepath.Base(rootPath), "_-_", "/", -1)
+	result.Name = baseNameUnescaped
 	result.IsDir = true
 
 	entries, readErr := os.ReadDir(rootPath)
