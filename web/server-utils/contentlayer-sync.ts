@@ -1,5 +1,5 @@
 import { DbScript, DbTemplte } from "@/db/types";
-import { getScriptMdx } from "./automatic-mdx";
+import { getScriptMdx, getTemplateMdx } from "./automatic-mdx";
 import * as fs from "fs";
 import pg from 'pg'
 const { Client } = pg
@@ -51,6 +51,20 @@ async function downloadScript(scriptName: string, savePath: string) {
     fs.writeFileSync(savePath, script)
 }
 
+async function downloadTemplate(templateName: string, savePath: string) {
+    const res = await fetch(`http://localhost:5000/api/templates?name=${templateName}`, {
+        headers: {
+            'Authorization': process.env.API_ROOT_KEY as string
+        }
+    })
+    if (!res.ok) {
+        console.error(`Failed to download template ${templateName}`)
+        return
+    }
+    const template = await res.text()
+    fs.writeFileSync(savePath, template)
+}
+
 export async function syncContent(contentDir: string) {
     // await syncContentWorker(contentDir)
 
@@ -77,7 +91,8 @@ export function unEscape(fileName: string) {
 async function syncContentWorker(contentDir: string) {
     const notSyncedScripts = await getNotSyncedScripts()
     console.log("notSyncedScripts", notSyncedScripts)
-    // const notSyncedTemplates = await getNotSyncedTemplates()
+    const notSyncedTemplates = await getNotSyncedTemplates()
+    console.log("notSyncedTemplates", notSyncedTemplates)
 
     notSyncedScripts.forEach(async (scriptName) => {
         fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
@@ -89,11 +104,13 @@ async function syncContentWorker(contentDir: string) {
         // fs.rmSync('/temp', { force: true, recursive: true })
     })
 
-    // notSyncedTemplates.forEach(async (templateName) => {
-    //     const savePath = `temp/template.mjs`
-    //     await downloadScript(templateName, savePath)
-    //     const templateMdx = await getScriptMdx(savePath)
-    //     fs.writeFileSync(`${contentDir}/remote-templates/${templateName}.mdx`, templateMdx)
-    //     fs.rmSync('/temp', { force: true, recursive: true })
-    // })
+    notSyncedTemplates.forEach(async (templateName) => {
+        fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
+        fs.mkdirSync(process.env.PWD + '/temp')
+        const savePath = `temp/${escape(templateName)}.mjs`
+        await downloadTemplate(templateName, savePath)
+        const templateMdx = await getTemplateMdx(savePath, templateName)
+        fs.writeFileSync(`${contentDir}/remote-templates/${escape(templateName)}.mdx`, templateMdx)
+        // fs.rmSync('/temp', { force: true, recursive: true })
+    })
 }

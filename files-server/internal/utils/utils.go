@@ -23,35 +23,27 @@ func GetDirectoryStructure(rootPath string) (FileNode, error) {
 	result.Name = filepath.Base(rootPath)
 	result.IsDir = true
 
-	err := filepath.Walk(rootPath, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
+	entries, readErr := os.ReadDir(rootPath)
+	if readErr != nil {
+		return FileNode{}, readErr
+	}
 
-		if path == rootPath {
-			return nil
+	for _, entry := range entries {
+		if entry.IsDir() {
+			children, err := GetDirectoryStructure(filepath.Join(rootPath, entry.Name()))
+			if err != nil {
+				return FileNode{}, err
+			}
+			result.Children = append(result.Children, children)
+			continue
 		}
 
 		node := FileNode{
-			Name:  info.Name(),
-			IsDir: info.IsDir(),
-		}
-
-		if info.IsDir() {
-			children, err := GetDirectoryStructure(path)
-			if err != nil {
-				return err
-			}
-			node.Children = append(node.Children, children)
+			Name:  entry.Name(),
+			IsDir: entry.IsDir(),
 		}
 
 		result.Children = append(result.Children, node)
-
-		return nil
-	})
-
-	if err != nil {
-		return FileNode{}, err
 	}
 
 	return result, nil

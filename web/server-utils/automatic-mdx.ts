@@ -79,6 +79,24 @@ ${script.command.join("\n")}
 `
 }
 
+export async function getTemplateMdx(templatePath: string, templateName: string) {
+
+    // const templates = fs.readdirSync(templatePath)
+
+    // return templates.map((template, i) => {
+    const dirStructure = await getTreeString(templatePath)
+    let description = ''
+    if (fs.existsSync(`${templatePath}/_strapupmetadata.json`)) {
+        const templateInfo = JSON.parse(fs.readFileSync(`${templatePath}/_strapupmetadata.json`, "utf-8"))
+        if (templateInfo.templateDesc) description = templateInfo.templateDesc
+    }
+    const filesNames = getAllFilesNameDepthFirst(templatePath)
+    const codeBlocks = getCodeBlocks(filesNames)
+    const mdxContent = getMdxContent({ sortNum: 1, title: templateName, codeBlocks, treeString: dirStructure, description })
+    return mdxContent
+    // })
+}
+
 // export const createTemplatesMdx = async () => {
 
 //     const templates = fs.readdirSync(TEMPLATES_PATH)
@@ -98,12 +116,12 @@ ${script.command.join("\n")}
 
 // }
 
-// const getCodeBlocks = (files: string[], templateName: string) => files.map((file) => {
-//     const fileContent = fs.readFileSync(file, "utf-8")
-//     const fileExtension = path.extname(file).replace(".", "")
-//     return `\`\`\`${fileExtension} title="${file.replace(`${TEMPLATES_PATH}/${templateName}`, '.')}"
-// ${fileContent}\`\`\``
-// }).join("\n")
+const getCodeBlocks = (files: string[]) => files.map((file) => {
+    const fileContent = fs.readFileSync(file, "utf-8")
+    const fileExtension = path.extname(file).replace(".", "")
+    return `\`\`\`${fileExtension} title="${file}"
+${fileContent}\`\`\``
+}).join("\n")
 
 const getMdxContent = ({ sortNum, title, codeBlocks, description, treeString }: { title: string, sortNum: number, treeString?: string, description?: string, codeBlocks?: string }) => {
     return `---
