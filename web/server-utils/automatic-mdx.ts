@@ -3,26 +3,26 @@
 import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
-import { fileURLToPath } from "url";
+// import { fileURLToPath } from "url";
 
-const TEMPLATES_PATH = `${process.env.STRAPUP_DIR_PATH}/templates`
-const SCRIPTS_PATH = `${process.env.STRAPUP_DIR_PATH}/scripts.mjs`
-const TEMPLATES_SORT_OFFSET = 100
-const SCRIPTS_SORT_OFFSET = 1000
-// @ts-ignore
-export const __filename = fileURLToPath(import.meta.url);
-// @ts-ignore
-export const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// const TEMPLATES_PATH = `${process.env.STRAPUP_DIR_PATH}/templates`
+// const SCRIPTS_PATH = `${process.env.STRAPUP_DIR_PATH}/scripts.mjs`
+// const TEMPLATES_SORT_OFFSET = 100
+// const SCRIPTS_SORT_OFFSET = 1000
+// // @ts-ignore
+// export const __filename = fileURLToPath(import.meta.url);
+// // @ts-ignore
+// export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-console.log("TEMPLATES_PATH", TEMPLATES_PATH)
-console.log("TEMPLATES_PATH", TEMPLATES_PATH)
-console.log("TEMPLATES_PATH", TEMPLATES_PATH)
-console.log("SCRIPTS_PATH", SCRIPTS_PATH)
-console.log("SCRIPTS_PATH", SCRIPTS_PATH)
-console.log("SCRIPTS_PATH", SCRIPTS_PATH)
-console.log("__dirname", __dirname)
-console.log("__dirname", __dirname)
-console.log("__dirname", __dirname)
+// console.log("TEMPLATES_PATH", TEMPLATES_PATH)
+// console.log("TEMPLATES_PATH", TEMPLATES_PATH)
+// console.log("TEMPLATES_PATH", TEMPLATES_PATH)
+// console.log("SCRIPTS_PATH", SCRIPTS_PATH)
+// console.log("SCRIPTS_PATH", SCRIPTS_PATH)
+// console.log("SCRIPTS_PATH", SCRIPTS_PATH)
+// console.log("__dirname", __dirname)
+// console.log("__dirname", __dirname)
+// console.log("__dirname", __dirname)
 
 export async function getScriptMdx(scriptPath: string) {
     type Script = {
@@ -42,28 +42,28 @@ export async function getScriptMdx(scriptPath: string) {
     return mdxContent
 }
 
-const createScriptsMdx = async () => {
-    type Scripts = {
-        [key: string]: {
-            description: string
-            command: (...args: string[]) => string[]
-        }
-    }
-    const scripts: Scripts = await import(SCRIPTS_PATH).then(module => module.scripts)
-    const sciriptsFormatted = Object.entries(scripts).map(([scriptName, { description, command }], i) => {
-        const params = getParameterNames(command)
-        const args = params.map((param) => `\${${param}}`)
-        return {
-            name: scriptName,
-            description,
-            command: command(...args),
-        }
-    })
-    sciriptsFormatted.forEach((script, i) => {
-        const mdxContent = getMdxScriptsContent({ sortNum: SCRIPTS_SORT_OFFSET + i, script })
-        fs.writeFileSync(`${__dirname}/../results/scripts/${script.name}.mdx`, mdxContent)
-    })
-}
+// const createScriptsMdx = async () => {
+//     type Scripts = {
+//         [key: string]: {
+//             description: string
+//             command: (...args: string[]) => string[]
+//         }
+//     }
+//     const scripts: Scripts = await import(SCRIPTS_PATH).then(module => module.scripts)
+//     const sciriptsFormatted = Object.entries(scripts).map(([scriptName, { description, command }], i) => {
+//         const params = getParameterNames(command)
+//         const args = params.map((param) => `\${${param}}`)
+//         return {
+//             name: scriptName,
+//             description,
+//             command: command(...args),
+//         }
+//     })
+//     sciriptsFormatted.forEach((script, i) => {
+//         const mdxContent = getMdxScriptsContent({ sortNum: SCRIPTS_SORT_OFFSET + i, script })
+//         fs.writeFileSync(`${__dirname}/../results/scripts/${script.name}.mdx`, mdxContent)
+//     })
+// }
 
 const getMdxScriptsContent = ({ script, sortNum }: { sortNum: number, script: { name: string, description?: string, command: string[] } }) => {
     return `---
@@ -79,31 +79,31 @@ ${script.command.join("\n")}
 `
 }
 
-export const createTemplatesMdx = async () => {
+// export const createTemplatesMdx = async () => {
 
-    const templates = fs.readdirSync(TEMPLATES_PATH)
+//     const templates = fs.readdirSync(TEMPLATES_PATH)
 
-    templates.forEach(async (template, i) => {
-        const dirStructure = await getTreeString(`${TEMPLATES_PATH}/${template}`)
-        let description = ''
-        if (fs.existsSync(`${TEMPLATES_PATH}/${template}/_strapupmetadata.json`)) {
-            const templateInfo = JSON.parse(fs.readFileSync(`${TEMPLATES_PATH}/${template}/_strapupmetadata.json`, "utf-8"))
-            if (templateInfo.templateDesc) description = templateInfo.templateDesc
-        }
-        const filesNames = getAllFilesNameDepthFirst(`${TEMPLATES_PATH}/${template}`)
-        const codeBlocks = getCodeBlocks(filesNames, template)
-        const mdxContent = getMdxContent({ sortNum: TEMPLATES_SORT_OFFSET + i, title: template, codeBlocks, treeString: dirStructure, description })
-        fs.writeFileSync(`${__dirname}/../results/templates/${template}.mdx`, mdxContent)
-    })
+//     templates.forEach(async (template, i) => {
+//         const dirStructure = await getTreeString(`${TEMPLATES_PATH}/${template}`)
+//         let description = ''
+//         if (fs.existsSync(`${TEMPLATES_PATH}/${template}/_strapupmetadata.json`)) {
+//             const templateInfo = JSON.parse(fs.readFileSync(`${TEMPLATES_PATH}/${template}/_strapupmetadata.json`, "utf-8"))
+//             if (templateInfo.templateDesc) description = templateInfo.templateDesc
+//         }
+//         const filesNames = getAllFilesNameDepthFirst(`${TEMPLATES_PATH}/${template}`)
+//         const codeBlocks = getCodeBlocks(filesNames, template)
+//         const mdxContent = getMdxContent({ sortNum: TEMPLATES_SORT_OFFSET + i, title: template, codeBlocks, treeString: dirStructure, description })
+//         fs.writeFileSync(`${__dirname}/../results/templates/${template}.mdx`, mdxContent)
+//     })
 
-}
+// }
 
-const getCodeBlocks = (files: string[], templateName: string) => files.map((file) => {
-    const fileContent = fs.readFileSync(file, "utf-8")
-    const fileExtension = path.extname(file).replace(".", "")
-    return `\`\`\`${fileExtension} title="${file.replace(`${TEMPLATES_PATH}/${templateName}`, '.')}"
-${fileContent}\`\`\``
-}).join("\n")
+// const getCodeBlocks = (files: string[], templateName: string) => files.map((file) => {
+//     const fileContent = fs.readFileSync(file, "utf-8")
+//     const fileExtension = path.extname(file).replace(".", "")
+//     return `\`\`\`${fileExtension} title="${file.replace(`${TEMPLATES_PATH}/${templateName}`, '.')}"
+// ${fileContent}\`\`\``
+// }).join("\n")
 
 const getMdxContent = ({ sortNum, title, codeBlocks, description, treeString }: { title: string, sortNum: number, treeString?: string, description?: string, codeBlocks?: string }) => {
     return `---
