@@ -1,6 +1,5 @@
 import { allDocs } from '@/.contentlayer/generated'
 import PageContentNav from '@/components/PageContentNav'
-import StarIt from '@/components/StarTemplate'
 import { Mdx } from '@/components/mdx-components'
 import { DBQuery } from '@/db/db'
 import { DbTemplte, DbUser } from '@/db/types'
@@ -10,6 +9,7 @@ import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
+import StarIt from '@/components/StarIt'
 
 function getTemplateDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
@@ -42,9 +42,9 @@ export default async function TemplatePage({ params }: { params: { slug: string 
                         <p className=''>This template has earned</p>
                         <p className='text-yellow-500 text-nowrap flex items-center gap-1 font-medium'>122 <FaStar className="inline text-yellow-500" /></p>
                         <p className=''>stars</p>
-                        <StarIt className='' />
                         {/* <p className='text-muted-foreground'>This template has earned <span className='relative text-yellow-500 text-nowrap'>122 <FaStar className="inline text-yellow-500" /></span> stars</p> */}
                     </div>
+                    <StarIt className='flex items-center gap-1 underline' template name={templateName} />
                     <p className='mb-2 text-muted-foreground mt-8 text-xs'>creator</p>
                     <div className='flex items-center gap-4'>
                         <Image alt='user avatar' src={rows[0].image} width={32} height={32} className='rounded-full shadow-md' />
