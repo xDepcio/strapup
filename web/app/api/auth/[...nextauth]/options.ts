@@ -53,7 +53,7 @@ export const authOptions: AuthOptions = {
             return token
         },
         async session({ token, session }) {
-            console.log('session', token, session)
+            // console.log('session', token, session)
             if (token?.login) {
                 session.user.login = token.login as string
             }

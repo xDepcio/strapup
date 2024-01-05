@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default async function Home() {
     const session = await getServerSession(authOptions)
-    console.log(session)
+    // console.log(session)
     return (
         <main className="min-h-screen flex items-center flex-col overflow-hidden">
             <section className="w-full flex justify-start h-64 sm:mt-32 flex-col items-center relative mt-16 mb-12 sm:mb-0">
