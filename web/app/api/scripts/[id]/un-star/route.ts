@@ -2,13 +2,13 @@ import { DBQuery } from "@/db/db";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 
-export type StarScriptResponse = {
+export type UnstarScriptResponse = {
     success: true
 } | {
     success: false
     error: string
 }
-export const POST = async (req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse<StarScriptResponse>> => {
+export const POST = async (req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse<UnstarScriptResponse>> => {
     const token = await getToken({ req })
     if (!token) {
         return NextResponse.json({
@@ -18,8 +18,7 @@ export const POST = async (req: NextRequest, { params }: { params: { id: string 
     }
 
     await DBQuery(`
-        INSERT INTO user_script_stars (user_id, script_id)
-        VALUES ($1, $2)
+        DELETE FROM user_script_stars WHERE user_id = $1 AND script_id = $2
     `, [token.id, params.id])
 
     return NextResponse.json({
