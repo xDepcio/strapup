@@ -31,9 +31,31 @@ async function createScriptsTable() {
     );`
 }
 
+async function createUserTemplateStars() {
+    await sql`CREATE TABLE IF NOT EXISTS user_template_stars
+    (
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        template_id INTEGER NOT NULL REFERENCES templates(id),
+
+        PRIMARY KEY (user_id, template_id)
+    );`
+}
+
+async function createUserScriptStars() {
+    await sql`CREATE TABLE IF NOT EXISTS user_script_stars
+    (
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        script_id INTEGER NOT NULL REFERENCES scripts(id),
+
+        PRIMARY KEY (user_id, script_id)
+    );`
+}
+
 async function main() {
     await createTemplatesTable()
     await createScriptsTable()
+    await createUserTemplateStars()
+    await createUserScriptStars()
 }
 
 main().catch((err) => {

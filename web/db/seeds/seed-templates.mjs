@@ -3,7 +3,9 @@ import { sql } from "@vercel/postgres";
 async function createDummyTemplates() {
     await sql`INSERT INTO templates (name, public, owner_id, tags) VALUES
         ('@xDepcio/template1', true, 1, 'nextjs react typescript tailwind'),
-        ('@xDepcio/template2', false, 1, 'express sequelize postgres socketio')
+        ('@xDepcio/template2', false, 1, 'express sequelize postgres socketio'),
+        ('@xDepcio/template3', true, 1, 'python flask sql'),
+        ('@xDepcio/template4', false, 1, 'express sql postgres')
     ;`
 }
 
