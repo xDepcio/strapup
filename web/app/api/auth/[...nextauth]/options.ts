@@ -45,15 +45,15 @@ export const authOptions: AuthOptions = {
     callbacks: {
         async jwt({ token, profile, user, account, session, trigger }) {
             // console.log('jwt', token, profile)
-            console.log('in JWT')
-            console.log({
-                token,
-                profile,
-                user,
-                account,
-                session,
-                trigger
-            })
+            // console.log('in JWT')
+            // console.log({
+            //     token,
+            //     profile,
+            //     user,
+            //     account,
+            //     session,
+            //     trigger
+            // })
 
             // @ts-ignore
             if (profile?.login) {

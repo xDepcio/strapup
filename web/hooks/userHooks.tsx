@@ -1,5 +1,6 @@
 'use client'
 
+import { StarredTemplateResponse } from "@/app/api/starred-template/route"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 
@@ -7,21 +8,22 @@ type UseHasUserStarredTemplateProps = {
     templateName: string
 }
 export function useHasUserStarredTemplate({ templateName }: UseHasUserStarredTemplateProps) {
-    const [hasStarred, setHasStarred] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [data, setData] = useState<StarredTemplateResponse>()
+
     const revalidate = () => {
         setIsLoading(true)
         fetch(`/api/starred-template?templateName=${templateName}`, {})
             .then(res => res.json())
-            .then(data => {
-                setHasStarred(data.starred)
+            .then((data: StarredTemplateResponse) => {
+                setData(data)
                 setIsLoading(false)
             })
     }
 
     useEffect(revalidate, [])
 
-    return { hasStarred, revalidate, isLoading }
+    return { data, revalidate, isLoading, setIsLoading }
 
     // const [stars, setStars] = useState<string[]>([])
 

@@ -18,8 +18,8 @@ function getTemplateDoc(name: string) {
 export default async function TemplatePage({ params }: { params: { slug: string } }) {
     const templateName = decodeURIComponent(unescapeName(params.slug))
     console.log(templateName)
-    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars"> & Pick<DbUser, "image" | "login" | "github_id">>(`
-        SELECT t.name, t.tags, t.stars, u.login, u.image, u.github_id FROM templates t
+    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+        SELECT t.id, t.name, t.tags, t.stars, u.login, u.image, u.github_id FROM templates t
         JOIN users u ON t.owner_id = u.id
         WHERE t.name = $1 AND t.public IS TRUE
     `, [templateName])
@@ -44,7 +44,7 @@ export default async function TemplatePage({ params }: { params: { slug: string 
                         <p className=''>stars</p>
                         {/* <p className='text-muted-foreground'>This template has earned <span className='relative text-yellow-500 text-nowrap'>122 <FaStar className="inline text-yellow-500" /></span> stars</p> */}
                     </div>
-                    <StarIt className='flex items-center gap-1 underline' template name={templateName} />
+                    <StarIt className='flex items-center gap-1 underline' template={rows[0]} name={templateName} />
                     <p className='mb-2 text-muted-foreground mt-8 text-xs'>creator</p>
                     <div className='flex items-center gap-4'>
                         <Image alt='user avatar' src={rows[0].image} width={32} height={32} className='rounded-full shadow-md' />
