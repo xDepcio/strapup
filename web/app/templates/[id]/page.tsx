@@ -2,49 +2,51 @@ import { allDocs } from '@/.contentlayer/generated'
 import PageContentNav from '@/components/PageContentNav'
 import { Mdx } from '@/components/mdx-components'
 import { DBQuery } from '@/db/db'
-import { DbTemplte, DbUser } from '@/db/types'
-import { escapeName, unescapeName } from '@/lib/utils'
+import { DbScript, DbUser } from '@/db/types'
+import { escapeName } from '@/lib/utils'
 import Image from 'next/image'
+import { Suspense } from 'react'
 import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
-import StarIt from '@/components/StarIt'
+import StarTemplate from '@/components/StarTemplate'
 
 function getTemplateDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
 }
 
-export default async function TemplatePage({ params }: { params: { slug: string } }) {
-    const templateName = decodeURIComponent(unescapeName(params.slug))
-    console.log(templateName)
-    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+export default async function TemplatePage({ params }: { params: { id: string } }) {
+    // const templateName = decodeURIComponent(unescapeName(params.slug))
+    // console.log(templateName)
+    const { rows, rowCount } = await DBQuery<Pick<DbScript, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
         SELECT t.id, t.name, t.tags, t.stars, u.login, u.image, u.github_id FROM templates t
         JOIN users u ON t.owner_id = u.id
-        WHERE t.name = $1 AND t.public IS TRUE
-    `, [templateName])
+        WHERE t.id = $1 AND t.public IS TRUE
+    `, [params.id])
 
     if (rowCount === 0) {
         return <div>404</div>
         // return redirect('/')
     }
 
-    const template = getTemplateDoc(templateName)
-    if (!template) {
+    const templateDoc = getTemplateDoc(rows[0].name)
+    if (!templateDoc) {
         return <div>404</div>
     }
 
     return (
-        <div className=''>
+        <div className='min-h-screen'>
             <div className='max-w-screen-xl mx-auto grid grid-cols-[1fr_3fr_1fr] gap-10'>
                 <div className='mt-9'>
                     <div className='flex gap-1 flex-wrap'>
                         <p className=''>This template has earned</p>
                         <p className='text-yellow-500 text-nowrap flex items-center gap-1 font-medium'>122 <FaStar className="inline text-yellow-500" /></p>
                         <p className=''>stars</p>
-                        {/* <p className='text-muted-foreground'>This template has earned <span className='relative text-yellow-500 text-nowrap'>122 <FaStar className="inline text-yellow-500" /></span> stars</p> */}
                     </div>
-                    <StarIt className='flex items-center gap-1 underline' template={rows[0]} name={templateName} />
+                    <Suspense fallback={<div>loading...</div>}>
+                        <StarTemplate className='flex items-center gap-1 underline' template={rows[0]} />
+                    </Suspense>
                     <p className='mb-2 text-muted-foreground mt-8 text-xs'>creator</p>
                     <div className='flex items-center gap-4'>
                         <Image alt='user avatar' src={rows[0].image} width={32} height={32} className='rounded-full shadow-md' />
@@ -70,7 +72,7 @@ export default async function TemplatePage({ params }: { params: { slug: string 
                     </div>
                 </div>
                 <div className=''>
-                    <Mdx code={template.body.code} />
+                    <Mdx code={templateDoc.body.code} />
                 </div>
                 <PageContentNav />
             </div>

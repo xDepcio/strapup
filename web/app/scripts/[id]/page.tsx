@@ -1,17 +1,16 @@
 import { allDocs } from '@/.contentlayer/generated'
 import PageContentNav from '@/components/PageContentNav'
+import StarScript from '@/components/StarScript'
 import { Mdx } from '@/components/mdx-components'
 import { DBQuery } from '@/db/db'
-import { DbScript, DbTemplte, DbUser } from '@/db/types'
-import { escapeName, unescapeName } from '@/lib/utils'
+import { DbScript, DbUser } from '@/db/types'
+import { escapeName } from '@/lib/utils'
 import Image from 'next/image'
+import { Suspense } from 'react'
 import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
-import StarIt from '@/components/StarIt'
-import StarScript from '@/components/StarScript'
-import { Suspense } from 'react'
 
 function getScriptDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
