@@ -1,5 +1,6 @@
 'use client'
 
+import { StarredScriptResponse } from "@/app/api/scripts/[id]/starred/route"
 import { StarredTemplateResponse } from "@/app/api/starred-template/route"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
@@ -24,14 +25,28 @@ export function useHasUserStarredTemplate({ templateName }: UseHasUserStarredTem
     useEffect(revalidate, [])
 
     return { data, revalidate, isLoading, setIsLoading }
+}
 
-    // const [stars, setStars] = useState<string[]>([])
+type UseHasUserStarredScriptProps = {
+    scriptId: number
+}
+export function useHasUserStarredScript({ scriptId }: UseHasUserStarredScriptProps) {
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [hasStarred, setHasStarred] = useState<boolean>(false)
 
-    // useEffect(() => {
-    //     if (status === "authenticated") {
-    //         setStars(data.user.stars)
-    //     }
-    // }, [status])
+    const revalidate = () => {
+        setIsLoading(true)
+        fetch(`/api/scripts/${scriptId}/starred`)
+            .then(res => res.json())
+            .then((data: StarredScriptResponse) => {
+                if (data.success) {
+                    setHasStarred(data.starred)
+                }
+                setIsLoading(false)
+            })
+    }
 
-    // return { stars, setStars }
+    useEffect(revalidate, [])
+
+    return { hasStarred, revalidate, isLoading, setIsLoading }
 }
