@@ -1,16 +1,15 @@
 import { allDocs } from '@/.contentlayer/generated'
+import PageContentNav from '@/components/PageContentNav'
+import StarIt from '@/components/StarTemplate'
 import { Mdx } from '@/components/mdx-components'
 import { DBQuery } from '@/db/db'
 import { DbTemplte, DbUser } from '@/db/types'
 import { escapeName, unescapeName } from '@/lib/utils'
-import { sql } from '@vercel/postgres'
-import { redirect } from 'next/navigation'
-import '../../../styles/docs.css'
-import PageContentNav from '@/components/PageContentNav'
 import Image from 'next/image'
-import { FaCode } from "react-icons/fa6";
-import { MdOutlineStorage } from "react-icons/md";
-import { FaStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa"
+import { FaCode } from "react-icons/fa6"
+import { MdOutlineStorage } from "react-icons/md"
+import '../../../styles/docs.css'
 
 function getTemplateDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
@@ -43,6 +42,7 @@ export default async function TemplatePage({ params }: { params: { slug: string 
                         <p className=''>This template has earned</p>
                         <p className='text-yellow-500 text-nowrap flex items-center gap-1 font-medium'>122 <FaStar className="inline text-yellow-500" /></p>
                         <p className=''>stars</p>
+                        <StarIt className='' />
                         {/* <p className='text-muted-foreground'>This template has earned <span className='relative text-yellow-500 text-nowrap'>122 <FaStar className="inline text-yellow-500" /></span> stars</p> */}
                     </div>
                     <p className='mb-2 text-muted-foreground mt-8 text-xs'>creator</p>
