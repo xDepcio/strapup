@@ -18,6 +18,7 @@ import { MdOutlineStorage } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { FaRegStar } from "react-icons/fa";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
@@ -25,6 +26,8 @@ export default function Search() {
     const [searchScripts, setSearchScripts] = useState<boolean>(true)
     const [searchTemplates, setSearchTemplates] = useState<boolean>(false)
     const [searchResults, setSearchResults] = useState<SearchResBody>()
+    const [searchInput, setSearchInput] = useState<string>('')
+    const router = useRouter()
     // useEffect(() => {
     //     setSearchResults({
     //         scripts: [
@@ -100,6 +103,7 @@ export default function Search() {
     })
 
     function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
+        setSearchInput(e.target.value)
         setSearchResults(undefined)
         const timeout = setTimeout(async () => {
             console.log('searching...')
@@ -120,6 +124,13 @@ export default function Search() {
         setDbSearchTimeout(timeout)
     }
 
+    function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault()
+        // console.log(e.currentTarget.val)
+        router.push(`/search?q=${searchInput}&scripts=${searchScripts}&templates=${searchTemplates}`)
+        closeDialog()
+    }
+
     return (
         <Dialog>
             <DialogTrigger asChild ref={searchRef}>
@@ -136,7 +147,9 @@ export default function Search() {
             <DialogContent className="max-w-[624px] top-1/2 p-0 py-2 border border-zinc-200 dark:border-zinc-900 max-h-[75vh]">
                 <div className="">
                     <div className="border-b border-zinc-200 dark:border-zinc-900">
-                        <input onChange={handleSearchInput} className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
+                        <form onSubmit={handleSearchSubmit}>
+                            <input onChange={handleSearchInput} value={searchInput} className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
+                        </form>
                     </div>
                     <div className="p-4">
                         <div className="mb-4 flex items-center gap-4 text-muted-foreground">
