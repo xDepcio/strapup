@@ -29,8 +29,8 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { Check, ChevronsDown, ChevronsUp, ChevronsUpDown } from "lucide-react"
-import { useSearchParams } from "next/navigation"
-import { HTMLAttributes, ReactNode, useContext, useEffect, useState } from "react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { Checkbox } from "./ui/checkbox"
 import { SearchResBody } from "@/app/api/search/route"
 import { SearchContext } from "./Providers"
@@ -66,10 +66,15 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
     const { setData, setLoading } = useContext(SearchContext)
     const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const searchParams = useSearchParams()
+    const router = useRouter()
+    const pathname = usePathname()
+
+
     const searchParamsObj = {
-        keyword: searchParams.get('q') || "",
-        searchScripts: searchParams.get('scripts') ? searchParams.get('scripts') === 'true' : true,
-        searchTemplates: searchParams.get('templates') ? searchParams.get('templates') === 'true' : false,
+        keyword: searchParams.get('keyword') || "",
+        searchScripts: searchParams.get('searchScripts') ? searchParams.get('searchScripts') === 'true' : true,
+        searchTemplates: searchParams.get('searchTemplates') ? searchParams.get('searchTemplates') === 'true' : false,
+        orderBy: searchParams.get('orderBy') || "stars-desc",
     }
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -78,12 +83,27 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
             keyword: searchParamsObj.keyword,
             searchScripts: searchParamsObj.searchScripts,
             searchTemplates: searchParamsObj.searchTemplates,
-            orderBy: "stars-desc",
+            orderBy: searchParamsObj.orderBy,
         },
     })
 
+    const createQueryString = useCallback(
+        (name: string, value: string) => {
+            const params = new URLSearchParams()
+            params.set(name, value)
+
+            return params.toString()
+        },
+        [searchParams]
+    )
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
+        const queryString = Object
+            .entries(values)
+            .map(([key, value]) => createQueryString(key, String(value)))
+            .join('&')
+
+        router.push(pathname + '?' + queryString)
         setLoading(true)
         const timeout = setTimeout(async () => {
             console.log(values)
