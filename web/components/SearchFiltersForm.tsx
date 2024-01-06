@@ -30,8 +30,10 @@ import {
 import { cn } from "@/lib/utils"
 import { Check, ChevronsDown, ChevronsUp, ChevronsUpDown } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { HTMLAttributes, ReactNode } from "react"
+import { HTMLAttributes, ReactNode, useContext, useState } from "react"
 import { Checkbox } from "./ui/checkbox"
+import { SearchResBody } from "@/app/api/search/route"
+import { SearchContext } from "./Providers"
 // const languages = [
 //     { label: "English", value: "en" },
 //     { label: "French", value: "fr" },
@@ -62,6 +64,8 @@ const formSchema = z.object({
 interface SearchFilterProps extends HTMLAttributes<HTMLFormElement> {
 }
 export function SearchFilters({ ...restProps }: SearchFilterProps) {
+    const { setData, setLoading } = useContext(SearchContext)
+    const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const searchParams = useSearchParams()
     const searchParamsObj = {
         keyword: searchParams.get('s') || "",
@@ -80,14 +84,31 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
     })
 
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+    async function onSubmit(values: z.infer<typeof formSchema>) {
+        setLoading(true)
+        const timeout = setTimeout(async () => {
+            console.log(values)
+            const res = await fetch('/api/search', {
+                method: 'POST',
+                body: JSON.stringify({
+                    searchString: values.keyword,
+                    searchScripts: values.searchScripts,
+                    searchTemplates: values.searchTemplates
+                })
+            })
+            const data = await res.json() as SearchResBody
+            setData(data)
+            setLoading(false)
+            console.log(data)
+        }, 300)
+        clearTimeout(dbSearchTimeout)
+        setDbSearchTimeout(timeout)
     }
 
 
     return (
         <Form {...form}>
-            <form {...restProps} onChange={form.handleSubmit(onSubmit)} onSubmit={form.handleSubmit(onSubmit)} className={cn("flex flex-col  mt-10", restProps.className)}>
+            <form {...restProps} onChange={form.handleSubmit(onSubmit)} onSubmit={form.handleSubmit(onSubmit)} className={cn("flex flex-col", restProps.className)}>
                 <FormField
                     control={form.control}
                     name="orderBy"
