@@ -2,7 +2,8 @@
 import {
     Dialog,
     DialogContent,
-    DialogTrigger
+    DialogTrigger,
+    closeDialog
 } from "@/components/ui/dialog";
 import { useEffect, useRef, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -16,6 +17,7 @@ import { FaCode } from "react-icons/fa6";
 import { MdOutlineStorage } from "react-icons/md";
 import { cn } from "@/lib/utils";
 import { FaRegStar } from "react-icons/fa";
+import Link from "next/link";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
@@ -23,74 +25,74 @@ export default function Search() {
     const [searchScripts, setSearchScripts] = useState<boolean>(true)
     const [searchTemplates, setSearchTemplates] = useState<boolean>(false)
     const [searchResults, setSearchResults] = useState<SearchResBody>()
-    useEffect(() => {
-        setSearchResults({
-            scripts: [
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                }
-            ],
-            templates: [
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                },
-                {
-                    name: 'Create-Next-App-ShadCN',
-                    tags: 'Next React Shadcn Prisma Typescript Tailwind',
-                    stars: 0,
-                }
-            ]
-        })
-    }, [])
+    // useEffect(() => {
+    //     setSearchResults({
+    //         scripts: [
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             }
+    //         ],
+    //         templates: [
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             },
+    //             {
+    //                 name: 'Create-Next-App-ShadCN',
+    //                 tags: 'Next React Shadcn Prisma Typescript Tailwind',
+    //                 stars: 0,
+    //             }
+    //         ]
+    //     })
+    // }, [])
 
     useHotkeys('ctrl+k', (e) => {
         e.preventDefault()
@@ -154,25 +156,25 @@ export default function Search() {
                                     <>
                                         {
                                             [
-                                                ...searchResults.scripts.map(e => ({ ...e, script: true })),
-                                                ...searchResults.templates.map(e => ({ ...e, template: true })),
+                                                ...searchResults.scripts.map(e => ({ ...e, type: 'script' })),
+                                                ...searchResults.templates.map(e => ({ ...e, type: 'template' })),
                                             ].map((entry, i) => (
-                                                <div key={i} className="flex flex-col dark:hover:bg-zinc-900 hover:bg-zinc-100 rounded-md p-2 cursor-pointer gap-1">
-                                                    <div className="flex gap-4 justify-start">
-                                                        <p className="text-sm">{entry.name}</p>
-                                                        <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
-                                                            {/* @ts-ignore */}
-                                                            {entry.template ? <MdOutlineStorage /> : <FaCode />}
-                                                            {/* @ts-ignore */}
-                                                            <p>{entry.template ? 'Template' : 'Script'}</p>
+                                                <Link href={entry.type === 'script' ? `/scripts/${entry.id}` : `/templates/${entry.id}`} onClick={closeDialog}>
+                                                    <div key={i} className="flex flex-col dark:hover:bg-zinc-900 hover:bg-zinc-100 rounded-md p-2 cursor-pointer gap-1">
+                                                        <div className="flex gap-4 justify-start">
+                                                            <p className="text-sm">{entry.name}</p>
+                                                            <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
+                                                                {entry.type === 'template' ? <MdOutlineStorage /> : <FaCode />}
+                                                                <p>{entry.type === 'template' ? 'Template' : 'Script'}</p>
+                                                            </div>
+                                                            <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
+                                                                <FaRegStar />
+                                                                <p className="text-xs text-muted-foreground">{entry.stars}</p>
+                                                            </div>
                                                         </div>
-                                                        <div className="flex items-center gap-2 text-xs w-fit rounded-full px-2 py-[2px] h-fit border text-muted-foreground">
-                                                            <FaRegStar />
-                                                            <p className="text-xs text-muted-foreground">{entry.stars}</p>
-                                                        </div>
+                                                        <p className="text-xs text-muted-foreground text-ellipsis max-w-[70%] overflow-hidden">{entry.tags.split(' ').join('\u00A0\u00A0')}</p>
                                                     </div>
-                                                    <p className="text-xs text-muted-foreground text-ellipsis max-w-[70%] overflow-hidden">{entry.tags.split(' ').join('\u00A0\u00A0')}</p>
-                                                </div>
+                                                </Link>
                                             ))
                                         }
                                     </>

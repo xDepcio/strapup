@@ -8,11 +8,13 @@ type ReqBody = {
 }
 export type SearchResBody = {
     scripts: {
+        id: number
         name: string
         tags: string
         stars: number
     }[]
     templates: {
+        id: number
         name: string
         tags: string
         stars: number
@@ -35,7 +37,7 @@ export const POST = async (req: NextRequest) => {
 
     let scriptResults: QueryResult | null = null
     if (searchScripts) {
-        scriptResults = await client.query(`SELECT name, tags, stars FROM scripts
+        scriptResults = await client.query(`SELECT id, name, tags, stars FROM scripts
             WHERE public IS TRUE
             AND (
                 LOWER(name) SIMILAR TO $1
@@ -49,7 +51,7 @@ export const POST = async (req: NextRequest) => {
 
     let templateResults: QueryResult | null = null
     if (searchTemplates) {
-        templateResults = await client.query(`SELECT name, tags, stars FROM templates
+        templateResults = await client.query(`SELECT id, name, tags, stars FROM templates
             WHERE public IS TRUE
             AND (
                 LOWER(name) SIMILAR TO $1
