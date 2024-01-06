@@ -11,23 +11,26 @@ export default function SearchPage() {
         <div className="mx-auto min-h-screen grid grid-cols-[20%_auto] max-w-screen-lg mt-10">
             <SearchFilters />
             <div>
-                {isLoading && (
+                {isLoading ? (
                     <>
                         <Skeleton className="w-full h-20" />
                     </>
+                ) : (
+                    <>
+                        {data.scripts.map((script) => (
+                            <div key={script.id} className="flex items-center space-x-4">
+                                <p className="text-sm text-muted-foreground">Script</p>
+                                <p className="text-sm text-muted-foreground">{script.name}</p>
+                            </div>
+                        ))}
+                        {data.templates.map((template) => (
+                            <div key={template.id} className="flex items-center space-x-4">
+                                <p className="text-sm text-muted-foreground">Template</p>
+                                <p className="text-sm text-muted-foreground">{template.name}</p>
+                            </div>
+                        ))}
+                    </>
                 )}
-                {data.scripts.map((script) => (
-                    <div key={script.id} className="flex items-center space-x-4">
-                        <p className="text-sm text-muted-foreground">Script</p>
-                        <p className="text-sm text-muted-foreground">{script.name}</p>
-                    </div>
-                ))}
-                {data.templates.map((template) => (
-                    <div key={template.id} className="flex items-center space-x-4">
-                        <p className="text-sm text-muted-foreground">Template</p>
-                        <p className="text-sm text-muted-foreground">{template.name}</p>
-                    </div>
-                ))}
             </div>
         </div>
     );

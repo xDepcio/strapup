@@ -30,7 +30,7 @@ import {
 import { cn } from "@/lib/utils"
 import { Check, ChevronsDown, ChevronsUp, ChevronsUpDown } from "lucide-react"
 import { useSearchParams } from "next/navigation"
-import { HTMLAttributes, ReactNode, useContext, useState } from "react"
+import { HTMLAttributes, ReactNode, useContext, useEffect, useState } from "react"
 import { Checkbox } from "./ui/checkbox"
 import { SearchResBody } from "@/app/api/search/route"
 import { SearchContext } from "./Providers"
@@ -57,7 +57,6 @@ const formSchema = z.object({
     }),
     searchScripts: z.boolean(),
     searchTemplates: z.boolean(),
-    // language: z.string().optional(),
     orderBy: z.string(),
 })
 
@@ -68,7 +67,7 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
     const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const searchParams = useSearchParams()
     const searchParamsObj = {
-        keyword: searchParams.get('s') || "",
+        keyword: searchParams.get('q') || "",
         searchScripts: searchParams.get('scripts') ? searchParams.get('scripts') === 'true' : true,
         searchTemplates: searchParams.get('templates') ? searchParams.get('templates') === 'true' : false,
     }
@@ -105,6 +104,11 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
         setDbSearchTimeout(timeout)
     }
 
+    useEffect(() => {
+        if (formSchema.safeParse(form.getValues()).success) {
+            form.handleSubmit(onSubmit)()
+        }
+    }, [])
 
     return (
         <Form {...form}>
