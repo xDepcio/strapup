@@ -33,7 +33,7 @@ export default function SearchPage() {
                             <>
                                 {formattedData.map((entry) => (
                                     <div key={entry.id} className="flex items-center space-x-4">
-                                        <p className="text-sm text-muted-foreground">Script</p>
+                                        <p className="text-sm text-muted-foreground">{entry.type}</p>
                                         <p className="text-sm text-muted-foreground">{entry.name}</p>
                                     </div>
                                 ))}
