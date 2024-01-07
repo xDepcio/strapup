@@ -92,7 +92,26 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
-        p.log.error(`Template ${templateName} does not exist. Aborting.`)
+        p.log.info(`Template ${templateName} does not exist locally. Attempting to download.`)         
+        //@username podane w nazwie? 
+        const templateStructureResponse = await fetch(`${GO_BACKEND_URL}/api/templates/structure?name=${templateName}`,{
+            method: 'GET',
+            headers: {
+                'Authorization': `${loadSettings().githubToken}`,
+                'Content-Type': 'application/json',
+            }
+        }) 
+        
+        if (!templateStructureResponse.ok) {
+            p.log.error(`Failed to download template. Error: ${templateStructureResponse.statusText}`)
+            return
+        }
+        const templateStructureJson = await templateStructureResponse.json()
+
+        //TODO iterate over (potentially) nested jsons 
+        templateStructureJson.forEach()
+
+        // p.log.error(`Template ${templateName} does not exist. Aborting.`)
         return
     }
 
