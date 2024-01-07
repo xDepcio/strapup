@@ -27,13 +27,13 @@ export default function SearchPage() {
     return (
         <div className="mx-auto min-h-screen grid grid-cols-[20%_auto] max-w-screen-lg mt-10 gap-4">
             <SearchFilters />
-            <div className="flex gap-2 h-fit flex-col">
+            <div className="flex gap-4 h-fit flex-col">
                 {isLoading ? (
                     <>
-                        <Skeleton className="w-full h-20" />
-                        <Skeleton className="w-full h-20" />
-                        <Skeleton className="w-full h-20" />
-                        <Skeleton className="w-full h-20" />
+                        <Skeleton className="w-full h-40" />
+                        <Skeleton className="w-full h-40" />
+                        <Skeleton className="w-full h-40" />
+                        <Skeleton className="w-full h-40" />
                     </>
                 ) : (
                     <>
@@ -42,7 +42,7 @@ export default function SearchPage() {
                         ) : (
                             <>
                                 {formattedData.map((entry) => (
-                                    <div key={entry.name} className="flex gap-2 flex-col justify-center border border-zinc-200 p-4 rounded-md shadow-sm">
+                                    <div key={entry.name} className="flex gap-4 flex-col justify-center border-b dark:border-zinc-800 border-zinc-200 p-4 ">
                                         <div className="flex items-center gap-2">
                                             <Link href={`/${entry.type === 'script' ? 'scripts' : 'templates'}/${entry.id}`}>
                                                 <h4 className="cursor-pointer hover:underline scroll-m-20 text-lg font-semibold tracking-tight">{entry.name}</h4>
@@ -66,7 +66,7 @@ export default function SearchPage() {
                                         <p className="text-ellipsis overflow-hidden line-clamp-2 max-w-[60ch]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut non cupiditate porro in! Laborum repellendus, molestias enim voluptatibus doloribus nulla corrupti iure quod perferendis maiores? Impedit laborum in odit!</p>
                                         <div className="flex gap-2">
                                             {entry.tags.split(' ').map((tag, i) => (
-                                                <Link href={`/search?${newQueryParams(searchParams, { keyword: tag })}`} className="bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
+                                                <Link href={`/search?${newQueryParams(searchParams, { keyword: tag })}`} className="dark:bg-zinc-800 bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
                                                     key={i}>
                                                     {tag}
                                                 </Link>
