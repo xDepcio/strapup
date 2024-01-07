@@ -127,7 +127,7 @@ export default function Search() {
     function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         // console.log(e.currentTarget.val)
-        router.push(`/search?q=${searchInput}&scripts=${searchScripts}&templates=${searchTemplates}`)
+        router.push(`/search?keyword=${searchInput}&searchScripts=${searchScripts}&searchTemplates=${searchTemplates}`)
         closeDialog()
     }
 
