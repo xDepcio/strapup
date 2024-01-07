@@ -52,9 +52,7 @@ const orderByOptions = [
 ] as const
 
 const formSchema = z.object({
-    keyword: z.string().min(2, {
-        message: "Keyword must be at least 2 characters.",
-    }),
+    keyword: z.string(),
     searchScripts: z.boolean(),
     searchTemplates: z.boolean(),
     orderBy: z.string(),
@@ -96,6 +94,15 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
         },
         [searchParams]
     )
+
+    useEffect(() => {
+        console.log(searchParamsObj)
+        form.setValue('keyword', searchParamsObj.keyword)
+        form.setValue('searchScripts', searchParamsObj.searchScripts)
+        form.setValue('searchTemplates', searchParamsObj.searchTemplates)
+        form.setValue('orderBy', searchParamsObj.orderBy)
+        form.handleSubmit(onSubmit)()
+    }, [searchParams])
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const queryString = Object

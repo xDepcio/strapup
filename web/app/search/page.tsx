@@ -4,9 +4,19 @@ import { SearchContext } from "@/components/Providers";
 import { SearchFilters } from "@/components/SearchFiltersForm"
 import { Skeleton } from "@/components/ui/skeleton";
 import { useContext, useMemo } from "react";
+import { FaCode } from "react-icons/fa";
+import { MdOutlineSdStorage } from "react-icons/md";
+import { FaRegStar } from "react-icons/fa";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useBetterQueryParams } from "@/hooks/utility";
+import { newQueryParams } from "@/lib/utils";
+
 
 export default function SearchPage() {
     const { data, isLoading } = useContext(SearchContext)
+    const searchParams = useSearchParams()
+    // const searchParams = useBetterQueryParams()
     const formattedData = useMemo(() => {
         return [
             ...data.scripts.map(e => ({ ...e, type: 'script' })),
@@ -32,9 +42,36 @@ export default function SearchPage() {
                         ) : (
                             <>
                                 {formattedData.map((entry) => (
-                                    <div key={entry.id} className="flex items-center space-x-4">
-                                        <p className="text-sm text-muted-foreground">{entry.type}</p>
-                                        <p className="text-sm text-muted-foreground">{entry.name}</p>
+                                    <div key={entry.name} className="flex gap-2 flex-col justify-center border border-zinc-200 p-4 rounded-md shadow-sm">
+                                        <div className="flex items-center gap-2">
+                                            <Link href={`/${entry.type === 'script' ? 'scripts' : 'templates'}/${entry.id}`}>
+                                                <h4 className="cursor-pointer hover:underline scroll-m-20 text-lg font-semibold tracking-tight">{entry.name}</h4>
+                                            </Link>
+                                            {entry.type === 'script' ? (
+                                                <div className="w-fit bg-indigo-200 flex items-center gap-1 rounded-full px-2 py-[2px] text-xs text-indigo-800">
+                                                    <FaCode />
+                                                    <p>script</p>
+                                                </div>
+                                            ) : (
+                                                <div className="w-fit bg-indigo-200 flex items-center gap-1 rounded-full px-2 py-[2px] text-xs text-indigo-800">
+                                                    <MdOutlineSdStorage />
+                                                    <p>template</p>
+                                                </div>
+                                            )}
+                                            <div className="flex items-center gap-1 text-xs bg-yellow-200 px-2 py-[2px] rounded-full text-yellow-800">
+                                                <FaRegStar />
+                                                <p className="">{entry.stars}</p>
+                                            </div>
+                                        </div>
+                                        <p className="text-ellipsis overflow-hidden line-clamp-2 max-w-[60ch]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut non cupiditate porro in! Laborum repellendus, molestias enim voluptatibus doloribus nulla corrupti iure quod perferendis maiores? Impedit laborum in odit!</p>
+                                        <div className="flex gap-2">
+                                            {entry.tags.split(' ').map((tag, i) => (
+                                                <Link href={`/search?${newQueryParams(searchParams, { keyword: tag })}`} className="bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
+                                                    key={i}>
+                                                    {tag}
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
                                 ))}
                             </>
