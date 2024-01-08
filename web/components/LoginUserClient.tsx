@@ -10,7 +10,7 @@ interface LoginUserClientProps extends HTMLAttributes<HTMLButtonElement>, React.
 
 export default function LoginUserClient({ ...props }: LoginUserClientProps) {
     return (
-        <Button {...props} onClick={() => signIn('github')} >
+        <Button {...props} onClick={() => signIn('github', { redirect: true, callbackUrl: '/user/templates' })} >
             <p>Sign In</p>
             <BsGithub className="text-[1rem]" />
         </Button>

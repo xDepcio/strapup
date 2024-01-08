@@ -26,7 +26,7 @@ export default async function Navigation() {
                         {/* <Link href={'/docs'}></Link> */}
                     </Link>
                     {user ? (
-                        <Link href={user ? "/user" : '/api/auth/signin'}>
+                        <Link href={user ? "/user/templates" : '/api/auth/signin'}>
                             <Button variant={"ghost"} className="flex gap-2 items-center justify-center">
                                 {/* <Button>sign in</Button> */}
                                 <p>Profile</p>
