@@ -4,6 +4,11 @@ import { getServerSession } from "next-auth"
 import Link from "next/link"
 import { FaRegStar } from "react-icons/fa"
 import { MdOutlineSdStorage } from "react-icons/md"
+import { FaLock } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
+import { FaTrash } from "react-icons/fa";
+import { Button } from "@/components/ui/button"
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
     const user = await getServerSession()
@@ -67,28 +72,47 @@ export default async function UserPage({ children }: { children: React.ReactNode
     return (
         <div className="flex flex-col gap-2 bg-zinc-900 rounded-lg p-4 border">
             {templates.map((template) => (
-                <div key={template.name} className="flex gap-4 flex-col justify-center border-b dark:border-zinc-800 border-zinc-200 p-4">
-                    <div className="flex items-center gap-2">
-                        <Link href={`/templates/${template.id}`}>
-                            <h4 className="cursor-pointer hover:underline scroll-m-20 text-lg font-semibold tracking-tight">{template.name}</h4>
-                        </Link>
-                        <div className="w-fit bg-indigo-200 flex items-center gap-1 rounded-full px-2 py-[2px] text-xs text-indigo-800">
-                            <MdOutlineSdStorage />
-                            <p>template</p>
+                <div key={template.name} className="flex border-b">
+                    <div className="flex gap-4 flex-col justify-center dark:border-zinc-800 border-zinc-200 p-4">
+                        <div className="flex items-center gap-2">
+                            <Link href={`/templates/${template.id}`}>
+                                <h4 className="cursor-pointer hover:underline scroll-m-20 text-lg font-semibold tracking-tight">{template.name}</h4>
+                            </Link>
+                            <div className="w-fit bg-indigo-200 flex items-center gap-1 rounded-full px-2 py-[2px] text-xs text-indigo-800">
+                                <MdOutlineSdStorage />
+                                <p>template</p>
+                            </div>
+                            <div className="flex items-center gap-1 text-xs bg-yellow-200 px-2 py-[2px] rounded-full text-yellow-800">
+                                <FaRegStar />
+                                <p className="">{template.stars}</p>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-1 text-xs bg-yellow-200 px-2 py-[2px] rounded-full text-yellow-800">
-                            <FaRegStar />
-                            <p className="">{template.stars}</p>
+                        <p className="text-ellipsis overflow-hidden line-clamp-2 max-w-[60ch]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut non cupiditate porro in! Laborum repellendus, molestias enim voluptatibus doloribus nulla corrupti iure quod perferendis maiores? Impedit laborum in odit!</p>
+                        <div className="flex gap-2">
+                            {template.tags.split(' ').map((tag, i) => (
+                                <Link href={{ pathname: '/search', query: { keyword: tag } }} className="dark:bg-zinc-800 bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
+                                    key={i}>
+                                    {tag}
+                                </Link>
+                            ))}
                         </div>
                     </div>
-                    <p className="text-ellipsis overflow-hidden line-clamp-2 max-w-[60ch]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut non cupiditate porro in! Laborum repellendus, molestias enim voluptatibus doloribus nulla corrupti iure quod perferendis maiores? Impedit laborum in odit!</p>
-                    <div className="flex gap-2">
-                        {template.tags.split(' ').map((tag, i) => (
-                            <Link href={{ pathname: '/search', query: { keyword: tag } }} className="dark:bg-zinc-800 bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
-                                key={i}>
-                                {tag}
-                            </Link>
-                        ))}
+                    <div className="text-muted-foreground text-sm items-start flex flex-col">
+                        <div className="flex items-center gap-2 px-4 py-2 mb-4">
+                            <p>Private</p>
+                            <FaLock />
+                            <Button variant={'outline'} className="bg-zinc-900">
+                                <HiOutlineDotsHorizontal className='scale-150' />
+                            </Button>
+                        </div>
+                        <Button className="flex items-center gap-2" variant={'ghost'}>
+                            <p>Edit</p>
+                            <FaEdit />
+                        </Button>
+                        <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
+                            <p>Delete</p>
+                            <FaTrash />
+                        </Button>
                     </div>
                 </div>
             ))}
