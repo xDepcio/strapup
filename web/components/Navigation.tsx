@@ -14,19 +14,24 @@ export default function Navigation() {
                 <div className="flex items-center justify-center">
                     <Link href={'/'} className={cn(ProximaSoft.className, "font-bold text-2xl bg-clip-text text-transparent bg-[rgba(67,_56,_202,_1)]")}>Strapup</Link>
                 </div>
-                <div className="flex items-center justify-center gap-8">
+                <div className="flex items-center justify-center gap-4">
                     <Search />
-                    <div className="font-medium flex items-center justify-center">
-                        <Link href={'/docs'}>Docs</Link>
-                    </div>
-                    <div className="flex items-center justify-center">
-                        <Button variant={"ghost"} className="flex items-center justify-center">
-                            <Link href={"https://github.com/xDepcio/strapup-mono"}>
-                                <BsGithub className="text-[1rem]" />
-                            </Link>
+                    <Link href={'/docs'} className="font-medium flex items-center justify-center text-sm">
+                        <Button variant={'ghost'}>
+                            Docs
                         </Button>
-                        <ModeToggle />
-                    </div>
+                        {/* <Link href={'/docs'}></Link> */}
+                    </Link>
+                    <Link href={"https://github.com/xDepcio/strapup-mono"}>
+                        <Button variant={"ghost"} className="flex gap-2 items-center justify-center">
+                            {/* <Button>sign in</Button> */}
+                            <p>Profile</p>
+                            <BsGithub className="text-[1rem]" />
+                        </Button>
+                    </Link>
+                    {/* <div className="flex items-center justify-center">
+                    </div> */}
+                    <ModeToggle />
                 </div>
             </div>
         </nav>
