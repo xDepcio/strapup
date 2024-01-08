@@ -13,20 +13,20 @@ export default function UserPage({ children }: { children: React.ReactNode }) {
     return (
         <div className="min-h-screen mx-auto max-w-screen-lg grid grid-cols-[20%_auto] mt-16 mb-16">
             <div className="flex flex-col gap-4 text-muted-foreground">
-                <div className={cn("flex gap-2 items-center cursor-pointer hover:text-foreground transition-all", pathname === '/user/templates' ? 'text-foreground' : '')}>
+                <div className={cn("flex gap-2 items-center cursor-pointer hover:text-indigo-600 transition-all", pathname === '/user/templates' ? 'text-indigo-600 font-medium' : '')}>
                     <p>My Templates</p>
                     <MdOutlineSdStorage />
                 </div>
-                <div className={cn("flex gap-2 items-center cursor-pointer hover:text-foreground transition-all", pathname === '/user/scripts' ? 'text-foreground' : '')}>
+                <div className={cn("flex gap-2 items-center cursor-pointer hover:text-indigo-600 transition-all", pathname === '/user/scripts' ? 'text-indigo-600 font-medium' : '')}>
                     <p>My Scripts</p>
                     <FaCode />
                 </div>
-                <div className={"flex gap-2 items-center cursor-pointer hover:text-foreground transition-all"}>
-                    <Logout className="flex gap-2 items-center cursor-pointer hover:text-foreground transition-all">
-                        <p>Logout</p>
-                        <FaSignOutAlt />
-                    </Logout>
-                </div>
+                {/* <div className={"flex gap-2 items-center cursor-pointer hover:text-red-500 transition-all"}> */}
+                <Logout className="flex gap-2 items-center cursor-pointer hover:text-red-500 transition-all">
+                    <p>Logout</p>
+                    <FaSignOutAlt />
+                </Logout>
+                {/* </div> */}
             </div>
             {children}
         </div>

@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { FaRegEye } from "react-icons/fa";
+import DeleteTemplate from "@/components/DeleteTemplate"
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
     const user = await getServerSession()
@@ -72,7 +73,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
     ]
 
     return (
-        <div className="flex flex-col gap-2 bg-zinc-900 rounded-lg p-4 border">
+        <div className="flex flex-col gap-2 dark:bg-zinc-900 bg-zinc-50 rounded-lg p-4 border">
             {templates.map((template) => (
                 <div key={template.name} className="flex border-b">
                     <div className="flex gap-4 flex-col justify-center dark:border-zinc-800 border-zinc-200 p-4">
@@ -105,7 +106,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
                             <FaLock />
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button variant={'outline'} className="bg-zinc-900">
+                                    <Button variant={'outline'} className="dark:bg-zinc-900">
                                         <HiOutlineDotsHorizontal className='scale-150' />
                                     </Button>
                                 </PopoverTrigger>
@@ -121,10 +122,11 @@ export default async function UserPage({ children }: { children: React.ReactNode
                             <p>Edit</p>
                             <FaEdit />
                         </Button>
-                        <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
+                        <DeleteTemplate />
+                        {/* <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
                             <p>Delete</p>
                             <FaTrash />
-                        </Button>
+                        </Button> */}
                     </div>
                 </div>
             ))}
