@@ -43,7 +43,7 @@ export default function SearchPage() {
 
     return (
         <div className="mx-auto min-h-screen grid grid-cols-[20%_auto] max-w-screen-lg mt-10 gap-4 mb-20">
-            <SearchFilters />
+            <SearchFilters className="sticky top-28 h-fit" />
             <div className="flex gap-4 h-fit flex-col">
                 {isLoading ? (
                     <>
