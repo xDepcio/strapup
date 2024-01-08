@@ -116,9 +116,12 @@ export default function Search() {
                     searchTemplates
                 })
             })
-            const data = await res.json() as SearchResBodyData
-            console.log(data)
-            setSearchResults(data)
+            const data = await res.json() as SearchResBody
+            if (data.error) {
+                console.error(data.error)
+                return
+            }
+            setSearchResults(data as SearchResBodyData)
 
         }, 500)
         clearTimeout(dbSearchTimeout)

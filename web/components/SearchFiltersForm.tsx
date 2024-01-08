@@ -122,8 +122,12 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                     searchTemplates: values.searchTemplates
                 })
             })
-            const data = await res.json() as SearchResBodyData
-            setData(data)
+            const data = await res.json() as SearchResBody
+            if (data.error) {
+                console.error(data.error)
+                return
+            }
+            setData(data as SearchResBodyData)
             setLoading(false)
             console.log(data)
         }, 300)
