@@ -140,7 +140,7 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
             .map(([key, value]) => createQueryString(key, String(value)))
             .join('&')
 
-        router.push(pathname + '?' + queryString)
+        router.replace(pathname + '?' + queryString)
         setLoading(true)
         const timeout = setTimeout(async () => {
             console.log(values)

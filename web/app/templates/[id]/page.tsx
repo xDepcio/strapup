@@ -11,6 +11,7 @@ import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
 import StarTemplate from '@/components/StarTemplate'
+import Link from 'next/link'
 
 function getTemplateDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
@@ -67,7 +68,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                     <p className='text-muted-foreground text-xs mt-8'>related tags</p>
                     <div className='flex flex-wrap gap-2 mt-2'>
                         {rows[0].tags.split(' ').map((tag) => (
-                            <div className='bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition-all shadow-sm text-white rounded-md px-2 py-1 text-xs cursor-pointer'>{tag}</div>
+                            <Link href={{ pathname: '/search', query: { keyword: tag, searchTemplates: true, searchScripts: false } }} className='bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition-all shadow-sm text-white rounded-md px-2 py-1 text-xs cursor-pointer'>{tag}</Link>
                         ))}
                     </div>
                 </div>
