@@ -9,6 +9,8 @@ import { FaEdit } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { FaRegEye } from "react-icons/fa";
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
     const user = await getServerSession()
@@ -101,9 +103,19 @@ export default async function UserPage({ children }: { children: React.ReactNode
                         <div className="flex items-center gap-2 px-4 py-2 mb-4">
                             <p>Private</p>
                             <FaLock />
-                            <Button variant={'outline'} className="bg-zinc-900">
-                                <HiOutlineDotsHorizontal className='scale-150' />
-                            </Button>
+                            <Popover>
+                                <PopoverTrigger>
+                                    <Button variant={'outline'} className="bg-zinc-900">
+                                        <HiOutlineDotsHorizontal className='scale-150' />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-fit p-0" align="center" side="top">
+                                    <Button variant={'ghost'} className="gap-2">
+                                        <p>Make Public</p>
+                                        <FaRegEye />
+                                    </Button>
+                                </PopoverContent>
+                            </Popover>
                         </div>
                         <Button className="flex items-center gap-2" variant={'ghost'}>
                             <p>Edit</p>
