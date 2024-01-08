@@ -18,6 +18,7 @@ import { useSearchParams } from "next/navigation";
 import { useContext, useMemo } from "react";
 import { FaCode, FaRegStar } from "react-icons/fa";
 import { MdOutlineSdStorage } from "react-icons/md";
+import { FaEyeSlash } from "react-icons/fa";
 
 
 export default function SearchPage() {
@@ -55,7 +56,10 @@ export default function SearchPage() {
                 ) : (
                     <>
                         {formattedData.length === 0 ? (
-                            <div>no results</div>
+                            <div className="text-muted-foreground flex items-center justify-center flex-col gap-4 mt-12">
+                                <p>No results found. Try changing selected filters.</p>
+                                <FaEyeSlash className="w-48 h-48 opacity-50" />
+                            </div>
                         ) : (
                             <div className="flex flex-col-reverse gap-6">
                                 <div>
