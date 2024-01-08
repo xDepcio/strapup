@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
+import { SearchResBody } from "@/app/api/search/route"
 import { Button } from "@/components/ui/button"
 import {
     Command,
     CommandEmpty,
     CommandGroup,
-    CommandInput,
-    CommandItem,
+    CommandItem
 } from "@/components/ui/command"
 import {
     Form,
@@ -28,12 +28,11 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
-import { Check, ChevronsDown, ChevronsUp, ChevronsUpDown } from "lucide-react"
+import { ChevronsDown, ChevronsUp, ChevronsUpDown } from "lucide-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from "react"
-import { Checkbox } from "./ui/checkbox"
-import { SearchResBody } from "@/app/api/search/route"
 import { SearchContext, SearchResBodyData } from "./Providers"
+import { Checkbox } from "./ui/checkbox"
 // const languages = [
 //     { label: "English", value: "en" },
 //     { label: "French", value: "fr" },
@@ -45,6 +44,14 @@ import { SearchContext, SearchResBodyData } from "./Providers"
 //     { label: "Korean", value: "ko" },
 //     { label: "Chinese", value: "zh" },
 // ] as const
+type SearchQueryParams = {
+    keyword: string
+    searchScripts: string
+    searchTemplates: string
+    orderBy: string
+    page: string
+    pageSize: string
+}
 
 const orderByOptions = [
     { label: "Stars (desc)", value: "stars-desc", icon: <ChevronsUp /> },
@@ -56,6 +63,8 @@ const formSchema = z.object({
     searchScripts: z.boolean(),
     searchTemplates: z.boolean(),
     orderBy: z.string(),
+    page: z.number(),
+    pageSize: z.number(),
 })
 
 interface SearchFilterProps extends HTMLAttributes<HTMLFormElement> {
@@ -66,14 +75,17 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathname = usePathname()
+    // const { params, setParams } = useBetterSearchParams<SearchQueryParams>()
 
 
-    const searchParamsObj = {
+    const [searchParamsObj, setSearchParamsObj] = useState({
         keyword: searchParams.get('keyword') || "",
         searchScripts: searchParams.get('searchScripts') ? searchParams.get('searchScripts') === 'true' : true,
         searchTemplates: searchParams.get('searchTemplates') ? searchParams.get('searchTemplates') === 'true' : false,
         orderBy: searchParams.get('orderBy') || "stars-desc",
-    }
+        page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
+        pageSize: searchParams.get('pageSize') ? Number(searchParams.get('pageSize')) : 10,
+    })
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -82,6 +94,8 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
             searchScripts: searchParamsObj.searchScripts,
             searchTemplates: searchParamsObj.searchTemplates,
             orderBy: searchParamsObj.orderBy,
+            page: searchParamsObj.page,
+            pageSize: searchParamsObj.pageSize,
         },
     })
 
@@ -95,12 +109,28 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
         [searchParams]
     )
 
+    function retFormParams() {
+        return {
+            keyword: searchParams.get('keyword') || "",
+            searchScripts: searchParams.get('searchScripts') ? searchParams.get('searchScripts') === 'true' : true,
+            searchTemplates: searchParams.get('searchTemplates') ? searchParams.get('searchTemplates') === 'true' : false,
+            orderBy: searchParams.get('orderBy') || "stars-desc",
+            page: searchParams.get('page') ? Number(searchParams.get('page')) : 1,
+            pageSize: searchParams.get('pageSize') ? Number(searchParams.get('pageSize')) : 10
+        }
+    }
+
     useEffect(() => {
-        console.log(searchParamsObj)
-        form.setValue('keyword', searchParamsObj.keyword)
-        form.setValue('searchScripts', searchParamsObj.searchScripts)
-        form.setValue('searchTemplates', searchParamsObj.searchTemplates)
-        form.setValue('orderBy', searchParamsObj.orderBy)
+        console.log("BEFORE UPDATE", searchParamsObj)
+        const newParams = retFormParams()
+        setSearchParamsObj(newParams)
+        console.log("AFTER UPDATE", newParams)
+        form.setValue('keyword', newParams.keyword)
+        form.setValue('searchScripts', newParams.searchScripts)
+        form.setValue('searchTemplates', newParams.searchTemplates)
+        form.setValue('orderBy', newParams.orderBy)
+        form.setValue('page', newParams.page)
+        form.setValue('pageSize', newParams.pageSize)
         form.handleSubmit(onSubmit)()
     }, [searchParams])
 
@@ -119,7 +149,9 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                 body: JSON.stringify({
                     searchString: values.keyword,
                     searchScripts: values.searchScripts,
-                    searchTemplates: values.searchTemplates
+                    searchTemplates: values.searchTemplates,
+                    page: values.page,
+                    pageSize: values.pageSize,
                 })
             })
             const data = await res.json() as SearchResBody

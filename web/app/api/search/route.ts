@@ -55,7 +55,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
                 LOWER(name) SIMILAR TO $1
                 OR tags SIMILAR TO $1
             )
-            ORDER BY stars DESC
+            ORDER BY stars DESC, ID ASC
             LIMIT $2
             OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])
@@ -70,7 +70,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
                 LOWER(name) SIMILAR TO $1
                 OR tags SIMILAR TO $1
             )
-            ORDER BY stars DESC
+            ORDER BY stars DESC, ID ASC
             LIMIT $2
             OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])
