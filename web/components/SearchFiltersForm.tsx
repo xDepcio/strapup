@@ -33,7 +33,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { Checkbox } from "./ui/checkbox"
 import { SearchResBody } from "@/app/api/search/route"
-import { SearchContext } from "./Providers"
+import { SearchContext, SearchResBodyData } from "./Providers"
 // const languages = [
 //     { label: "English", value: "en" },
 //     { label: "French", value: "fr" },
@@ -122,7 +122,7 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                     searchTemplates: values.searchTemplates
                 })
             })
-            const data = await res.json() as SearchResBody
+            const data = await res.json() as SearchResBodyData
             setData(data)
             setLoading(false)
             console.log(data)
@@ -131,11 +131,11 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
         setDbSearchTimeout(timeout)
     }
 
-    useEffect(() => {
-        if (formSchema.safeParse(form.getValues()).success) {
-            form.handleSubmit(onSubmit)()
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (formSchema.safeParse(form.getValues()).success) {
+    //         form.handleSubmit(onSubmit)()
+    //     }
+    // }, [])
 
     return (
         <Form {...form}>

@@ -8,10 +8,11 @@ import { SearchResBody } from "@/app/api/search/route";
 
 const queryClient = new QueryClient()
 
+export type SearchResBodyData = Pick<Extract<SearchResBody, { scripts: any; templates: any }>, 'scripts' | 'templates'>
 type SearchContextType = {
-    data: SearchResBody
+    data: SearchResBodyData
     isLoading: boolean
-    setData: (data: SearchResBody) => void
+    setData: (data: SearchResBodyData) => void
     setLoading: (loading: boolean) => void
 }
 export const SearchContext = createContext<SearchContextType>({
@@ -20,12 +21,12 @@ export const SearchContext = createContext<SearchContextType>({
         templates: [],
     },
     isLoading: false,
-    setData: (data: SearchResBody) => { },
+    setData: (data: SearchResBodyData) => { },
     setLoading: (loading: boolean) => { },
 })
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-    const [searchRes, setSearchRes] = useState<SearchResBody>({
+    const [searchRes, setSearchRes] = useState<SearchResBodyData>({
         scripts: [],
         templates: [],
     })

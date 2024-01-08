@@ -19,13 +19,14 @@ import { cn } from "@/lib/utils";
 import { FaRegStar } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { SearchResBodyData } from "./Providers";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
     const [dbSearchTimeout, setDbSearchTimeout] = useState<NodeJS.Timeout>()
     const [searchScripts, setSearchScripts] = useState<boolean>(true)
     const [searchTemplates, setSearchTemplates] = useState<boolean>(false)
-    const [searchResults, setSearchResults] = useState<SearchResBody>()
+    const [searchResults, setSearchResults] = useState<SearchResBodyData>()
     const [searchInput, setSearchInput] = useState<string>('')
     const router = useRouter()
     // useEffect(() => {
@@ -115,7 +116,7 @@ export default function Search() {
                     searchTemplates
                 })
             })
-            const data = await res.json() as SearchResBody
+            const data = await res.json() as SearchResBodyData
             console.log(data)
             setSearchResults(data)
 
