@@ -13,7 +13,7 @@
     Np. jest taka komenda w skrypce: `npx strapup run-script @userName/some-script`.
     Patrzymy, że nie mamy takiego skryptu, więc go pobieramy (patrz #4). UWAGA Trzeba pamiętać, że nowo pobrany skrypt może wklejać schematy i wykonywać skrypty, których nie mamy pobranych, musi to więc działać też dla takiej syutacji (patrz #2).
 
-[TODO] #3
+[TODO] #3 DONE?
     Można sobie wkleić template którego się nie ma lokalnie.
     Pod spodem działa to tak:
     - Najpierw leci zapytanie GET do backendu w GO `/api/templates/structure?name=@userName/some-template`. Zwraca strukturę plików schematu. Taka, odpowiedź jak się powiedzie, będzie wyglądać np. tak:

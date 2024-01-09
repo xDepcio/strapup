@@ -99,7 +99,7 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
     
     if(my_struct.IsDir)
     {
-        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name}/`)
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}/`)
         const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}/`)
         try    
         {
@@ -119,7 +119,7 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
     }
     else
     {
-        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name}`)
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}`)
         const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}`)
         const curFileContentResponse = await fetch(`${GO_BACKEND_URL}/api/templates/file?name=${cur_relative_path}`,{
             method: 'GET',
@@ -140,7 +140,7 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
 }
     
 export async function paste({ templateName, destinationRelativePath }: PasteOptions) {
-    const templatePath = path.normalize(`${TEMPLATES_PATH()}/${templateName}`)
+    const templatePath = path.normalize(`${TEMPLATES_PATH()}/${templateName.replace("/", "_-_")}`)
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
