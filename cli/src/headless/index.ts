@@ -2,9 +2,11 @@
 
 import { dirname, normalize } from 'path'
 import { fileURLToPath } from 'url'
-import { paste, runScript } from './commandsHandlers.js'
-import { SCRIPTS_PATH, Scripts } from './constants.js'
+//import { paste, runScript } from './commandsHandlers.js'
+import { paste, runScript } from '../commandsHandlers.js' //imo powinno działać
+import { SCRIPTS_PATH, Scripts } from './constants.js' 
 import { getParameterNames } from './utils.js'
+
 
 export const STRAPUP_DIR_NAME = 'strapup'
 export const STRAPUP_DIR_PATH = `/home/olek/${STRAPUP_DIR_NAME}`
