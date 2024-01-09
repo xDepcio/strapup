@@ -1,0 +1,1 @@
+Tu dajemy zawartość konkretnego pliku.

@@ -261,3 +261,128 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 		Success: true,
 	})
 }
+
+func CreateChildren(children []Files, parentName string) {
+	for _, child := range children {
+		if child.IsDir {
+			err := os.Mkdir("./files/templates/"+parentName+"/"+child.Name, 0755)
+			if err != nil {
+				fmt.Println("Error creating directory")
+			}
+			CreateChildren(child.Children, parentName+"/"+child.Name)
+		} else {
+			f, err := os.Create("./files/templates/" + parentName + "/" + child.Name)
+			if err != nil {
+				fmt.Println("Error creating file")
+			}
+			defer f.Close()
+			f.Write([]byte(child.Content))
+		}
+	}
+}
+
+func ParseTags(tags []string) string {
+	resString := strings.Join(tags, " ")
+	// make resString lowercase
+	resString = strings.ToLower(resString)
+
+	return resString
+}
+
+type Files struct {
+	Name     string  `json:"name"`
+	IsDir    bool    `json:"isDir"`
+	Content  string  `json:"content"`
+	Children []Files `json:"children"`
+}
+
+type TemplatePost struct {
+	Public bool     `json:"isPublic"`
+	Tags   []string `json:"tags"`
+	Files  Files    `json:"files"`
+}
+
+func PostTemplatesHandler(c *fiber.Ctx) error {
+
+	type Response struct {
+		Message string `json:"message"`
+		Success bool   `json:"success"`
+	}
+
+	token := c.Get("Authorization")
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	isValid, _, user, err := utils.Authorize(c)
+	if !isValid || err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(Response{
+			Message: "Unauthorized",
+			Success: false,
+		})
+	}
+
+	var template TemplatePost
+	if err := c.BodyParser(&template); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error parsing body",
+			Success: false,
+		})
+	}
+
+	if "@"+user.Login != strings.Split(template.Files.Name, "/")[0] {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Name does not match",
+			Success: false,
+		})
+	}
+
+	if template.Files.Name == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Name is not specified",
+			Success: false,
+		})
+	}
+
+	escapedName := strings.Replace(template.Files.Name, "/", "_-_", -1)
+	if strings.Contains(escapedName, "..") {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Invalid script name",
+			Success: false,
+		})
+	}
+
+	// Create base folder for template
+	err = os.Mkdir("./files/templates/"+escapedName, 0755)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error creating base directory",
+			Success: false,
+		})
+	}
+	// Loop through children and save each one into a file
+	for _, child := range template.Files.Children {
+		// If child is a directory, create a directory and loop through its children\
+		if child.IsDir {
+		} else {
+			CreateChildren(template.Files.Children, escapedName)
+		}
+
+	}
+
+	dbTags := ParseTags(template.Tags)
+	// zapisujemy do bazy danych rekord identyfikujący ten schemat
+	_, dbErr := database.DB.Exec("INSERT INTO templates (name, public, owner_id, tags) VALUES ($1, $2, $3, $4)", template.Files.Name, template.Public, user.ID, dbTags)
+	if dbErr != nil {
+		fmt.Println(dbErr)
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error while saving script in db",
+			Success: false,
+		})
+	}
+
+	return c.JSON(Response{
+		Message: "Template created",
+		Success: true,
+	})
+}

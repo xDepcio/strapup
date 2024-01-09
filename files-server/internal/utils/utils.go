@@ -105,7 +105,7 @@ func Authorize(c *fiber.Ctx) (bool, bool, User, error) {
 		return false, false, User{}, err
 	}
 	if root_key == token {
-		return true, true, User{}, nil
+		return true, true, User{ID: 1, Name: "testuser", Login: "testuser"}, nil
 	}
 
 	// Specify the GitHub API endpoint you want to access
