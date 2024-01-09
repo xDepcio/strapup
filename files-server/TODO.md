@@ -50,3 +50,11 @@ Body wygląda np. tak:
         "content": "Tu jest zawartość pliku .mjs ze skryptem."
     }
     ` - Walidujemy użytkownika (sprawdzamy ważność tokenu, oraz czy @username jest takie same jak login pobrany z bazy danych). - Jeśli tak to zapisujemy do bazy danych rekord identyfikujący ten skrypt. - Dalej zapisujemy w plikach servera ten skrypt. - Zwracamy odpowiedź czy wszytko się powiodło lub też nie.
+
+[TODO] #5
+
+Endpoint delete `/api/templates/[id]/
+
+usuwa template z file-server i wpis z bazy danych
+
+zwraca typowy json sucess message
