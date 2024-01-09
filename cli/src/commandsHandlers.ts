@@ -162,7 +162,7 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
 
         try
         {
-            constructTemplate(templateStructureJson, ``, templatePath)
+            constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
         }
         catch(err)
         {
