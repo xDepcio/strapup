@@ -14,6 +14,7 @@ export type UserTemplateResponse = {
 }
 export const GET = async (req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse<UserTemplateResponse>> => {
     const token = await getToken({ req })
+    console.log('token', token)
     if (!token) {
         return NextResponse.json({
             error: 'Not logged in',

@@ -67,6 +67,9 @@ export const authOptions: AuthOptions = {
             // console.log('session', token, session)
             if (token?.login) {
                 session.user.login = token.login as string
+                session.user.id = token.id as number
+                // @ts-ignore
+                session.user.xd = 'xd'
             }
             return session
         }

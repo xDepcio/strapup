@@ -2,7 +2,7 @@ import { DbTemplte } from "@/db/types"
 import { newQueryParams } from "@/lib/utils"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
-import { FaRegStar } from "react-icons/fa"
+import { FaEye, FaRegStar } from "react-icons/fa"
 import { MdOutlineSdStorage } from "react-icons/md"
 import { FaLock } from "react-icons/fa";
 import { FaEdit } from "react-icons/fa";
@@ -12,65 +12,107 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { FaRegEye } from "react-icons/fa";
 import DeleteTemplate from "@/components/DeleteTemplate"
+import { DBQuery } from "@/db/db"
+import { Merge } from 'type-fest'
+import { redirect } from "next/navigation"
+import { authOptions } from "@/app/api/auth/[...nextauth]/options"
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
-    const user = await getServerSession()
-    const templates: DbTemplte[] = [
-        {
-            id: 1,
-            name: 'Template 1',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-        {
-            id: 2,
-            name: 'Template 2',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-        {
-            id: 3,
-            name: 'Template 3',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-        {
-            id: 4,
-            name: 'Template 4',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-        {
-            id: 5,
-            name: 'Template 5',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-        {
-            id: 6,
-            name: 'Template 6',
-            owner_id: 1,
-            public: true,
-            stars: 1,
-            tags: 'tag1 tag2',
-            synced: true,
-        },
-    ]
+    const user = await getServerSession(authOptions)
+    if (!user) {
+        return redirect('/')
+    }
+    console.log('userts', user)
+    // const res = await fetch(`http://localhost:3000/api/user/${user.user.id}/templates`).then(res => res.json()) as UserTemplateResponse
+
+    const { rows, rowCount } = await DBQuery<Merge<Pick<DbTemplte, 'id' | 'name' | 'public' | 'tags'>, { stars: number }>>(`
+        SELECT
+        t.id,
+        t.name,
+        t.public,
+        t.owner_id,
+        t.tags,
+        t.synced,
+        COUNT(uts.template_id) AS stars
+    FROM
+        templates AS t
+    LEFT JOIN
+        user_template_stars AS uts ON t.id = uts.template_id
+    WHERE
+        t.owner_id = $1
+    GROUP BY
+        t.id,
+        t.name,
+        t.public,
+        t.owner_id,
+        t.tags,
+        t.synced
+    ORDER BY stars DESC;
+    `, [user.user.id])
+
+    if (rowCount === 0) {
+        // console.log(res)
+        return <div>error</div>
+    }
+    // const templates = res.data
+    const templates = rows
+
+    // const templates: DbTemplte[] = [
+    //     {
+    //         id: 1,
+    //         name: 'Template 1',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    //     {
+    //         id: 2,
+    //         name: 'Template 2',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    //     {
+    //         id: 3,
+    //         name: 'Template 3',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    //     {
+    //         id: 4,
+    //         name: 'Template 4',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    //     {
+    //         id: 5,
+    //         name: 'Template 5',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    //     {
+    //         id: 6,
+    //         name: 'Template 6',
+    //         owner_id: 1,
+    //         public: true,
+    //         stars: 1,
+    //         tags: 'tag1 tag2',
+    //         synced: true,
+    //     },
+    // ]
 
     return (
         <div className="flex flex-col gap-2 dark:bg-zinc-900 bg-zinc-50 rounded-lg p-4 border">
@@ -102,13 +144,13 @@ export default async function UserPage({ children }: { children: React.ReactNode
                     </div>
                     <div className="text-muted-foreground text-sm items-start flex flex-col">
                         <div className="flex items-center gap-2 px-4 py-2 mb-4">
-                            <p>Private</p>
-                            <FaLock />
+                            <p>{template.public ? "Public" : "Private"}</p>
+                            {template.public ? <FaEye /> : <FaLock />}
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button variant={'outline'} className="dark:bg-zinc-900">
+                                    <div className="dark:bg-zinc-900 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
                                         <HiOutlineDotsHorizontal className='scale-150' />
-                                    </Button>
+                                    </div>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-fit p-0" align="center" side="top">
                                     <Button variant={'ghost'} className="gap-2">

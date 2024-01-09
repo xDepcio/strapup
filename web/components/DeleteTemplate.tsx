@@ -13,9 +13,12 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "./ui/button"
 import { FaTrash } from "react-icons/fa"
+import { useSession } from "next-auth/react"
 
 
 export default function DeleteTemplate() {
+    const ses = useSession()
+    console.log(ses)
     return (
         <AlertDialog>
             <AlertDialogTrigger>
