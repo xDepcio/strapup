@@ -154,7 +154,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
                                 </PopoverContent>
                             </Popover>
                         </div>
-                        <Button className="flex items-center gap-2" variant={'ghost'}>
+                        <Button disabled className="flex items-center gap-2" variant={'ghost'}>
                             <p>Edit</p>
                             <FaEdit />
                         </Button>
