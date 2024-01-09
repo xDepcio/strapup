@@ -164,7 +164,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
                             <p>Edit</p>
                             <FaEdit />
                         </Button>
-                        <DeleteTemplate />
+                        <DeleteTemplate template={template as DbTemplte} />
                         {/* <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
                             <p>Delete</p>
                             <FaTrash />

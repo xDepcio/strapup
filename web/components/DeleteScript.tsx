@@ -14,18 +14,18 @@ import {
 import { Button } from "./ui/button"
 import { FaTrash } from "react-icons/fa"
 import { useSession } from "next-auth/react"
-import { DbTemplte } from "@/db/types"
+import { DbScript, DbTemplte } from "@/db/types"
 import { Skeleton } from "./ui/skeleton"
 
-async function handleDeleteTemplate(userId: number, templateId: number) {
-    const res = await fetch(`/api/user/${userId}/templates/${templateId}`, {
+async function handleDeleteScript(userId: number, scriptId: number) {
+    const res = await fetch(`/api/user/${userId}/scripts/${scriptId}`, {
         method: 'DELETE'
     })
     console.log(res)
     window.location.reload()
 }
 
-export default function DeleteTemplate({ template }: { template: DbTemplte }) {
+export default function DeleteScript({ script }: { script: DbScript }) {
     const ses = useSession()
     // if (!ses.data) return <Skeleton />
 
@@ -47,7 +47,7 @@ export default function DeleteTemplate({ template }: { template: DbTemplte }) {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={() => handleDeleteTemplate(ses.data?.user.id!, template.id)}>Continue</AlertDialogAction>
+                    <AlertDialogAction onClick={() => handleDeleteScript(ses.data?.user.id!, script.id)}>Continue</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
