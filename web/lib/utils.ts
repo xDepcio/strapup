@@ -24,3 +24,11 @@ export function newQueryParams(currParams: ReadonlyURLSearchParams, newParams: N
     }
     return params
 }
+
+export function UrlSearchParamsToPOJO(params: URLSearchParams) {
+    const obj: Record<string, string> = {}
+    for (const [key, value] of params.entries()) {
+        obj[key] = value
+    }
+    return obj
+}

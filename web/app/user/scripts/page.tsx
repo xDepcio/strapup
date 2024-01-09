@@ -1,4 +1,4 @@
-import { DbTemplte } from "@/db/types"
+import { DbScript, DbTemplte } from "@/db/types"
 import { newQueryParams } from "@/lib/utils"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
@@ -15,7 +15,7 @@ import DeleteTemplate from "@/components/DeleteTemplate"
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
     const user = await getServerSession()
-    const templates: DbTemplte[] = [
+    const templates: DbScript[] = [
         {
             id: 1,
             name: 'Template 1',
@@ -106,9 +106,9 @@ export default async function UserPage({ children }: { children: React.ReactNode
                             <FaLock />
                             <Popover>
                                 <PopoverTrigger>
-                                    <Button variant={'outline'} className="dark:bg-zinc-900">
+                                    <div className="dark:bg-zinc-900 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
                                         <HiOutlineDotsHorizontal className='scale-150' />
-                                    </Button>
+                                    </div>
                                 </PopoverTrigger>
                                 <PopoverContent className="w-fit p-0" align="center" side="top">
                                     <Button variant={'ghost'} className="gap-2">
@@ -123,10 +123,6 @@ export default async function UserPage({ children }: { children: React.ReactNode
                             <FaEdit />
                         </Button>
                         <DeleteTemplate />
-                        {/* <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
-                            <p>Delete</p>
-                            <FaTrash />
-                        </Button> */}
                     </div>
                 </div>
             ))}

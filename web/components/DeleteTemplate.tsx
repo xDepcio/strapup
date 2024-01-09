@@ -1,3 +1,5 @@
+'use client'
+
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,10 +19,10 @@ export default function DeleteTemplate() {
     return (
         <AlertDialog>
             <AlertDialogTrigger>
-                <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
+                <div className="gap-2 text-red-700 h-10 px-4 py-2 hover:bg-accent hover:text-accent-foreground inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50">
                     <p>Delete</p>
                     <FaTrash />
-                </Button>
+                </div>
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
