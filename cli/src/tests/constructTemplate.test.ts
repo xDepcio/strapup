@@ -14,53 +14,53 @@ describe("Testing constructTemplate", function()
         Children: folderStruct[] | null
     }
     async function constructTemplate(my_struct: folderStruct, my_relative_path: string, my_absolute_path: string)
+{
+    
+    if(my_struct.IsDir)
     {
-
-        if(my_struct.IsDir)
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}/`)
+        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}/`)
+        try    
         {
-            const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name}/`)
-            const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}/`)
-            try    
-            {
-                fs.mkdirSync(cur_absolute_path, {recursive: true})
-            }
-            catch (err)
-            {
-                throw new Error(`Failed to create folder ${cur_absolute_path}. Error: ${err}`)
-            }
-            if(my_struct.Children)
-            {
-                my_struct.Children.forEach((child: folderStruct) =>
-                {
-                    constructTemplate(child, cur_relative_path, cur_absolute_path)
-                })
-            }
+            fs.mkdirSync(cur_absolute_path, {recursive: true})
         }
-        else
+        catch (err)
         {
-            const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name}`)
-            const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}`)
-            // const curFileContentResponse = await fetch(`${GO_BACKEND_URL}/api/templates/file?name=${cur_relative_path}`,{
-            //     method: 'GET',
-            //     headers: {
-            //         'Authorization': `${loadSettings().githubToken}`
-            //     }
-            // })
-
-            // if(!curFileContentResponse.ok)
-            // {
-            //     throw new Error(`Failed to download file ${cur_relative_path}. Error: ${curFileContentResponse.statusText}`)
-            // }
-            // const curFileContent: string = await curFileContentResponse.text() 
-
-            fs.writeFileSync(cur_absolute_path, my_struct.Name)
+            throw new Error(`Failed to create folder ${cur_absolute_path}. Error: ${err}`)
         }
-        return
+        if(my_struct.Children)
+        {
+            my_struct.Children.forEach((child: folderStruct) =>
+            {
+                constructTemplate(child, cur_relative_path, cur_absolute_path)
+            })
+        }
     }
+    else
+    {
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}`)
+        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}`)
+        // const curFileContentResponse = await fetch(`${GO_BACKEND_URL}/api/templates/file?name=${cur_relative_path}`,{
+        //     method: 'GET',
+        //     headers: {
+        //         'Authorization': `${loadSettings().githubToken}`
+        //     }
+        // })
+        
+        // if(!curFileContentResponse.ok)
+        // {
+        //     throw new Error(`Failed to download file ${cur_relative_path}. Error: ${curFileContentResponse.statusText}`)
+        // }
+        // const curFileContent: string = await curFileContentResponse.text() 
+
+        fs.writeFileSync(cur_absolute_path, my_struct.Name)
+    }
+    return
+}
 
     let mock_folder_struct: folderStruct = 
     {
-        Name: "test_folder",
+        Name: "@user/test_folder",
         IsDir: true,
         Children: [
             {

@@ -194,7 +194,7 @@ export function list() {
 
     p.log.success(`Your templates:`)
     templates.forEach(template => {
-        console.log(`${color.gray(p.S_BAR)}  ${color.dim(template)}`)
+        console.log(`${color.gray(p.S_BAR)}  ${color.dim(template.replace("_-_", "/"))}`)
     })
 }
 
