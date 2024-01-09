@@ -91,7 +91,7 @@ interface PasteOptions {
 interface folderStruct{
     Name: string,
     IsDir: boolean,
-    Children: folderStruct[]
+    Children: folderStruct[] | null
 }
 
 async function constructTemplate(my_struct: folderStruct, my_relative_path: string, my_absolute_path: string)
