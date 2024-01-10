@@ -87,7 +87,6 @@ interface PasteOptions {
     destinationRelativePath: string
 }
 
-//use templateEntry?
 interface folderStruct{
     name: string,
     isDir: boolean,
@@ -167,17 +166,20 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
         }
         const templateStructureJson: folderStruct = await templateStructureResponse.json()      
     
-        
-        await constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
-        // catch
-        // {
-        //     p.log.warn(`Failed to download and construct template. ${err}`)
-        //     if(fs.existsSync(templatePath))
-        //     {
-        //         fs.rmSync(templatePath, {recursive: true})
-        //     }
-        //     return
-        // }
+        try
+        {
+            await constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
+
+        }
+        catch(err)
+        {
+            p.log.warn(`Failed to download and construct template. ${err}`)
+            if(fs.existsSync(templatePath))
+            {
+                fs.rmSync(templatePath, {recursive: true})
+            }
+            return
+        }
 
     }
 
