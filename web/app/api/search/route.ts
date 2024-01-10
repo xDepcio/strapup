@@ -52,8 +52,8 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
         scriptResults = await DBQuery(`SELECT s.id, s.name, s.tags, COUNT(uss.script_id) as stars FROM scripts s
             LEFT JOIN user_script_stars uss ON uss.script_id=s.id
             WHERE s.public IS TRUE
-                AND LOWER(s.name) SIMILAR TO $1
-                OR s.tags SIMILAR TO $1
+                AND (LOWER(s.name) SIMILAR TO $1
+                OR s.tags SIMILAR TO $1)
             GROUP BY uss.script_id, s.id
             ORDER BY stars DESC
             LIMIT $2
@@ -64,11 +64,12 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
 
     let templateResults: QueryResult | null = null
     if (searchTemplates) {
-        templateResults = await DBQuery(`SELECT t.id, t.name, t.tags, COUNT(uts.template_id) as stars FROM templates t
-        LEFT JOIN user_template_stars uss ON uts.template_id=t.id
+        templateResults = await DBQuery(`SELECT t.id, t.name, t.tags, COUNT(uts.template_id) as stars
+        FROM templates t
+        LEFT JOIN user_template_stars uts ON uts.template_id=t.id
         WHERE t.public IS TRUE
-            AND LOWER(t.name) SIMILAR TO $1
-            OR t.tags SIMILAR TO $1
+            AND (LOWER(t.name) SIMILAR TO $1
+            OR t.tags SIMILAR TO $1)
         GROUP BY uts.template_id, t.id
         ORDER BY stars DESC
         LIMIT $2
