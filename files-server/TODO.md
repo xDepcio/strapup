@@ -51,7 +51,7 @@ Body wygląda np. tak:
     }
     ` - Walidujemy użytkownika (sprawdzamy ważność tokenu, oraz czy @username jest takie same jak login pobrany z bazy danych). - Jeśli tak to zapisujemy do bazy danych rekord identyfikujący ten skrypt. - Dalej zapisujemy w plikach servera ten skrypt. - Zwracamy odpowiedź czy wszytko się powiodło lub też nie.
 
-[TODO] #5
+[TODO] #5 DONE
 
 Endpoint delete `/api/templates/[id]/
 
