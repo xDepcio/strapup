@@ -1,13 +1,14 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
 import ChangeVisibilityBtn from "@/components/ChangeVisibility"
 import DeleteTemplate from "@/components/DeleteTemplate"
+import Empty from "@/components/Empty"
 import { Button } from "@/components/ui/button"
 import { DBQuery } from "@/db/db"
 import { DbTemplte } from "@/db/types"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { FaEdit, FaRegStar } from "react-icons/fa"
+import { FaEdit, FaEyeSlash, FaRegStar } from "react-icons/fa"
 import { MdOutlineSdStorage } from "react-icons/md"
 import { Merge } from 'type-fest'
 
@@ -19,93 +20,22 @@ export default async function UserPage({ children }: { children: React.ReactNode
     console.log('userts', user)
 
     const { rows, rowCount } = await DBQuery<Merge<Pick<DbTemplte, 'id' | 'name' | 'public' | 'tags'>, { stars: number }>>(`
-        SELECT
-        t.id,
-        t.name,
-        t.public,
-        t.owner_id,
-        t.tags,
-        t.synced,
-        COUNT(uts.template_id) AS stars
-    FROM
-        templates AS t
-    LEFT JOIN
-        user_template_stars AS uts ON t.id = uts.template_id
-    WHERE
-        t.owner_id = $1
-    GROUP BY
-        t.id,
-        t.name,
-        t.public,
-        t.owner_id,
-        t.tags,
-        t.synced
-    ORDER BY stars DESC;
+        SELECT t.id, t.name, t.public, t.owner_id, t.tags, t.synced, COUNT(uts.template_id) AS stars
+        FROM templates t
+        LEFT JOIN user_template_stars AS uts ON t.id = uts.template_id
+        WHERE t.owner_id = $1
+        GROUP BY t.id, t.name, t.public, t.owner_id, t.tags, t.synced
+        ORDER BY stars DESC;
     `, [user.user.id])
 
     if (rowCount === 0) {
-        // console.log(res)
-        return <div>error</div>
+        return (
+            <Empty className="self-start">
+                <p>You don't have any templates.</p>
+            </Empty>
+        )
     }
-    // const templates = res.data
     const templates = rows
-
-    // const templates: DbTemplte[] = [
-    //     {
-    //         id: 1,
-    //         name: 'Template 1',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    //     {
-    //         id: 2,
-    //         name: 'Template 2',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    //     {
-    //         id: 3,
-    //         name: 'Template 3',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    //     {
-    //         id: 4,
-    //         name: 'Template 4',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    //     {
-    //         id: 5,
-    //         name: 'Template 5',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    //     {
-    //         id: 6,
-    //         name: 'Template 6',
-    //         owner_id: 1,
-    //         public: true,
-    //         stars: 1,
-    //         tags: 'tag1 tag2',
-    //         synced: true,
-    //     },
-    // ]
 
     return (
         <div className="flex flex-col gap-2 dark:bg-zinc-900 bg-zinc-50 rounded-lg p-4 border">

@@ -1,4 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
+import Empty from "@/components/Empty"
 import { DBQuery } from "@/db/db"
 import { DbScript } from "@/db/types"
 import { getServerSession } from "next-auth"
@@ -24,7 +25,11 @@ export default async function UserPage({ children }: { children: React.ReactNode
     `, [user.user.id])
 
     if (rowCount === 0) {
-        return <div>error</div>
+        return (
+            <Empty className="self-start">
+                <p>You don't have any starred templates.</p>
+            </Empty>
+        )
     }
     const scripts = rows
 
