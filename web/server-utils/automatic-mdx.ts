@@ -3,6 +3,7 @@
 import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
+import { unEscape } from "./helpers";
 
 export async function getScriptMdx(scriptPath: string) {
     type Script = {
@@ -14,22 +15,23 @@ export async function getScriptMdx(scriptPath: string) {
     const params = getParameterNames(scripts.command)
     const args = params.map((param) => `\${${param}}`)
     const script = {
-        name: path.basename(scriptPath, ".mjs"),
+        name: unEscape(path.basename(scriptPath, ".mjs")),
         description: scripts.description,
         // command: scripts.command(...args),
         command: scripts.command.toString(),
     }
+    console.log("scr OBJ", script)
     const mdxContent = getMdxScriptsContent({ sortNum: 1, script })
     return mdxContent
 }
 
 const getMdxScriptsContent = ({ script, sortNum }: { sortNum: number, script: { name: string, description?: string, command: string } }) => {
     return `---
-title: ${script.name}
+title: ${escapeAt(script.name)}
 sortNum: ${sortNum}
 ---
-### ${script.name}
-${script.description || ''}
+### ${escapeAt(script.name)}
+${escapeAt(script.description || '')}
 ### Executed commands
 \`\`\`bash
 ${script.command}
