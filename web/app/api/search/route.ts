@@ -49,13 +49,13 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
 
     let scriptResults: QueryResult | null = null
     if (searchScripts) {
-        scriptResults = await DBQuery(`SELECT id, name, tags, stars FROM scripts
-            WHERE public IS TRUE
-            AND (
-                LOWER(name) SIMILAR TO $1
-                OR tags SIMILAR TO $1
-            )
-            ORDER BY stars DESC, ID ASC
+        scriptResults = await DBQuery(`SELECT s.id, s.name, s.tags, COUNT(uss.script_id) as stars FROM scripts s
+            LEFT JOIN user_script_stars uss ON uss.script_id=s.id
+            WHERE s.public IS TRUE
+                AND LOWER(s.name) SIMILAR TO $1
+                OR s.tags SIMILAR TO $1
+            GROUP BY uss.script_id, s.id
+            ORDER BY stars DESC
             LIMIT $2
             OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])
@@ -64,15 +64,15 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
 
     let templateResults: QueryResult | null = null
     if (searchTemplates) {
-        templateResults = await DBQuery(`SELECT id, name, tags, stars FROM templates
-            WHERE public IS TRUE
-            AND (
-                LOWER(name) SIMILAR TO $1
-                OR tags SIMILAR TO $1
-            )
-            ORDER BY stars DESC, ID ASC
-            LIMIT $2
-            OFFSET $3;
+        templateResults = await DBQuery(`SELECT t.id, t.name, t.tags, COUNT(uts.template_id) as stars FROM templates t
+        LEFT JOIN user_template_stars uss ON uts.template_id=t.id
+        WHERE t.public IS TRUE
+            AND LOWER(t.name) SIMILAR TO $1
+            OR t.tags SIMILAR TO $1
+        GROUP BY uts.template_id, t.id
+        ORDER BY stars DESC
+        LIMIT $2
+        OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])
     }
     console.log('templateResults', templateResults?.rows)
