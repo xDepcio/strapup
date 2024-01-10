@@ -143,7 +143,7 @@ async function main() {
             const templates = fs.readdirSync(TEMPLATES_PATH()).map(template => {
                 const metdata = readMetadataFile(`${TEMPLATES_PATH()}/${template}`)
                 return {
-                    name: template,
+                    name: template.replace("_-_", "/"),
                     description: metdata?.templateDesc
                 }
             })
@@ -152,7 +152,7 @@ async function main() {
                 return
             }
 
-            const templateName = await p.select({
+            const templateName = await p.selectsearch({
                 message: 'What template do you want to paste?',
                 options: templates.map(({ name, description }) => ({ value: name, label: name, hint: description })),
             }) as string

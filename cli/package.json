@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "mocha",
-    "ts": "tsc && cp ./src/premade-templates ./dist -r",
+    "ts": "tsc && cp ./premade-templates ./dist -r",
     "start": "npm run ts && node ./dist/index.js"
   },
   "repository": {

@@ -3,11 +3,13 @@ import { copyDirectoryContents, getFilesIgnoredByGit, getParameterNames } from "
 import * as fs from 'fs'
 import { expect } from "chai";
 import assert from 'assert'
-import { spawnSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import path from "path"
+import { paste } from "../commandsHandlers.js"
 
 describe("Testing constructTemplate", function()
 {
+    //pasted from commandHandler.js idk how to import private function
     interface folderStruct{
         Name: string,
         IsDir: boolean,
@@ -89,5 +91,11 @@ describe("Testing constructTemplate", function()
     }
 
     constructTemplate(mock_folder_struct, '', `${path.resolve()}/`)
+
+})
+
+describe('Testing paste', function()
+{
+    paste({templateName: "@xDepcio/template1", destinationRelativePath: "" })
 
 })

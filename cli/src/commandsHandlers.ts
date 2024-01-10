@@ -89,18 +89,20 @@ interface PasteOptions {
 
 //use templateEntry?
 interface folderStruct{
-    Name: string,
-    IsDir: boolean,
-    Children: folderStruct[] | null
+    name: string,
+    isDir: boolean,
+    children: folderStruct[] | null
 }
 
 async function constructTemplate(my_struct: folderStruct, my_relative_path: string, my_absolute_path: string)
-{
-    
-    if(my_struct.IsDir)
+{    
+    if(my_struct.isDir)
     {
-        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}/`)
-        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}/`)
+        
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.name.replace("/", "_-_")}/`)
+        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.name}/`)
+
+        p.log.info(`Creating folder ${cur_relative_path}`)
         try    
         {
             fs.mkdirSync(cur_absolute_path, {recursive: true})
@@ -109,9 +111,9 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
         {
             throw new Error(`Failed to create folder ${cur_absolute_path}. Error: ${err}`)
         }
-        if(my_struct.Children)
+        if(my_struct.children)
         {
-            my_struct.Children.forEach((child: folderStruct) =>
+            my_struct.children.forEach((child: folderStruct) =>
             {
                 constructTemplate(child, cur_relative_path, cur_absolute_path)
             })
@@ -119,8 +121,11 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
     }
     else
     {
-        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.Name.replace("/", "_-_")}`)
-        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.Name}`)
+        const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.name.replace("/", "_-_")}`)
+        const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.name}`)
+
+        p.log.info(`Downloading file ${cur_relative_path}`)
+
         const curFileContentResponse = await fetch(`${GO_BACKEND_URL}/api/templates/file?name=${cur_relative_path}`,{
             method: 'GET',
             headers: {
@@ -144,8 +149,8 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
     const destinationAbsolutePath = path.normalize(`${WORK_DIR}/${destinationRelativePath}`)
 
     if (!fs.existsSync(templatePath)) {
-        p.log.info(`Template ${templateName} does not exist locally. Attempting to download.`)         
-        //@username podane w nazwie? 
+        p.log.info(`Template ${templateName} does not exist locally. Attempting to download.`) 
+
         const templateStructureResponse = await fetch(`${GO_BACKEND_URL}/api/templates/structure?name=${templateName}`,{
             method: 'GET',
             headers: {
@@ -158,8 +163,8 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
             p.log.error(`Failed to download template structure. Error: ${templateStructureResponse.statusText}`)
             return
         }
-        const templateStructureJson: folderStruct = await templateStructureResponse.json()        
-
+        const templateStructureJson: folderStruct = await templateStructureResponse.json()      
+    
         try
         {
             constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
@@ -167,7 +172,10 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
         catch(err)
         {
             p.log.warn(`Failed to download and construct template. ${err}`)
-            fs.rmSync(templatePath, {recursive: true})
+            if(fs.existsSync(templatePath))
+            {
+                fs.rmSync(templatePath, {recursive: true})
+            }
             return
         }
 
