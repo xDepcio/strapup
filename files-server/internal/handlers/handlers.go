@@ -374,6 +374,8 @@ func PostTemplatesHandler(c *fiber.Ctx) error {
 	// zapisujemy do bazy danych rekord identyfikujący ten schemat
 	_, dbErr := database.DB.Exec("INSERT INTO templates (name, public, owner_id, tags) VALUES ($1, $2, $3, $4)", template.Files.Name, template.Public, user.ID, dbTags)
 	if dbErr != nil {
+		// Reverse file creation
+		err = os.RemoveAll("./files/templates/" + escapedName)
 		fmt.Println(dbErr)
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
 			Message: "Error while saving script in db",
@@ -383,6 +385,78 @@ func PostTemplatesHandler(c *fiber.Ctx) error {
 
 	return c.JSON(Response{
 		Message: "Template created",
+		Success: true,
+	})
+}
+
+func DeleteTemplateHandler(c *fiber.Ctx) error {
+	type Response struct {
+		Message string `json:"message"`
+		Success bool   `json:"success"`
+	}
+
+	templateId := c.Params("id")
+
+	token := c.Get("Authorization")
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
+	}
+
+	isValid, _, user, err := utils.Authorize(c)
+	if !isValid || err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(Response{
+			Message: "Unauthorized",
+			Success: false,
+		})
+	}
+
+	// Get the template name and owner_id from an id from a database request, and check if the user is the owner
+	row := database.DB.QueryRow("SELECT name, owner_id FROM templates WHERE id = $1", templateId)
+	var templateName string
+	var templateOwnerId int
+	errScan := row.Scan(&templateName, &templateOwnerId)
+	if errScan != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error while looking up the template in the database.",
+			Success: false,
+		})
+	}
+
+	if templateOwnerId != user.ID {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "You are not the owner of this template.",
+			Success: false,
+		})
+	}
+
+	// Delete the template from the database
+	_, dbErr := database.DB.Exec("DELETE FROM templates WHERE id = $1", templateId)
+	if dbErr != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error while deleting the template from the database.",
+			Success: false,
+		})
+	}
+
+	// Delete the template from the filesystem
+	escapedName := strings.Replace(templateName, "/", "_-_", -1)
+	if strings.Contains(escapedName, "..") {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Invalid script name",
+			Success: false,
+		})
+	}
+
+	err = os.RemoveAll("./files/templates/" + escapedName)
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(Response{
+			Message: "Error while deleting the template from the filesystem.",
+			Success: false,
+		})
+	}
+
+	return c.JSON(Response{
+		Message: "Template successfully deleted.",
 		Success: true,
 	})
 }

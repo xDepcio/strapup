@@ -15,4 +15,5 @@ func SetupRoutes(app *fiber.App) {
 	api.Get("/scripts", handlers.GetScriptsHandler)
 	api.Post("/scripts", handlers.PostScriptsHandler)
 	api.Post("/templates", handlers.PostTemplatesHandler)
+	api.Delete("/templates/:id", handlers.DeleteTemplateHandler)
 }
