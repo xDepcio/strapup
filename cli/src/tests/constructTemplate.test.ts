@@ -8,7 +8,7 @@ import path from "path"
 import { paste } from "../commandsHandlers.js"
 
 describe("Testing constructTemplate", function()
-{
+{   it("tests")
     //pasted from commandHandler.js idk how to import private function
     interface folderStruct{
         Name: string,
@@ -96,6 +96,6 @@ describe("Testing constructTemplate", function()
 
 describe('Testing paste', function()
 {
-    paste({templateName: "@xDepcio/template1", destinationRelativePath: "" })
+    paste({templateName: "@xDepcio/template1", destinationRelativePath: "test_template" })
 
 })

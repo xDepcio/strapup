@@ -113,10 +113,12 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
         }
         if(my_struct.children)
         {
+            let children_promises: any[] = []
             my_struct.children.forEach((child: folderStruct) =>
             {
-                constructTemplate(child, cur_relative_path, cur_absolute_path)
+                children_promises.push(constructTemplate(child, cur_relative_path, cur_absolute_path))
             })
+            return Promise.all(children_promises)
         }
     }
     else
@@ -141,7 +143,7 @@ async function constructTemplate(my_struct: folderStruct, my_relative_path: stri
 
         fs.writeFileSync(cur_absolute_path, curFileContent)
     }
-    return
+    return Promise.resolve()
 }
     
 export async function paste({ templateName, destinationRelativePath }: PasteOptions) {
@@ -165,19 +167,17 @@ export async function paste({ templateName, destinationRelativePath }: PasteOpti
         }
         const templateStructureJson: folderStruct = await templateStructureResponse.json()      
     
-        try
-        {
-            constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
-        }
-        catch(err)
-        {
-            p.log.warn(`Failed to download and construct template. ${err}`)
-            if(fs.existsSync(templatePath))
-            {
-                fs.rmSync(templatePath, {recursive: true})
-            }
-            return
-        }
+        
+        await constructTemplate(templateStructureJson, ``, `${TEMPLATES_PATH()}/`)
+        // catch
+        // {
+        //     p.log.warn(`Failed to download and construct template. ${err}`)
+        //     if(fs.existsSync(templatePath))
+        //     {
+        //         fs.rmSync(templatePath, {recursive: true})
+        //     }
+        //     return
+        // }
 
     }
 
