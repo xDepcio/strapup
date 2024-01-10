@@ -16,13 +16,14 @@ export async function getScriptMdx(scriptPath: string) {
     const script = {
         name: path.basename(scriptPath, ".mjs"),
         description: scripts.description,
-        command: scripts.command(...args),
+        // command: scripts.command(...args),
+        command: scripts.command.toString(),
     }
     const mdxContent = getMdxScriptsContent({ sortNum: 1, script })
     return mdxContent
 }
 
-const getMdxScriptsContent = ({ script, sortNum }: { sortNum: number, script: { name: string, description?: string, command: string[] } }) => {
+const getMdxScriptsContent = ({ script, sortNum }: { sortNum: number, script: { name: string, description?: string, command: string } }) => {
     return `---
 title: ${script.name}
 sortNum: ${sortNum}
@@ -31,7 +32,7 @@ sortNum: ${sortNum}
 ${script.description || ''}
 ### Executed commands
 \`\`\`bash
-${script.command.join("\n")}
+${script.command}
 \`\`\`
 `
 }
