@@ -1,14 +1,13 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/options"
+import ChangeVisibilityBtn from "@/components/ChangeVisibility"
 import DeleteScript from "@/components/DeleteScript"
 import { Button } from "@/components/ui/button"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { DBQuery } from "@/db/db"
 import { DbScript, DbTemplte } from "@/db/types"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { FaCode, FaEdit, FaEye, FaLock, FaRegEye, FaRegStar } from "react-icons/fa"
-import { HiOutlineDotsHorizontal } from "react-icons/hi"
+import { FaCode, FaEdit, FaRegStar } from "react-icons/fa"
 import { Merge } from "type-fest"
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
@@ -17,7 +16,6 @@ export default async function UserPage({ children }: { children: React.ReactNode
         return redirect('/')
     }
     console.log('user', user)
-    // const res = await fetch(`http://localhost:3000/api/user/${user.user.id}/scripts`).then(res => res.json()) as UserTemplateResponse
 
     const { rows, rowCount } = await DBQuery<Merge<Pick<DbTemplte, 'id' | 'name' | 'public' | 'tags'>, { stars: number }>>(`
         SELECT
@@ -137,23 +135,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
                         </div>
                     </div>
                     <div className="text-muted-foreground text-sm items-start flex flex-col">
-                        <div className="flex items-center gap-2 px-4 py-2 mb-4">
-                            <p>{script.public ? "Public" : "Private"}</p>
-                            {script.public ? <FaEye /> : <FaLock />}
-                            <Popover>
-                                <PopoverTrigger>
-                                    <div className="dark:bg-zinc-900 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                                        <HiOutlineDotsHorizontal className='scale-150' />
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-fit p-0" align="center" side="top">
-                                    <Button variant={'ghost'} className="gap-2">
-                                        <p>Make Public</p>
-                                        <FaRegEye />
-                                    </Button>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
+                        <ChangeVisibilityBtn script={script as DbScript} changeWhat="script" toPublic={!script.public} />
                         <Button disabled className="flex items-center gap-2" variant={'ghost'}>
                             <p>Edit</p>
                             <FaEdit />

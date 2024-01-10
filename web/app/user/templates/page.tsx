@@ -1,21 +1,15 @@
+import { authOptions } from "@/app/api/auth/[...nextauth]/options"
+import ChangeVisibilityBtn from "@/components/ChangeVisibility"
+import DeleteTemplate from "@/components/DeleteTemplate"
+import { Button } from "@/components/ui/button"
+import { DBQuery } from "@/db/db"
 import { DbTemplte } from "@/db/types"
-import { newQueryParams } from "@/lib/utils"
 import { getServerSession } from "next-auth"
 import Link from "next/link"
-import { FaEye, FaRegStar } from "react-icons/fa"
-import { MdOutlineSdStorage } from "react-icons/md"
-import { FaLock } from "react-icons/fa";
-import { FaEdit } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
-import { Button } from "@/components/ui/button"
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { FaRegEye } from "react-icons/fa";
-import DeleteTemplate from "@/components/DeleteTemplate"
-import { DBQuery } from "@/db/db"
-import { Merge } from 'type-fest'
 import { redirect } from "next/navigation"
-import { authOptions } from "@/app/api/auth/[...nextauth]/options"
+import { FaEdit, FaRegStar } from "react-icons/fa"
+import { MdOutlineSdStorage } from "react-icons/md"
+import { Merge } from 'type-fest'
 
 export default async function UserPage({ children }: { children: React.ReactNode }) {
     const user = await getServerSession(authOptions)
@@ -23,7 +17,6 @@ export default async function UserPage({ children }: { children: React.ReactNode
         return redirect('/')
     }
     console.log('userts', user)
-    // const res = await fetch(`http://localhost:3000/api/user/${user.user.id}/templates`).then(res => res.json()) as UserTemplateResponse
 
     const { rows, rowCount } = await DBQuery<Merge<Pick<DbTemplte, 'id' | 'name' | 'public' | 'tags'>, { stars: number }>>(`
         SELECT
@@ -143,32 +136,14 @@ export default async function UserPage({ children }: { children: React.ReactNode
                         </div>
                     </div>
                     <div className="text-muted-foreground text-sm items-start flex flex-col">
-                        <div className="flex items-center gap-2 px-4 py-2 mb-4">
-                            <p>{template.public ? "Public" : "Private"}</p>
-                            {template.public ? <FaEye /> : <FaLock />}
-                            <Popover>
-                                <PopoverTrigger>
-                                    <div className="dark:bg-zinc-900 inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
-                                        <HiOutlineDotsHorizontal className='scale-150' />
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-fit p-0" align="center" side="top">
-                                    <Button variant={'ghost'} className="gap-2">
-                                        <p>Make Public</p>
-                                        <FaRegEye />
-                                    </Button>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
+                        <ChangeVisibilityBtn template={template as DbTemplte} changeWhat="template" toPublic={!template.public} />
+
                         <Button disabled className="flex items-center gap-2" variant={'ghost'}>
                             <p>Edit</p>
                             <FaEdit />
                         </Button>
                         <DeleteTemplate template={template as DbTemplte} />
-                        {/* <Button className="flex items-center gap-2 text-red-700" variant={'ghost'}>
-                            <p>Delete</p>
-                            <FaTrash />
-                        </Button> */}
+
                     </div>
                 </div>
             ))}
