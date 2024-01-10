@@ -7,7 +7,7 @@ async function createTemplatesTable() {
         id SERIAL,
         name VARCHAR(255) NOT NULL,
         public BOOLEAN NOT NULL,
-        owner_id INTEGER NOT NULL REFERENCES users(id),
+        owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         tags VARCHAR(512),
         synced BOOLEAN DEFAULT FALSE,
 
@@ -21,7 +21,7 @@ async function createScriptsTable() {
         id SERIAL,
         name VARCHAR(255) NOT NULL,
         public BOOLEAN NOT NULL,
-        owner_id INTEGER NOT NULL REFERENCES users(id),
+        owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         tags VARCHAR(512),
         synced BOOLEAN DEFAULT FALSE,
 
@@ -32,8 +32,8 @@ async function createScriptsTable() {
 async function createUserTemplateStars() {
     await sql`CREATE TABLE IF NOT EXISTS user_template_stars
     (
-        user_id INTEGER NOT NULL REFERENCES users(id),
-        template_id INTEGER NOT NULL REFERENCES templates(id),
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        template_id INTEGER NOT NULL REFERENCES templates(id) ON DELETE CASCADE,
 
         PRIMARY KEY (user_id, template_id)
     );`
@@ -42,8 +42,8 @@ async function createUserTemplateStars() {
 async function createUserScriptStars() {
     await sql`CREATE TABLE IF NOT EXISTS user_script_stars
     (
-        user_id INTEGER NOT NULL REFERENCES users(id),
-        script_id INTEGER NOT NULL REFERENCES scripts(id),
+        user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+        script_id INTEGER NOT NULL REFERENCES scripts(id) ON DELETE CASCADE,
 
         PRIMARY KEY (user_id, script_id)
     );`
