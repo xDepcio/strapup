@@ -11,8 +11,8 @@ async function createDummyScripts() {
         (7, 'Zdfod', 'zdfod@example.com', 'https://avatars.githubusercontent.com/u/19310?v=4', 'zdfod'),
         (8, 'Wvqxw', 'wvqxw@example.com', 'https://avatars.githubusercontent.com/u/14656?v=4', 'wvqxw'),
         (9, 'Vomwq', 'vomwq@example.com', 'https://avatars.githubusercontent.com/u/20150?v=4', 'vomwq'),
-        (10, 'Lzgoq', 'lzgoq@example.com', 'https://avatars.githubusercontent.com/u/97502?v=4', 'lzgoq'),
-    `
+        (10, 'Lzgoq', 'lzgoq@example.com', 'https://avatars.githubusercontent.com/u/97502?v=4', 'lzgoq')
+    ;`
 }
 
 

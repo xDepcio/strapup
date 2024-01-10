@@ -76,7 +76,7 @@ async function createDummyScripts() {
         ('@vomwq/script47', True, 9, 'typescript react java kotlin'),
         ('@kdjbg/script48', True, 6, 'kotlin java go ruby'),
         ('@tpjcw/script49', False, 1, 'kotlin javascript'),
-        ('@uemki/script50', False, 1, 'swift vue go ruby k)
+        ('@uemki/script50', False, 1, 'swift vue go ruby')
     ;`
 }
 
