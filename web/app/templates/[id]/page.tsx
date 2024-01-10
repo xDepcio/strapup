@@ -2,7 +2,7 @@ import { allDocs } from '@/.contentlayer/generated'
 import PageContentNav from '@/components/PageContentNav'
 import { Mdx } from '@/components/mdx-components'
 import { DBQuery } from '@/db/db'
-import { DbScript, DbUser } from '@/db/types'
+import { DbScript, DbTemplte, DbUser } from '@/db/types'
 import { escapeName } from '@/lib/utils'
 import Image from 'next/image'
 import { Suspense } from 'react'
@@ -20,10 +20,12 @@ function getTemplateDoc(name: string) {
 export default async function TemplatePage({ params }: { params: { id: string } }) {
     // const templateName = decodeURIComponent(unescapeName(params.slug))
     // console.log(templateName)
-    const { rows, rowCount } = await DBQuery<Pick<DbScript, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
-        SELECT t.id, t.name, t.tags, t.stars, u.login, u.image, u.github_id FROM templates t
+    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+        SELECT t.id, t.name, t.tags, u.login, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
         JOIN users u ON t.owner_id = u.id
+        LEFT JOIN user_template_stars uts ON uts.template_id = t.id
         WHERE t.id = $1 AND t.public IS TRUE
+        GROUP BY uts.template_id, t.id, u.id
     `, [params.id])
 
     if (rowCount === 0) {
