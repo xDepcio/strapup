@@ -22,7 +22,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
         SELECT t.id, t.name, t.tags, u.login, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
         JOIN users u ON t.owner_id = u.id
         LEFT JOIN user_template_stars uts ON uts.template_id = t.id
-        WHERE t.id = $1 AND t.public IS TRUE
+        WHERE t.id = $1 AND (t.public IS TRUE OR t.owner_id = u.id)
         GROUP BY uts.template_id, t.id, u.id
     `, [params.id])
 
@@ -68,7 +68,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                     </div>
                     <p className='text-muted-foreground text-xs mt-8'>related tags</p>
                     <div className='flex flex-wrap gap-2 mt-2'>
-                        {template.tags.split(' ').map((tag) => (
+                        {template.tags?.split(' ').map((tag) => (
                             <Link href={{ pathname: '/search', query: { keyword: tag, searchTemplates: true, searchScripts: false } }} className='bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition-all shadow-sm text-white rounded-md px-2 py-1 text-xs cursor-pointer'>{tag}</Link>
                         ))}
                     </div>

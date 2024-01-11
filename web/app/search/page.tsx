@@ -147,7 +147,7 @@ export default function SearchPage() {
                                             </div>
                                             <p className="text-ellipsis overflow-hidden line-clamp-2 max-w-[60ch]">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora aut non cupiditate porro in! Laborum repellendus, molestias enim voluptatibus doloribus nulla corrupti iure quod perferendis maiores? Impedit laborum in odit!</p>
                                             <div className="flex gap-2">
-                                                {entry.tags.split(' ').map((tag, i) => (
+                                                {entry.tags?.split(' ').map((tag, i) => (
                                                     <Link href={`/search?${newQueryParams(searchParams, { keyword: tag })}`} className="dark:bg-zinc-800 bg-zinc-200 px-2 py-[2px] rounded-md text-sm"
                                                         key={i}>
                                                         {tag}

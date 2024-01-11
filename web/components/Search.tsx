@@ -189,7 +189,7 @@ export default function Search() {
                                                                 <p className="text-xs text-muted-foreground">{entry.stars}</p>
                                                             </div>
                                                         </div>
-                                                        <p className="text-xs text-muted-foreground text-ellipsis max-w-[70%] overflow-hidden">{entry.tags.split(' ').join('\u00A0\u00A0')}</p>
+                                                        <p className="text-xs text-muted-foreground text-ellipsis max-w-[70%] overflow-hidden">{entry.tags?.split(' ').join('\u00A0\u00A0')}</p>
                                                     </div>
                                                 </Link>
                                             ))
