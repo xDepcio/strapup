@@ -18,8 +18,8 @@ function getTemplateDoc(name: string) {
 }
 
 export default async function TemplatePage({ params }: { params: { id: string } }) {
-    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
-        SELECT t.id, t.name, t.tags, u.login, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
+    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id' | 'owner_id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+        SELECT t.id, t.name, t.tags, u.login, t.owner_id, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
         JOIN users u ON t.owner_id = u.id
         LEFT JOIN user_template_stars uts ON uts.template_id = t.id
         WHERE t.id = $1 AND (t.public IS TRUE OR t.owner_id = u.id)
@@ -28,7 +28,6 @@ export default async function TemplatePage({ params }: { params: { id: string } 
 
     if (rowCount === 0) {
         return <div>404</div>
-        // return redirect('/')
     }
 
     const template = rows[0]
@@ -36,6 +35,35 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     if (!templateDoc) {
         return <div>404</div>
     }
+
+    const { rows: scriptCountRows } = await DBQuery<Record<'scripts_count', number>>(`
+        SELECT COUNT(*) as scripts_count FROM scripts s
+        WHERE s.owner_id = $1
+    `, [template.owner_id])
+    const scriptsCount = scriptCountRows[0].scripts_count
+
+    const { rows: templatesCountRows } = await DBQuery<Record<'templates_count', number>>(`
+        SELECT COUNT(*) as templates_count FROM templates s
+        WHERE s.owner_id = $1
+    `, [template.owner_id])
+    const templatesCount = templatesCountRows[0].templates_count
+
+    const { rows: starsCountsRows } = await DBQuery<Record<'total_stars', number>>(`
+        SELECT SUM(merged.cnt) total_stars FROM (
+            SELECT COUNT(*) as cnt FROM user_template_stars uts
+            WHERE uts.template_id IN (
+                SELECT t.id FROM templates t
+                WHERE t.owner_id = $1
+            )
+            UNION
+            SELECT COUNT(*) as cnt FROM user_script_stars uss
+            WHERE uss.script_id IN (
+                SELECT s.id FROM scripts s
+                WHERE s.owner_id = $1
+            )
+        ) merged
+    `, [template.owner_id])
+    const starsCount = starsCountsRows[0].total_stars
 
     return (
         <div className='min-h-screen'>
@@ -56,15 +84,15 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                     </div>
                     <div className='text-muted-foreground flex items-center gap-2 text-xs mt-3'>
                         <FaCode />
-                        <p>{36} created scripts</p>
+                        <p>{scriptsCount} created scripts</p>
                     </div>
                     <div className='text-muted-foreground flex items-center gap-2 text-xs mt-2'>
                         <MdOutlineStorage />
-                        <p>{12} created templates</p>
+                        <p>{templatesCount} created templates</p>
                     </div>
                     <div className='text-muted-foreground flex items-center gap-2 text-xs mt-2'>
                         <FaStar />
-                        <p>{1889} stars earned</p>
+                        <p>{starsCount} stars earned</p>
                     </div>
                     <p className='text-muted-foreground text-xs mt-8'>related tags</p>
                     <div className='flex flex-wrap gap-2 mt-2'>
