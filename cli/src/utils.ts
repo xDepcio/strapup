@@ -319,3 +319,11 @@ export const walkDir = (dir: string, callback: (path: string) => void, recursive
         }
     }
 }
+
+export function outroStrapup(my_headless: boolean) 
+{
+    if(!my_headless)
+    {
+        p.outro(`Problems? ${color.underline(color.cyan('https://example.com'))}`);
+    }
+}
