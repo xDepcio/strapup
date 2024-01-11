@@ -1,6 +1,7 @@
 import { normalize } from 'path'
 import { loadSettings } from './utils.js'
 
+
 export const STRAPUP_DIR_NAME = 'strapup'
 export const TEMPLATES_PATH = () => normalize(loadSettings().strapupDirPath + `/templates`)
 export const SCRIPTS_PATH = () => normalize(loadSettings().strapupDirPath + `/scripts.mjs`)

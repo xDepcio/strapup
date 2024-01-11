@@ -85,7 +85,7 @@ async function main() {
                 try {
                     await downloadScript(scriptName)
                 } catch (error) {
-                    p.log.error(`Something went wrong while fetching the script.`)
+                    p.log.error(`Something went wrong while fetching the script. Error: ${error}`)
                     return
                 }
                 script = await import(`${SCRIPTS_DIR_PATH}/${escape(scriptName)}.mjs`).then(module => module.default)
