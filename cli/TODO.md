@@ -3,17 +3,17 @@
     Musimy zrobić tak aby zamiast tego był folder `scripts/` a w nim pliki zawierające skrypty. `scripts.mjs` będzie zarezerwowaną nazwą, gdzię będą się znajdowały skrypty "biblioteczne". Zmiana ta jest potrzebna, bo skrypty są kodem ładowanym podczas wykonywania programu, w związku z tym błąd np. składniowy z jednym z nich wywalił by nam całą aplikację gdyby wszystkie znajdowały by się w jednym pliku. Taka zmiana też ułatwi nam życie gdy będziemy pobierać skrypty innych użytkowników.
     Czyli trzeba zmienić aktualną logikę ładowania skryptów o to, aby załadowała wszystkie z folderu `$HOME/.strapup/scripts/`.
 
-[TODO] #2 DOING
+[TODO] #2 DONE
     Jeśli któryś skrypt wkleja schemat którego nie mam zapisanego lokalnie, to trzeba to obsłużyć.
     Np. jest taka komenda w skrypcie: `npx strapup paste @userName/some-template`
     Patrzymy, że nie mamy takiego schematu, więc musimy go pobrać (patrz #3). Jak to zrobimy to można lecieć dalej.
 
-[TODO] #5 DOING
+[TODO] #5 DONE
     Jeśli któryś skrypt wykonuje inny skrypt, którego nie mamy zapisanego lokanie, to trzeba to obsłużyć.
     Np. jest taka komenda w skrypce: `npx strapup run-script @userName/some-script`.
     Patrzymy, że nie mamy takiego skryptu, więc go pobieramy (patrz #4). UWAGA Trzeba pamiętać, że nowo pobrany skrypt może wklejać schematy i wykonywać skrypty, których nie mamy pobranych, musi to więc działać też dla takiej syutacji (patrz #2).
 
-[TODO] #3 DONE?
+[TODO] #3 DONE
     Można sobie wkleić template którego się nie ma lokalnie.
     Pod spodem działa to tak:
     - Najpierw leci zapytanie GET do backendu w GO `/api/templates/structure?name=@userName/some-template`. Zwraca strukturę plików schematu. Taka, odpowiedź jak się powiedzie, będzie wyglądać np. tak:
@@ -109,5 +109,9 @@
     }
     ```
 
-[TODO] #8
+[TODO] #8 DONE
     Naprawienie tryby headless - aktualnie kopia kodu z poprawkami w katalogu `/headless` - rozwiązanie na tyle biedne że należy to zmienić. Przy odpalaniu programu z jakimkolwiek argumentem, flaga `HEADLESS` musi zostać ustawiona na `true`, a wykonanie programu uzależnione od wartości tej flagi.
+
+[TODO] #9 
+    Testy jednostkowe - w constructTemplates.test.ts wkleiłem prywatną funkcję bo nie wiem jak zaimportować
+    Headless.test.ts - test jest pending zamiast passed, trzeba poprawić
