@@ -69,7 +69,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     return (
         <div className='min-h-screen'>
             <div className='max-w-screen-xl mx-auto grid grid-cols-[1fr_3fr_1fr] gap-10'>
-                <div className='mt-9'>
+                <div className='mt-9 sticky top-[6.8rem] h-fit'>
                     <div className='flex gap-1 flex-wrap'>
                         <p className=''>This template has earned</p>
                         <p className='text-yellow-500 text-nowrap flex items-center gap-1 font-medium'>{template.stars}<FaStar className="inline text-yellow-500" /></p>

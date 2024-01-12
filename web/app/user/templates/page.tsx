@@ -40,7 +40,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
     return (
         <div className="flex flex-col gap-2 dark:bg-zinc-900 bg-zinc-50 rounded-lg p-4 border h-fit">
             {templates.map((template) => (
-                <div key={template.name} className="flex border-b">
+                <div key={template.name} className="flex border-b justify-between">
                     <div className="flex gap-4 flex-col justify-center dark:border-zinc-800 border-zinc-200 p-4">
                         <div className="flex items-center gap-2">
                             <Link href={`/templates/${template.id}`}>
