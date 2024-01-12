@@ -109,7 +109,7 @@ const DialogDescription = React.forwardRef<
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
-export function closeDialog() {
+function closeDialog() {
   const dialogClose = document.getElementById("dialog-close")
   dialogClose?.click()
 }
@@ -125,4 +125,5 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  closeDialog
 }

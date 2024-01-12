@@ -12,6 +12,7 @@ import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
+import NotFound from '@/components/NotFound'
 
 function getScriptDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
@@ -34,7 +35,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     const script = rows[0]
     const scriptDoc = getScriptDoc(script.name)
     if (!scriptDoc) {
-        return <div>404</div>
+        return <NotFound />
     }
 
     const { rows: scriptCountRows } = await DBQuery<Record<'scripts_count', number>>(`
