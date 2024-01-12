@@ -2,6 +2,7 @@ export type DbScript = {
     id: number
     name: string
     public: boolean
+    description: string
     owner_id: number
     tags: string
     stars: number

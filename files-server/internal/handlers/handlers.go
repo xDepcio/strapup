@@ -173,10 +173,11 @@ func GetScriptsHandler(c *fiber.Ctx) error {
 }
 
 type ScriptPost struct {
-	Name    string   `json:"name"`
-	Public  bool     `json:"isPublic"`
-	Tags    []string `json:"tags"`
-	Content string   `json:"content"`
+	Name        string   `json:"name"`
+	Public      bool     `json:"isPublic"`
+	Tags        []string `json:"tags"`
+	Content     string   `json:"content"`
+	Description string   `json:"description"`
 }
 
 func PostScriptsHandler(c *fiber.Ctx) error {
@@ -200,6 +201,11 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 			Success: false,
 		})
 	}
+	fmt.Println(script.Name)
+	fmt.Println(script.Content)
+	fmt.Println(script.Description)
+	fmt.Println(script.Public)
+	fmt.Println(script.Tags)
 
 	if "@"+user.Login != strings.Split(script.Name, "/")[0] {
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
@@ -230,8 +236,9 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).SendString("Error while getting scripts")
 	}
 
-	_, dbErr := database.DB.Exec("INSERT INTO scripts (name, public, owner_id) VALUES ($1, $2, $3)", script.Name, script.Public, user.ID)
+	_, dbErr := database.DB.Exec("INSERT INTO scripts (name, public, owner_id, tags, description) VALUES ($1, $2, $3, $4, $5)", script.Name, script.Public, user.ID, strings.Join(script.Tags, " "), script.Description)
 	if dbErr != nil {
+		fmt.Println(dbErr)
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
 			Message: "Error while saving script in db",
 			Success: false,

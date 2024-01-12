@@ -74,8 +74,17 @@ export const scriptsContent = `export const scripts = {
     // Create a new script by adding a key-value pair based on examples above.
 }`
 
-export const exampleScriptContent = `export default {
+export const exampleScriptContent = `/**
+* @typedef {Object} Script
+* @property {string} description - Description, which will be seen in the teminal and in the docs.
+* @property {string[]} tags - Tags are used to search for script.
+* @property {function(...string): string[]} command - Executed commands.
+*/
+
+/** @type {Script} */
+export default {
     description: "This will be shown as scripts description",
+    tags: ["go", "next", "typescript"],
     command: () => [
         \`echo "Change contents of this commands array"\`,
     ],
@@ -102,6 +111,7 @@ export type ScriptsFunction = (...args: string[]) => string[]
 export type Scripts = {
     [key: string]: {
         description: string
+        tags: string[]
         command: ScriptsFunction
     }
 }

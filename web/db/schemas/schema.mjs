@@ -6,6 +6,7 @@ async function createTemplatesTable() {
     (
         id SERIAL,
         name VARCHAR(255) NOT NULL,
+        description VARCHAR(1024),
         public BOOLEAN NOT NULL,
         owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         tags VARCHAR(512),
@@ -20,6 +21,7 @@ async function createScriptsTable() {
     (
         id SERIAL,
         name VARCHAR(255) NOT NULL,
+        description VARCHAR(1024),
         public BOOLEAN NOT NULL,
         owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
         tags VARCHAR(512),
