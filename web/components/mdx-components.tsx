@@ -196,7 +196,8 @@ const components = {
             )}
             {...props}
         >
-            <FiCopy onClick={() => toast.success('copied! 📝')} className="absolute top-1/2 -translate-y-1/2 right-1 hover:bg-indigo-200 p-2 rounded-md box-content transition-all cursor-pointer" />
+            {/* @ts-ignore */}
+            <FiCopy onClick={() => { toast.success('copied! 📝'); navigator.clipboard.writeText(props.children.props.children.props.children as string) }} className="absolute top-1/2 -translate-y-1/2 right-1 hover:bg-indigo-200 p-2 rounded-md box-content transition-all cursor-pointer" />
             {props.children}
         </code>
 
