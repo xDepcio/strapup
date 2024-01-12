@@ -127,8 +127,7 @@ interface RunScriptOptions {
 }
 
 export async function runScript({ functionParams = [], functionToRun }: RunScriptOptions) {
-    // @ts-ignore
-    const commands = functionToRun(...functionParams)
+    const commands = functionToRun(...functionParams).filter(command => command)
     const concatedCommands = commands.join('\n')
 
     p.log.info(`Running following commands, follow on-screen prompts.`)

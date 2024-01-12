@@ -15,13 +15,14 @@ export const args = process.argv
 export const __filename = fileURLToPath(import.meta.url);
 export const __dirname = dirname(fileURLToPath(import.meta.url));
 export const WORK_DIR = process.cwd()
+export const HEADLESS = args.length > 2
 
 async function main() {
-    if (args.length > 2) {
-        execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
-        return
-    }
-    console.clear();
+    // if (args.length > 2) {
+    //     execSync(`node ${__dirname}/headless/index.js ${args.slice(2).join(' ')}`, { stdio: 'inherit' })
+    //     return
+    // }
+    if (!HEADLESS) console.clear();
     p.intro(`${color.bgCyan(color.black(' strapup '))}`);
 
     let settings: StrapupSettings
@@ -45,7 +46,7 @@ async function main() {
     console.log(`${color.gray(p.S_BAR)}  Scripts can be modified and added here -> ${color.dim(SCRIPTS_DIR_PATH)}`)
     console.log(`${color.gray(p.S_BAR)}  And you are here -> ${color.dim(process.cwd())}`)
 
-    const command = await p.select({
+    const command = !HEADLESS ? await p.select({
         message: 'What do you want to do?',
         options: [
             { value: 'run-script', label: `${color.underline(color.cyan('run-script'))} - run a script.` },
@@ -56,16 +57,16 @@ async function main() {
             { value: 'push-script', label: `${color.underline(color.cyan('push-script'))} - save choosen script at remote.` },
             { value: 'push-template', label: `${color.underline(color.cyan('push-template'))} - save choosen template at remote.` },
         ],
-    })
+    }) : args[2]
 
     switch (command) {
         case 'run-script': {
             const scripts = await importScripts(SCRIPTS_DIR_PATH)
             const options = Object.entries(scripts).map(([name, { description }]) => ({ value: name, label: name, hint: description }))
-            const scriptName = await p.selectsearch({
+            const scriptName = !HEADLESS ? await p.selectsearch({
                 message: 'What script do you want to run?',
                 options: options,
-            }) as string
+            }) as string : args[3]
 
             let script = scripts[scriptName]
             if (!options.map(({ value }) => value).includes(scriptName)) {
