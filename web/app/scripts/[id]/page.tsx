@@ -67,7 +67,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     const starsCount = starsCountsRows[0].total_stars
 
     return (
-        <div className='min-h-screen'>
+        <div className='min-h-screen overflow-x-auto'>
             <div className='max-w-screen-xl mx-auto grid grid-cols-[1fr_3fr_1fr] gap-10'>
                 <div className='mt-9'>
                     <div className='flex gap-1 flex-wrap'>
@@ -102,7 +102,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                         ))}
                     </div>
                 </div>
-                <div className=''>
+                <div className='overflow-x-auto'>
                     <Mdx code={scriptDoc.body.code} />
                 </div>
                 <PageContentNav />

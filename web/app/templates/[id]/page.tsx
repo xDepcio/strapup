@@ -102,7 +102,7 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                         ))}
                     </div>
                 </div>
-                <div className=''>
+                <div className='overflow-x-auto'>
                     <Mdx code={templateDoc.body.code} />
                 </div>
                 <PageContentNav />
