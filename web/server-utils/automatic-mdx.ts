@@ -34,6 +34,11 @@ sortNum: ${sortNum}
 ---
 ### ${escapeAt(script.name)}
 ${escapeAt(script.description || '')}
+
+To run use:
+\`\`\`command
+npx strapup run-script ${script.name}
+\`\`\`
 ### Executed commands
 \`\`\`bash
 ${script.command}
