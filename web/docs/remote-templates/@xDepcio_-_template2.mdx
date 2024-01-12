@@ -15,7 +15,7 @@ Typescript redux toolkit with skeleton createApi, createSlice and TS redux hooks
     └── userApi.ts
 ```
 #### Files contents
-```ts title="temp/@xDepcio_-_template2/features/feature.ts"
+```ts title="features/feature.ts"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type User = {
@@ -42,17 +42,17 @@ export const userApi = createApi({
 
 export const { useGetUsersQuery, useGetUserByIdQuery } = userApi;
 ```
-```ts title="temp/@xDepcio_-_template2/hooks.ts"
+```ts title="hooks.ts"
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "./store";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
-```ts title="temp/@xDepcio_-_template2/services/sub-folder/deeply-nested-file.ts"
+```ts title="services/sub-folder/deeply-nested-file.ts"
 export const value = "I am deeply nested"
 ```
-```ts title="temp/@xDepcio_-_template2/services/userApi.ts"
+```ts title="services/userApi.ts"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type User = {

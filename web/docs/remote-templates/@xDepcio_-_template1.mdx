@@ -15,7 +15,7 @@ Typescript redux toolkit with skeleton createApi, createSlice and TS redux hooks
 └── store.ts
 ```
 #### Files contents
-```ts title="temp/@xDepcio_-_template1/features/counterSlice.ts"
+```ts title="features/counterSlice.ts"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type CounterState = {
@@ -46,14 +46,14 @@ export const {
 } = counter.actions;
 export default counter.reducer;
 ```
-```ts title="temp/@xDepcio_-_template1/hooks.ts"
+```ts title="hooks.ts"
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "./store";
 
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 ```
-```tsx title="temp/@xDepcio_-_template1/provider.tsx"
+```tsx title="provider.tsx"
 "use client";
 
 import { store } from "./store";
@@ -63,7 +63,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     return <Provider store={store}>{children}</Provider>;
 }
 ```
-```ts title="temp/@xDepcio_-_template1/services/userApi.ts"
+```ts title="services/userApi.ts"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 type User = {
@@ -90,7 +90,7 @@ export const userApi = createApi({
 
 export const { useGetUsersQuery, useGetUserByIdQuery } = userApi;
 ```
-```ts title="temp/@xDepcio_-_template1/store.ts"
+```ts title="store.ts"
 import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "./features/counterSlice";
 import { userApi } from "./services/userApi";

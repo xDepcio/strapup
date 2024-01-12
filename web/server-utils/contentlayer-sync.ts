@@ -24,20 +24,20 @@ async function syncContentWorker(contentDir: string) {
         }
     })
 
-    // notSyncedTemplates.forEach(async (templateName) => {
-    //     try {
-    //         fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
-    //         fs.mkdirSync(process.env.PWD + '/temp')
-    //         const savePath = `temp/${escape(templateName)}`
-    //         await downloadTemplate(templateName, savePath)
-    //         const templateMdx = await getTemplateMdx(savePath, templateName)
-    //         fs.writeFileSync(`${contentDir}/remote-templates/${escape(templateName)}.mdx`, templateMdx)
-    //         // await markTemplateAsSynced(templateName)
-    //     } catch (e) {
-    //         console.error("Failed to sync template", templateName)
-    //         console.error(e)
-    //     }
-    // })
+    notSyncedTemplates.forEach(async (templateName) => {
+        try {
+            fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
+            fs.mkdirSync(process.env.PWD + '/temp')
+            const savePath = `temp/${escape(templateName)}`
+            await downloadTemplate(templateName, savePath)
+            const templateMdx = await getTemplateMdx(savePath, templateName)
+            fs.writeFileSync(`${contentDir}/remote-templates/${escape(templateName)}.mdx`, templateMdx)
+            // await markTemplateAsSynced(templateName)
+        } catch (e) {
+            console.error("Failed to sync template", templateName)
+            // console.error(e)
+        }
+    })
 }
 
 export async function syncContent(contentDir: string) {
