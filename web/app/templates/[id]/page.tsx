@@ -7,6 +7,7 @@ import { DbTemplte, DbUser } from '@/db/types'
 import { escapeName } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
@@ -27,13 +28,13 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     `, [params.id])
 
     if (rowCount === 0) {
-        return <div>404</div>
+        return notFound()
     }
 
     const template = rows[0]
     const templateDoc = getTemplateDoc(template.name)
     if (!templateDoc) {
-        return <div>404</div>
+        return notFound()
     }
 
     const { rows: scriptCountRows } = await DBQuery<Record<'scripts_count', number>>(`

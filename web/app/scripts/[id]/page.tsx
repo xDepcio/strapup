@@ -7,12 +7,12 @@ import { DbScript, DbUser } from '@/db/types'
 import { escapeName } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import { Suspense } from 'react'
 import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
-import NotFound from '@/components/NotFound'
 
 function getScriptDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
@@ -28,14 +28,13 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     `, [params.id])
 
     if (rowCount === 0) {
-        return <div>404</div>
-        // return redirect('/')
+        return notFound()
     }
 
     const script = rows[0]
     const scriptDoc = getScriptDoc(script.name)
     if (!scriptDoc) {
-        return <NotFound />
+        return notFound()
     }
 
     const { rows: scriptCountRows } = await DBQuery<Record<'scripts_count', number>>(`
