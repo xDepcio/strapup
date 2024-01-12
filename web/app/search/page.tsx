@@ -24,22 +24,12 @@ import { FaEyeSlash } from "react-icons/fa";
 export default function SearchPage() {
     const { data, isLoading } = useContext(SearchContext)
     const searchParams = useSearchParams()
-    // const subData = useMemo(() => {
-    //     const page = parseInt(searchParams.get('page') ?? '1')
-    //     const perPage = parseInt(searchParams.get('perPage') ?? '10')
-    //     const start = (page - 1) * perPage
-    //     const end = start + perPage
-    //     return {
-    //         scripts: data.scripts.slice(start, end),
-    //         templates: data.templates.slice(start, end),
-    //     }
-    // }, [data])
-    // const searchParams = useBetterQueryParams()
+
     const formattedData = useMemo(() => {
         return [
             ...data.scripts.map(e => ({ ...e, type: 'script' })),
             ...data.templates.map(e => ({ ...e, type: 'template' })),
-        ].sort((a, b) => a.stars - b.stars)
+        ].sort((a, b) => b.stars - a.stars)
     }, [data])
 
     return (

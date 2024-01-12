@@ -9,6 +9,7 @@ const reqBodySchema = z.object({
     searchTemplates: z.boolean(),
     page: z.number().min(1).optional().default(1),
     pageSize: z.number().min(1).max(30).optional().default(10),
+    orderBy: z.enum(['stars-desc', 'stars-asc']).optional().default('stars-desc')
 })
 
 // type ReqBody = z.infer<typeof reqBodySchema>
@@ -48,6 +49,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
     const sqlRegexWildcards = '%(' + sqlRegex + ')%'
 
     let scriptResults: QueryResult | null = null
+    const order = body.data.orderBy === 'stars-desc' ? 'DESC' : 'ASC'
     if (searchScripts) {
         scriptResults = await DBQuery(`SELECT s.id, s.name, s.tags, COUNT(uss.script_id) as stars FROM scripts s
             LEFT JOIN user_script_stars uss ON uss.script_id=s.id
@@ -55,7 +57,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
                 AND (LOWER(s.name) SIMILAR TO $1
                 OR s.tags SIMILAR TO $1)
             GROUP BY uss.script_id, s.id
-            ORDER BY stars DESC
+            ORDER BY stars ${order}, s.id
             LIMIT $2
             OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])
@@ -71,7 +73,7 @@ export const POST = async (req: NextRequest): Promise<NextResponse<SearchResBody
             AND (LOWER(t.name) SIMILAR TO $1
             OR t.tags SIMILAR TO $1)
         GROUP BY uts.template_id, t.id
-        ORDER BY stars DESC
+        ORDER BY stars ${order}
         LIMIT $2
         OFFSET $3;
         `, [sqlRegexWildcards, pageSize, (page - 1) * pageSize])

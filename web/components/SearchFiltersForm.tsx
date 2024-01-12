@@ -33,17 +33,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { HTMLAttributes, ReactNode, useCallback, useContext, useEffect, useState } from "react"
 import { SearchContext, SearchResBodyData } from "./Providers"
 import { Checkbox } from "./ui/checkbox"
-// const languages = [
-//     { label: "English", value: "en" },
-//     { label: "French", value: "fr" },
-//     { label: "German", value: "de" },
-//     { label: "Spanish", value: "es" },
-//     { label: "Portuguese", value: "pt" },
-//     { label: "Russian", value: "ru" },
-//     { label: "Japanese", value: "ja" },
-//     { label: "Korean", value: "ko" },
-//     { label: "Chinese", value: "zh" },
-// ] as const
+
 type SearchQueryParams = {
     keyword: string
     searchScripts: string
@@ -54,8 +44,8 @@ type SearchQueryParams = {
 }
 
 const orderByOptions = [
-    { label: "Stars (desc)", value: "stars-desc", icon: <ChevronsUp /> },
-    { label: "Stars (asc)", value: "stars-asc", icon: <ChevronsDown /> },
+    { label: "Stars (desc)", value: "stars-desc", icon: <ChevronsDown /> },
+    { label: "Stars (asc)", value: "stars-asc", icon: <ChevronsUp /> },
 ] as const
 
 const formSchema = z.object({
@@ -75,7 +65,6 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
     const searchParams = useSearchParams()
     const router = useRouter()
     const pathname = usePathname()
-    // const { params, setParams } = useBetterSearchParams<SearchQueryParams>()
 
 
     const [searchParamsObj, setSearchParamsObj] = useState({
@@ -152,6 +141,7 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                     searchTemplates: values.searchTemplates,
                     page: values.page,
                     pageSize: values.pageSize,
+                    orderBy: values.orderBy
                 })
             })
             const data = await res.json() as SearchResBody
@@ -166,12 +156,6 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
         clearTimeout(dbSearchTimeout)
         setDbSearchTimeout(timeout)
     }
-
-    // useEffect(() => {
-    //     if (formSchema.safeParse(form.getValues()).success) {
-    //         form.handleSubmit(onSubmit)()
-    //     }
-    // }, [])
 
     return (
         <Form {...form}>
@@ -208,7 +192,6 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                                 </PopoverTrigger>
                                 <PopoverContent className="w-[200px] p-0">
                                     <Command>
-                                        {/* <CommandInput placeholder="Search orderOpt..." /> */}
                                         <CommandEmpty>No orderOpt found.</CommandEmpty>
                                         <CommandGroup>
                                             {orderByOptions.map((orderOpt) => (
@@ -221,14 +204,6 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                                                     }}
                                                 >
                                                     {orderOpt.icon}
-                                                    {/* <Check
-                                                        className={cn(
-                                                            "mr-2 h-4 w-4",
-                                                            orderOpt.value === field.value
-                                                                ? "opacity-100"
-                                                                : "opacity-0"
-                                                        )}
-                                                    /> */}
                                                     {orderOpt.label}
                                                 </CommandItem>
                                             ))}
@@ -290,40 +265,6 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
                         </FormItem>
                     )}
                 />
-                {/* <FormField
-                    control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormDescription>
-                                This is your public display name.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                /> */}
-                {/* <FormField
-                    control={form.control}
-                    name="searchScripts"
-                    render={({ field }) => (
-                        <FormItem className="flex items-center gap-1">
-                            <FormLabel className="text-sm whitespace-nowrap">Search Scripts</FormLabel>
-                            <FormControl>
-                                <Checkbox
-                                    style={{ marginTop: 0 }}
-                                    className="mt-0"
-                                    checked={field.value}
-                                    onCheckedChange={field.onChange}
-                                />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                /> */}
-                {/* <Button type="submit">Submit</Button> */}
             </form>
         </Form>
     )
