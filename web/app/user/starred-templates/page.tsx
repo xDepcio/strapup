@@ -9,7 +9,7 @@ import { FaCode, FaRegStar } from "react-icons/fa"
 import { MdOutlineSdStorage } from "react-icons/md"
 import { Merge } from "type-fest"
 
-export default async function UserPage({ children }: { children: React.ReactNode }) {
+export default async function UserPage() {
     const user = await getServerSession(authOptions)
     if (!user) {
         return redirect('/')
@@ -27,7 +27,7 @@ export default async function UserPage({ children }: { children: React.ReactNode
     if (rowCount === 0) {
         return (
             <Empty className="self-start">
-                <p>You don't have any starred templates.</p>
+                <p>{`You don't have any starred templates.`}</p>
             </Empty>
         )
     }

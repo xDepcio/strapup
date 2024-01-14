@@ -18,8 +18,9 @@ import {
 } from "@/components/ui/sheet"
 import DocsSideNav from './DocsSideNav'
 import { AiOutlineClose } from 'react-icons/ai'
+import { Doc } from '@/.contentlayer/generated'
 
-export default function MobileDocsNav() {
+export default function MobileDocsNav({ allDocs }: { allDocs: Doc[] }) {
     return (
         <div className="sm:hidden w-screen h-14 fixed bottom-0 dark:bg-zinc-950 bg-white border-t flex items-center justify-between text-muted-foreground font-medium z-10">
             <div className="flex items-center justify-center gap-2">
@@ -38,7 +39,7 @@ export default function MobileDocsNav() {
                             </SheetDescription>
                         </SheetHeader> */}
 
-                        <DocsSideNav className='block h-full w-full mt-6' />
+                        <DocsSideNav allDocs={allDocs} className='block h-full w-full mt-6' />
 
                         <SheetFooter>
                             <SheetClose asChild>

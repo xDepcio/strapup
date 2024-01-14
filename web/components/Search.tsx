@@ -108,7 +108,7 @@ export default function Search() {
                                                 ...searchResults.scripts.map(e => ({ ...e, type: 'script' })),
                                                 ...searchResults.templates.map(e => ({ ...e, type: 'template' })),
                                             ].map((entry, i) => (
-                                                <Link href={entry.type === 'script' ? `/scripts/${entry.id}` : `/templates/${entry.id}`} onClick={closeDialog}>
+                                                <Link key={i} href={entry.type === 'script' ? `/scripts/${entry.id}` : `/templates/${entry.id}`} onClick={closeDialog}>
                                                     <div key={i} className="flex flex-col dark:hover:bg-zinc-900 hover:bg-zinc-100 rounded-md p-2 cursor-pointer gap-1">
                                                         <div className="flex gap-4 justify-start">
                                                             <p className="text-sm">{entry.name}</p>

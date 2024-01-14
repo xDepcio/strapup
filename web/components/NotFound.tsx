@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function NotFound() {
     return (
         <div className="w-full h-full min-h-[85.9vh] flex items-center justify-center flex-col text-muted-foreground">
-            <p>We couldn't find the page you were looking for :(</p>
+            <p>{`We couldn't find the page you were looking for :(`}</p>
             <div className="flex gap-4 w-full items-center justify-center opacity-60">
                 <MdError className="w-28 h-28" />
                 <TbError404 className="w-48 h-48" />

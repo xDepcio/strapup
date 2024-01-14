@@ -97,8 +97,8 @@ export default async function TemplatePage({ params }: { params: { id: string } 
                     </div>
                     <p className='text-muted-foreground text-xs mt-8'>related tags</p>
                     <div className='flex flex-wrap gap-2 mt-2'>
-                        {template.tags?.split(' ').map((tag) => (
-                            <Link href={{ pathname: '/search', query: { keyword: tag, searchTemplates: true, searchScripts: false } }} className='bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition-all shadow-sm text-white rounded-md px-2 py-1 text-xs cursor-pointer'>{tag}</Link>
+                        {template.tags?.split(' ').map((tag, i) => (
+                            <Link key={i} href={{ pathname: '/search', query: { keyword: tag, searchTemplates: true, searchScripts: false } }} className='bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 transition-all shadow-sm text-white rounded-md px-2 py-1 text-xs cursor-pointer'>{tag}</Link>
                         ))}
                     </div>
                 </div>

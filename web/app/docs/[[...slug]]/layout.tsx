@@ -12,7 +12,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
             <DocsSideNav allDocs={staticDocs} />
             {children}
             <PageContentNav />
-            <MobileDocsNav />
+            <MobileDocsNav allDocs={staticDocs} />
         </div>
     )
 }
