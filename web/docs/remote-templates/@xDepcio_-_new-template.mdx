@@ -1,0 +1,443 @@
+---
+title: \@xDepcio/new-template
+sortNum: 1
+---
+### @xDepcio/new-template
+some desc
+#### Pasted files structure
+```bash
+└── src
+    ├── auth
+    │   ├── device.ts
+    │   └── login.ts
+    └── tests
+        ├── constructTemplate.test.ts
+        ├── headless.test.ts
+        └── utils.test.ts
+```
+#### Files contents
+```ts title="src/auth/device.ts"
+import * as p from "../clack-lib/prompts/index.js"
+import fetch from "node-fetch"
+import { setTimeout } from "timers/promises"
+import color from 'picocolors'
+import { pLog } from "../utils.js"
+
+const CLIENT_ID = "9f1f54f61275359d7cea"
+
+
+type DeviceResponse = {
+    device_code: string
+    user_code: string
+    verification_uri: string
+    expires_in: number
+    interval: number
+}
+async function startDeviceAuth(): Promise<DeviceResponse> {
+    const res = await fetch("https://github.com/login/device/code", {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            client_id: CLIENT_ID,
+            scope: "user:email"
+        })
+    })
+    const data = await res.json() as DeviceResponse
+    return data
+}
+
+async function checkUserAuthorized(deviceCode: string) {
+    const res = await fetch("https://github.com/login/oauth/access_token", {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify({
+            client_id: CLIENT_ID,
+            device_code: deviceCode,
+            grant_type: "urn:ietf:params:oauth:grant-type:device_code"
+        })
+    })
+    const data = await res.json() as any
+    return data
+}
+
+type TokenResponse = {
+    access_token: string
+    token_type: string | 'bearer'
+    scope: string
+}
+export async function authorizeDevice(): Promise<TokenResponse> {
+    const deviceRes = await startDeviceAuth()
+    // console.log(deviceRes)
+    let isAuthorized = false
+
+    p.log.info(`Open ${color.dim(deviceRes.verification_uri)} and type the code below to authorize`)
+    pLog.message('')
+    pLog.message(color.bgCyan(new Array(deviceRes.user_code.length + 4).fill(" ").join('')))
+    pLog.message(`${color.bgCyan("  " + color.bold(deviceRes.user_code) + "  ")}`)
+    pLog.message(color.bgCyan(new Array(deviceRes.user_code.length + 4).fill(" ").join('')))
+
+    let tokenData
+    while (!isAuthorized) {
+        tokenData = await checkUserAuthorized(deviceRes.device_code)
+        // console.log(tokenData)
+        if (tokenData.error) {
+            await setTimeout(deviceRes.interval * 1000 + 500)
+        } else {
+            isAuthorized = true
+        }
+    }
+
+    return tokenData
+}
+```
+```ts title="src/auth/login.ts"
+import { loadSettings } from "../utils.js"
+
+type GithubUser = {
+    login: string
+    id: number
+    node_id: string
+    avatar_url: string
+    gravatar_id: string
+    url: string
+    html_url: string
+    followers_url: string
+    following_url: string
+    gists_url: string
+    starred_url: string
+    subscriptions_url: string
+    organizations_url: string
+    repos_url: string
+    events_url: string
+    received_events_url: string
+    type: string
+    site_admin: boolean
+    name: string
+    company: string | null
+    blog: string
+    location: string | null
+    email: string | null
+    hireable: boolean | null
+    bio: string | null
+    twitter_username: string | null
+    public_repos: number
+    public_gists: number
+    followers: number
+    following: number
+    created_at: string
+    updated_at: string
+}
+
+export async function loginToGithub() {
+    const { githubToken } = loadSettings()
+    if (!githubToken) return null
+
+    const res = await fetch(`https://api.github.com/user`, {
+        headers: {
+            "Accept": "application/vnd.github+json",
+            "Authorization": `Bearer ${githubToken}`,
+            "X-GitHub-Api-Version": "2022-11-28"
+        },
+    })
+
+    if (!res.ok) return null
+
+    const data = await res.json()
+
+    return data as GithubUser
+}
+```
+```ts title="src/tests/constructTemplate.test.ts"
+import { afterEach, beforeEach, describe } from "mocha";
+import { copyDirectoryContents, getFilesIgnoredByGit, getParameterNames } from "../utils.js";
+import * as fs from 'fs'
+import { expect } from "chai";
+import assert from 'assert'
+import { execSync, spawnSync } from "child_process";
+import path from "path"
+import { paste } from "../commandsHandlers.js"
+
+describe("Testing constructTemplate", function()
+{   
+    
+    // const folderStruct = commandHandler.__get__('folderStruct')
+
+    beforeEach(() => {
+        if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+        fs.mkdirSync('tmp')
+    })
+
+    afterEach(() => {
+        if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+    })
+
+    it("tests the constructTemplate function", async() =>
+    {
+    //pasted from commandHandler.ts idk how to import private function
+
+    interface folderStruct{
+        name: string,
+        isDir: boolean,
+        children: folderStruct[] | null
+    }
+    
+    async function constructTemplate(my_struct: folderStruct, my_relative_path: string, my_absolute_path: string)
+    {    
+        if(my_struct.isDir)
+        {
+            
+            const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.name.replace("/", "_-_")}/`)
+            const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.name}/`)
+    
+            //p.log.info(`Creating folder ${cur_relative_path}`)
+            
+            try    
+            {
+                fs.mkdirSync(cur_absolute_path, {recursive: true})
+            }
+            catch (err)
+            {
+                throw new Error(`Failed to create folder ${cur_absolute_path}. Error: ${err}`)
+            }
+            if(my_struct.children)
+            {
+                let children_promises: any[] = []
+                my_struct.children.forEach((child: folderStruct) =>
+                {
+                    children_promises.push(constructTemplate(child, cur_relative_path, cur_absolute_path))
+                })
+                return Promise.all(children_promises)
+            }
+        }
+        else
+        {
+            const cur_absolute_path = path.normalize(`${my_absolute_path}${my_struct.name.replace("/", "_-_")}`)
+            const cur_relative_path = path.normalize(`${my_relative_path}${my_struct.name}`)
+    
+            // p.log.info(`Downloading file ${cur_relative_path}`)
+    
+            // const curFileContentResponse = await fetch(`${GO_BACKEND_URL}/api/templates/file?name=${cur_relative_path}`,{
+            //     method: 'GET',
+            //     headers: {
+            //         'Authorization': `${loadSettings().githubToken}`
+            //     }
+            // })
+            
+            // if(!curFileContentResponse.ok)
+            // {
+            //     throw new Error(`Failed to download file ${cur_relative_path}. Error: ${curFileContentResponse.statusText}`)
+            // }
+            // const curFileContent: string = await curFileContentResponse.text() 
+    
+            fs.writeFileSync(cur_absolute_path, cur_relative_path)
+        }
+        return Promise.resolve()
+    }
+
+    let mock_folder_struct: folderStruct = 
+    {
+        name: "@user/test_folder",
+        isDir: true,
+        children: [
+            {
+                name: "test_folder1",
+                isDir: true,
+                children: [
+                    {
+                        name: "test_file2",
+                        isDir: false,
+                        children: null
+                    }, 
+                    {
+                        name: "test_file3",
+                        isDir: false,
+                        children: null
+                    }
+                ]
+            },
+            {
+                name: "test_file1",
+                isDir: false,
+                children: null
+            }
+        ]
+
+    }
+
+        await constructTemplate(mock_folder_struct, '', 'tmp/')
+        expect(fs.existsSync('tmp/@user_-_test_folder')).to.be.true;
+        expect(fs.existsSync('tmp/@user_-_test_folder/test_folder1')).to.be.true;
+        expect(fs.existsSync('tmp/@user_-_test_folder/test_folder1/test_file2')).to.be.true;
+        expect(fs.existsSync('tmp/@user_-_test_folder/test_folder1/test_file3')).to.be.true;
+        expect(fs.existsSync('tmp/@user_-_test_folder/test_file1')).to.be.true;
+
+
+    })
+})
+
+// describe('Testing paste', function()
+// {
+//     paste({templateName: "@xDepcio/template1", destinationRelativePath: "test_template" })
+
+// })```
+```ts title="src/tests/headless.test.ts"
+import { afterEach, beforeEach, describe } from "mocha";
+import { copyDirectoryContents, getFilesIgnoredByGit, getParameterNames } from "../utils.js";
+import * as fs from 'fs'
+import { expect } from "chai";
+import assert from 'assert'
+import { spawnSync } from "child_process";
+import { runInThisContext } from "vm";
+
+describe('Testing headless mode', function()
+{
+    beforeEach(() => {
+        if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+        fs.mkdirSync('tmp')
+    })
+
+    afterEach(() => {
+        if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+    })
+
+    it('Attempts to download a template from server', function(done)
+    {
+        this.timeout(9999999999999);
+        spawnSync('npm', ['start', 'paste', '@xDepcio/template1', 'tmp/test_folder'])
+        
+        expect(fs.existsSync('tmp/test_folder')).to.be.true;
+        expect(fs.existsSync('tmp/test_folder/features')).to.be.true;
+        expect(fs.existsSync('tmp/test_folder/hooks.ts')).to.be.true;
+        done();
+    
+    })
+
+    it('Pastes existing template', function(done)
+    {
+        this.timeout(9999999999999);
+        spawnSync('npm', ['start', 'paste', 'python_project', 'tmp/test_folder1'])
+        
+        expect(fs.existsSync('tmp/test_folder1')).to.be.true;
+        expect(fs.existsSync('tmp/test_folder1/python_project')).to.be.true;
+        expect(fs.existsSync('tmp/test_folder1/setup.py')).to.be.true;
+
+        done();
+    
+    })
+
+    it('Run existing script', function(done) 
+    {
+        this.timeout(9999999999999);
+        spawnSync('npm', ['start', 'run-script', '@xDepcio_-_script1.mjs'])
+        //expect(fs.readFileSync('tmp/out'))
+        done();
+    })
+})```
+```ts title="src/tests/utils.test.ts"
+import { afterEach, beforeEach, describe } from "mocha";
+import { copyDirectoryContents, getFilesIgnoredByGit, getParameterNames } from "../utils.js";
+import * as fs from 'fs'
+import { expect } from "chai";
+import assert from 'assert'
+import { spawnSync } from "child_process";
+
+describe("Testing utils.ts", function () {
+
+    describe("copyDirectoryContents", function () {
+
+        beforeEach(() => {
+            if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+            fs.mkdirSync('tmp')
+        })
+
+        afterEach(() => {
+            if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+        })
+
+        it("copy to existing empty dir", async () => {
+            this.timeout(-1)
+            fs.mkdirSync('tmp/src')
+            fs.writeFileSync('tmp/src/test.txt', 'test')
+            fs.mkdirSync('tmp/dest')
+
+            await copyDirectoryContents({ fromPath: './tmp/src', toPath: './tmp/dest' })
+
+            expect(fs.existsSync('tmp/dest/test.txt')).to.be.true
+        });
+
+        it("Throws error when trying to co to non-existing dir", async () => {
+            this.timeout(-1)
+            fs.mkdirSync('tmp/src')
+            fs.writeFileSync('tmp/src/test.txt', 'test')
+
+            await assert.rejects((async () => await copyDirectoryContents({ fromPath: './tmp/src', toPath: './tmp/dest' }))())
+        })
+
+        it("Skips files not passing custom validation. Utilizing file name.", async () => {
+            this.timeout(-1)
+            fs.mkdirSync('tmp/src')
+            fs.writeFileSync('tmp/src/test1.txt', 'test1')
+            fs.writeFileSync('tmp/src/test2.txt', 'test2')
+            fs.mkdirSync('tmp/dest')
+
+            await copyDirectoryContents({
+                fromPath: './tmp/src',
+                toPath: './tmp/dest',
+                validate: ({ createName, createPath, isFile, sourcePath }) => {
+                    if (createName === 'test1.txt') return false
+                    return true
+                }
+            })
+
+            expect(fs.existsSync('tmp/dest/test1.txt')).to.be.false
+            expect(fs.existsSync('tmp/dest/test2.txt')).to.be.true
+        })
+    })
+
+    describe("getParameterNames", function () {
+        it("Returns parameter names of an arrow function", () => {
+            const func1 = new Function("a", "b", `(a, b) => { }`)
+            const func2 = new Function("name_", `(name_) => { }`)
+            const func3 = new Function("val1", `(val1) => (val1)`)
+            const func4 = new Function("val1", 'val2', `(val1, val2) => (val1)`)
+            const func5 = new Function("val1", `async (val1) => (val1)`)
+            const func6 = new Function("a", `a => b => a + b`)
+
+            expect(getParameterNames(func1)).to.deep.equal(['a', 'b'])
+            expect(getParameterNames(func2)).to.deep.equal(["name_"])
+            expect(getParameterNames(func3)).to.deep.equal(["val1"])
+            expect(getParameterNames(func4)).to.deep.equal(["val1", "val2"])
+            expect(getParameterNames(func5)).to.deep.equal(["val1"])
+            expect(getParameterNames(func6)).to.deep.equal(["a"])
+        })
+    })
+
+    describe("getFilesIgnoredByGit", function () {
+        beforeEach(() => {
+            if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+            fs.mkdirSync('tmp')
+        })
+
+        afterEach(() => {
+            if (fs.existsSync('tmp')) fs.rmSync('tmp', { recursive: true })
+        })
+
+        it("Returns array of files ignored by git", async () => {
+            spawnSync('git', ['init', '.'], { cwd: 'tmp' })
+            fs.writeFileSync('tmp/ignored.txt', 'test')
+            fs.writeFileSync('tmp/not-ignored.txt', 'test2')
+            fs.writeFileSync('tmp/.gitignore', 'ignored.txt')
+            spawnSync('git', ['add', '.'], { cwd: 'tmp' })
+
+            const results = await getFilesIgnoredByGit('tmp')
+            expect(results).to.deep.equal(['ignored.txt', '.git'])
+        })
+    })
+})
+```
