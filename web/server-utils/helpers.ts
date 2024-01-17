@@ -44,7 +44,7 @@ export async function getNotSyncedTemplates() {
 }
 
 export async function downloadScript(scriptName: string, savePath: string) {
-    const res = await fetch(`http://localhost:5000/api/scripts?name=${scriptName}`, {
+    const res = await fetch(`${process.env.GO_BACKEND_URL}/api/scripts?name=${scriptName}`, {
         headers: {
             'Authorization': process.env.API_ROOT_KEY as string
         }
@@ -81,7 +81,7 @@ async function saveTemplateStructure(templateStructure: TemplateStructureRespons
 }
 
 async function fetchFileContent(fileFullPath: string) {
-    const res = await fetch(`http://localhost:5000/api/templates/file?name=${fileFullPath}`, {
+    const res = await fetch(`${process.env.GO_BACKEND_URL}/api/templates/file?name=${fileFullPath}`, {
         headers: {
             'Authorization': process.env.API_ROOT_KEY as string
         }
@@ -99,7 +99,7 @@ type TemplateStructureResponse = {
     children: TemplateStructureResponse[]
 }
 async function getTemplateStrcuture(templateName: string) {
-    const res = await fetch(`http://localhost:5000/api/templates/structure?name=${templateName}`, {
+    const res = await fetch(`${process.env.GO_BACKEND_URL}/api/templates/structure?name=${templateName}`, {
         headers: {
             'Authorization': process.env.API_ROOT_KEY as string
         }
