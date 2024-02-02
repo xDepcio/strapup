@@ -17,7 +17,7 @@ async function syncContentWorker(contentDir: string) {
             await downloadScript(scriptName, savePath)
             const scriptMdx = await getScriptMdx(savePath)
             fs.writeFileSync(`${contentDir}/remote-scripts/${escape(scriptName)}.mdx`, scriptMdx)
-            // await markScriptAsSynced(scriptName)
+            await markScriptAsSynced(scriptName)
         } catch (e) {
             console.error("Failed to sync script", scriptName)
             // console.error(e)
@@ -32,7 +32,7 @@ async function syncContentWorker(contentDir: string) {
             await downloadTemplate(templateName, savePath)
             const templateMdx = await getTemplateMdx(savePath, templateName)
             fs.writeFileSync(`${contentDir}/remote-templates/${escape(templateName)}.mdx`, templateMdx)
-            // await markTemplateAsSynced(templateName)
+            await markTemplateAsSynced(templateName)
         } catch (e) {
             console.error("Failed to sync template", templateName)
             // console.error(e)

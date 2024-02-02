@@ -13,14 +13,18 @@ import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/options'
 
 function getScriptDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
 }
 
 export default async function TemplatePage({ params }: { params: { id: string } }) {
-    const { rows, rowCount } = await DBQuery<Pick<DbScript, "name" | "tags" | "stars" | 'id' | 'owner_id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
-        SELECT s.id, s.name, s.tags, s.owner_id, u.login, u.image, u.github_id, COUNT(uss.script_id) AS stars FROM scripts s
+    const session = await getServerSession(authOptions)
+
+    const { rows, rowCount } = await DBQuery<Pick<DbScript, "name" | "tags" | "stars" | 'id' | 'owner_id' | 'public'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+        SELECT s.id, s.name, s.tags, s.owner_id, s.public, u.login, u.image, u.github_id, COUNT(uss.script_id) AS stars FROM scripts s
         JOIN users u ON s.owner_id = u.id
         LEFT JOIN user_script_stars uss ON uss.script_id = s.id
         WHERE s.id = $1 AND (s.public IS TRUE OR s.owner_id = u.id)
@@ -34,6 +38,11 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     const script = rows[0]
     const scriptDoc = getScriptDoc(script.name)
     if (!scriptDoc) {
+        return notFound()
+    }
+
+    if (!script.public && session?.user.id !== script.owner_id) {
+        // console.log('session', session)
         return notFound()
     }
 

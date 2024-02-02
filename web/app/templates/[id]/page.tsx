@@ -13,14 +13,18 @@ import { FaStar } from "react-icons/fa"
 import { FaCode } from "react-icons/fa6"
 import { MdOutlineStorage } from "react-icons/md"
 import '../../../styles/docs.css'
+import { authOptions } from '@/app/api/auth/[...nextauth]/options'
+import { getServerSession } from 'next-auth'
 
 function getTemplateDoc(name: string) {
     return allDocs.find((doc) => doc.slugAsParams === escapeName(name))
 }
 
 export default async function TemplatePage({ params }: { params: { id: string } }) {
-    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id' | 'owner_id'> & Pick<DbUser, "image" | "login" | "github_id">>(`
-        SELECT t.id, t.name, t.tags, u.login, t.owner_id, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
+    const session = await getServerSession(authOptions)
+
+    const { rows, rowCount } = await DBQuery<Pick<DbTemplte, "name" | "tags" | "stars" | 'id' | 'owner_id' | 'public'> & Pick<DbUser, "image" | "login" | "github_id">>(`
+        SELECT t.id, t.name, t.tags, t.public, u.login, t.owner_id, u.image, u.github_id, COUNT(uts.template_id) AS stars FROM templates t
         JOIN users u ON t.owner_id = u.id
         LEFT JOIN user_template_stars uts ON uts.template_id = t.id
         WHERE t.id = $1 AND (t.public IS TRUE OR t.owner_id = u.id)
@@ -34,6 +38,11 @@ export default async function TemplatePage({ params }: { params: { id: string } 
     const template = rows[0]
     const templateDoc = getTemplateDoc(template.name)
     if (!templateDoc) {
+        return notFound()
+    }
+
+    if (!template.public && session?.user.id !== template.owner_id) {
+        // console.log('session', session)
         return notFound()
     }
 
