@@ -93,7 +93,7 @@ ${codeBlocks || ''}
 `
 }
 
-export function getTreeString(dirPath: string) {
+function getTreeString(dirPath: string) {
     const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*|.*directory.*file.*|${dirPath}|0 directories, 1 file`, "g")
     console.log("ignoredFilesNames", ignoredFilesNames)
 
