@@ -13,6 +13,7 @@
     "@auth/pg-adapter": "^0.2.6",
     "@code-hike/mdx": "^0.9.0",
     "@hookform/resolvers": "^3.3.4",
+    "@next/bundle-analyzer": "^14.0.3",
     "@prisma/client": "^5.2.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-checkbox": "^1.0.4",
@@ -24,8 +25,10 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@tanstack/react-query": "^5.17.4",
+    "@types/pg": "^8.10.9",
     "@vercel/analytics": "^1.0.2",
     "@vercel/postgres": "^0.5.1",
+    "autoprefixer": "^10.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
@@ -55,10 +58,8 @@
     "shiki": "^0.14.4",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.22.4",
-    "@next/bundle-analyzer": "^14.0.3",
-    "autoprefixer": "^10.0.1",
-    "@types/pg": "^8.10.9"
+    "tree-cli": "^0.6.7",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

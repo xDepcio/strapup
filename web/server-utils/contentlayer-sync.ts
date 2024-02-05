@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import { getScriptMdx, getTemplateMdx } from "./automatic-mdx";
 import { downloadScript, downloadTemplate, escape, getNotSyncedScripts, getNotSyncedTemplates, markScriptAsSynced, markTemplateAsSynced } from "./helpers";
+import { getTreeString } from "./automatic-mdx";
+import { resolve } from 'path'
 
 
 async function syncContentWorker(contentDir: string) {
@@ -41,6 +43,8 @@ async function syncContentWorker(contentDir: string) {
 }
 
 export async function syncContent(contentDir: string) {
+    const xd = await getTreeString(resolve('.'))
+    console.log("xd", xd)
     await syncContentWorker(contentDir)
 
     let wasCancelled = false

@@ -93,17 +93,24 @@ ${codeBlocks || ''}
 `
 }
 
-function getTreeString(dirPath: string) {
-    const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*\n|.*directories.*files.*|\n\n|.*${dirPath}.*\n|0 directories, 1 file`, "g")
+export function getTreeString(dirPath: string) {
+    const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*|.*directory.*file.*|${dirPath}|0 directories, 1 file`, "g")
+    console.log("ignoredFilesNames", ignoredFilesNames)
 
     return new Promise<string>((resolve, reject) => {
-        const shell = spawn("tree", [dirPath])
+        console.log("pwd", process.cwd())
+        const shell = spawn("npx", ["tree-cli", "-a", "-l", "1000"])
         let treeString = ""
         shell.stdout.on("data", (data) => {
+            console.log("datattt", data.toString())
             treeString += data.toString()
         })
         shell.on("close", () => {
-            resolve(treeString.replace(ignoredFilesNames, ""))
+
+            const formattedTree = treeString
+                .replace(ignoredFilesNames, "")
+            console.log("formattedTree", formattedTree)
+            resolve(formattedTree)
         })
     })
 }
