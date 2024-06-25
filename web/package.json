@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db-create-next-auth-schema": "npx tsx -r dotenv/config ./db/schemas/next-auth-schema.ts",
-    "db-create-schema": "npx tsx -r dotenv/config ./db/schemas/schema.ts"
+    "db-create-schema": "npx tsx -r dotenv/config ./db/schemas/schema.ts",
+    "db-drop-schema": "npx tsx -r dotenv/config ./db/schemas/drop-schema.ts"
   },
   "dependencies": {
     "@auth/pg-adapter": "^0.2.6",
