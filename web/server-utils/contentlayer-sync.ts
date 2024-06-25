@@ -9,7 +9,7 @@ async function syncContentWorker(contentDir: string) {
     const notSyncedTemplates = await getNotSyncedTemplates()
     console.log("notSyncedTemplates", notSyncedTemplates)
 
-    notSyncedScripts.forEach(async (scriptName) => {
+    for (const scriptName of notSyncedScripts) {
         try {
             fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
             fs.mkdirSync(process.env.PWD + '/temp')
@@ -22,9 +22,9 @@ async function syncContentWorker(contentDir: string) {
             console.error("Failed to sync script", scriptName)
             console.error(e)
         }
-    })
+    }
 
-    notSyncedTemplates.forEach(async (templateName) => {
+    for (const templateName of notSyncedTemplates) {
         try {
             fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
             fs.mkdirSync(process.env.PWD + '/temp')
@@ -37,7 +37,7 @@ async function syncContentWorker(contentDir: string) {
             console.error("Failed to sync template", templateName)
             console.error(e)
         }
-    })
+    }
 }
 
 export async function syncContent(contentDir: string) {
