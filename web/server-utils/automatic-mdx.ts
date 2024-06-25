@@ -4,6 +4,7 @@ import { spawn } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 import { unEscape } from "./helpers";
+import tree from 'tree-cli'
 
 export async function getScriptMdx(scriptPath: string) {
     type Script = {
@@ -94,27 +95,23 @@ ${codeBlocks || ''}
 }
 
 function getTreeString(dirPath: string) {
-    console.log('dirPath', dirPath)
-    return dirPath + '\n'
-    // const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*|.*directory.*file.*|${dirPath}|0 directories, 1 file`, "g")
-    // console.log("ignoredFilesNames", ignoredFilesNames)
+    const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*|.*directory.*file.*|${dirPath}|0 directories, 1 file|ignored: .*|.*${path.join(process.cwd(), dirPath)}.*`, "g")
+    console.log("ignoredFilesNames", ignoredFilesNames)
 
-    // return new Promise<string>((resolve, reject) => {
-    //     console.log("pwd", process.cwd())
-    //     const shell = spawn("npx", ["tree-cli", "-a", "-l", "1000"])
-    //     let treeString = ""
-    //     shell.stdout.on("data", (data) => {
-    //         console.log("datattt", data.toString())
-    //         treeString += data.toString()
-    //     })
-    //     shell.on("close", () => {
-
-    //         const formattedTree = treeString
-    //             .replace(ignoredFilesNames, "")
-    //         console.log("formattedTree", formattedTree)
-    //         resolve(formattedTree)
-    //     })
-    // })
+    return new Promise<string>((resolve, reject) => {
+        tree({
+            base: dirPath,
+            l: 1000,
+            ignore: ['_strapupmetadata.json']
+        }).then((res) => {
+            console.log("res", res)
+            const formattedTree = res.report
+                .replace(ignoredFilesNames, "")
+                .trim()
+            console.log("formattedTree", formattedTree)
+            resolve(formattedTree)
+        })
+    })
 }
 
 function getAllFilesNameDepthFirst(dirPath: string) {
