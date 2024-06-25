@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sql-next-auth-schema": "node -r dotenv/config ./db/schemas/next-auth-schema.mjs"
+    "db-create-next-auth-schema": "npx tsx -r dotenv/config ./db/schemas/next-auth-schema.ts",
+    "db-create-schema": "npx tsx -r dotenv/config ./db/schemas/schema.ts"
   },
   "dependencies": {
     "@auth/pg-adapter": "^0.2.6",
@@ -62,13 +63,15 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.14.8",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "postcss": "^8",
     "tailwindcss": "^3.3.0",
+    "tslib": "^2.6.3",
+    "tsx": "^4.15.7",
     "typescript": "^5"
   }
 }
