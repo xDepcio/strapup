@@ -1,7 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { BASE_SEED_INDEX } from "./constants.mjs";
+import { BASE_SEED_INDEX } from "./constants";
+import { DBQuery } from "../db";
 
-async function createDummyScripts() {
+export async function createDummyUsers() {
     const string = `INSERT INTO users (id, name, email, image, login) VALUES
         (${BASE_SEED_INDEX}1, 'Uemki', 'uemki@example.com', 'https://avatars.githubusercontent.com/u/25835?v=4', 'uemki'),
         (${BASE_SEED_INDEX}2, 'Admes', 'admes@example.com', 'https://avatars.githubusercontent.com/u/31702?v=4', 'admes'),
@@ -12,19 +12,8 @@ async function createDummyScripts() {
         (${BASE_SEED_INDEX}7, 'Zdfod', 'zdfod@example.com', 'https://avatars.githubusercontent.com/u/19310?v=4', 'zdfod'),
         (${BASE_SEED_INDEX}8, 'Wvqxw', 'wvqxw@example.com', 'https://avatars.githubusercontent.com/u/14656?v=4', 'wvqxw'),
         (${BASE_SEED_INDEX}9, 'Vomwq', 'vomwq@example.com', 'https://avatars.githubusercontent.com/u/20150?v=4', 'vomwq'),
-        (${BASE_SEED_INDEX}10, 'Lzgoq', 'lzgoq@example.com', 'https://avatars.githubusercontent.com/u/97502?v=4', 'lzgoq')
+        (${BASE_SEED_INDEX}10, 'Lzgoq', 'lzgoq@example.com', 'https://avatars.githubusercontent.com/u/97502?v=4', 'lzgoq'),
+        (${BASE_SEED_INDEX}11, 'Gabrysia', 'zlacoreczka@gmail.com', 'https://avatars.githubusercontent.com/u/97502?v=4', 'zlacoreczka')
     ;`
-    await sql.query(string)
+    await DBQuery(string)
 }
-
-
-async function main() {
-    await createDummyScripts()
-}
-
-main().catch((err) => {
-    console.error(
-        "An error occured when seeding database:",
-        err
-    )
-})

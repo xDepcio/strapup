@@ -1,7 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { BASE_SEED_INDEX } from "./constants.mjs";
+import { DBQuery } from "../db";
+import { BASE_SEED_INDEX } from "./constants";
 
-async function createDummyTemplates() {
+export async function createDummyTemplates() {
     const queryString = `INSERT INTO templates (id, name, public, owner_id, tags) VALUES
         (${BASE_SEED_INDEX}1, '@xDepcio/template1', true, ${BASE_SEED_INDEX}1, 'nextjs react typescript tailwind'),
         (${BASE_SEED_INDEX}2, '@xDepcio/template2', false, ${BASE_SEED_INDEX}1, 'express sequelize postgres socketio'),
@@ -80,17 +80,5 @@ async function createDummyTemplates() {
         (${BASE_SEED_INDEX}75, 'template_50', False, ${BASE_SEED_INDEX}10, 'form ecommerce landing website admin')
     ;`
 
-    await sql.query(queryString)
+    await DBQuery(queryString)
 }
-
-
-async function main() {
-    await createDummyTemplates()
-}
-
-main().catch((err) => {
-    console.error(
-        "An error occured when seeding database:",
-        err
-    )
-})

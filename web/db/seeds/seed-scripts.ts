@@ -1,7 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { BASE_SEED_INDEX } from "./constants.mjs";
+import { BASE_SEED_INDEX } from "./constants";
+import { DBQuery } from "../db";
 
-async function createDummyScripts() {
+export async function createDummyScripts() {
     const queryString = `INSERT INTO scripts (id, name, public, owner_id, tags) VALUES
         (${BASE_SEED_INDEX}1, '@xDepcio/script1', true, ${BASE_SEED_INDEX}1, 'nextjs react typescript tailwind'),
         (${BASE_SEED_INDEX}2, '@xDepcio/script2', false, ${BASE_SEED_INDEX}1, 'express sequelize postgres socketio'),
@@ -80,17 +80,5 @@ async function createDummyScripts() {
         (${BASE_SEED_INDEX}75, '@uemki/script50', False, ${BASE_SEED_INDEX}1, 'swift vue go ruby')
     ;`
 
-    await sql.query(queryString)
+    await DBQuery(queryString)
 }
-
-
-async function main() {
-    await createDummyScripts()
-}
-
-main().catch((err) => {
-    console.error(
-        "An error occured when seeding database:",
-        err
-    )
-})

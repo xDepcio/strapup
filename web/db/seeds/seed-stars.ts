@@ -1,7 +1,7 @@
-import { sql } from "@vercel/postgres";
-import { BASE_SEED_INDEX } from "./constants.mjs";
+import { BASE_SEED_INDEX } from "./constants";
+import { DBQuery } from "../db";
 
-async function createDummyUserTemplatesStars() {
+export async function createDummyUserTemplatesStars() {
     const queryString = `INSERT INTO user_template_stars (user_id, template_id) VALUES
         (${BASE_SEED_INDEX}1, ${BASE_SEED_INDEX}1),
         (${BASE_SEED_INDEX}1, ${BASE_SEED_INDEX}2),
@@ -116,10 +116,10 @@ async function createDummyUserTemplatesStars() {
         (${BASE_SEED_INDEX}10, ${BASE_SEED_INDEX}75)
     ;`
 
-    await sql.query(queryString)
+    await DBQuery(queryString)
 }
 
-async function createDummyUserScriptsStars() {
+export async function createDummyUserScriptsStars() {
     const queryString = `INSERT INTO user_script_stars (user_id, script_id) VALUES
         (${BASE_SEED_INDEX}1, ${BASE_SEED_INDEX}1),
         (${BASE_SEED_INDEX}1, ${BASE_SEED_INDEX}2),
@@ -227,18 +227,5 @@ async function createDummyUserScriptsStars() {
         (${BASE_SEED_INDEX}10, ${BASE_SEED_INDEX}72)
     ;`
 
-    await sql.query(queryString)
+    await DBQuery(queryString)
 }
-
-
-async function main() {
-    await createDummyUserTemplatesStars()
-    await createDummyUserScriptsStars()
-}
-
-main().catch((err) => {
-    console.error(
-        "An error occured when seeding database:",
-        err
-    )
-})
