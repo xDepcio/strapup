@@ -95,7 +95,7 @@ export function SearchFilters({ ...restProps }: SearchFilterProps) {
 
             return params.toString()
         },
-        [searchParams]
+        []
     )
 
     function retFormParams() {
