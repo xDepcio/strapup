@@ -20,7 +20,7 @@ async function syncContentWorker(contentDir: string) {
             await markScriptAsSynced(scriptName)
         } catch (e) {
             console.error("Failed to sync script", scriptName)
-            // console.error(e)
+            console.error(e)
         }
     })
 
@@ -35,7 +35,7 @@ async function syncContentWorker(contentDir: string) {
             await markTemplateAsSynced(templateName)
         } catch (e) {
             console.error("Failed to sync template", templateName)
-            // console.error(e)
+            console.error(e)
         }
     })
 }
