@@ -88,7 +88,8 @@ sortNum: ${sortNum}
 ${description || ""}
 ${treeString ? `#### Pasted files structure
 \`\`\`bash
-${treeString}\`\`\`` : ''}
+${treeString}
+\`\`\`` : ''}
 #### Files contents
 ${codeBlocks || ''}
 `
