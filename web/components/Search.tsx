@@ -35,15 +35,15 @@ export default function Search() {
         searchRef.current?.click()
     })
 
-    function handleSearchInput(e: React.ChangeEvent<HTMLInputElement>) {
-        setSearchInput(e.target.value)
+    function handleSearchInput(searchValue: string) {
+        setSearchInput(searchValue)
         setSearchResults(undefined)
         const timeout = setTimeout(async () => {
             console.log('searching...')
             const res = await fetch('/api/search', {
                 method: 'POST',
                 body: JSON.stringify({
-                    searchString: e.target.value,
+                    searchString: searchValue,
                     searchScripts,
                     searchTemplates
                 })
@@ -84,7 +84,7 @@ export default function Search() {
                 <div className="">
                     <div className="border-b border-zinc-200 dark:border-zinc-900">
                         <form onSubmit={handleSearchSubmit}>
-                            <input onChange={handleSearchInput} value={searchInput} className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
+                            <input onChange={(e) => handleSearchInput(e.target.value)} value={searchInput} className="text-lg px-4 py-2 outline-none w-full dark:bg-zinc-950" placeholder="Search templates and scripts..." />
                         </form>
                     </div>
                     <div className="p-4">
@@ -139,23 +139,38 @@ export default function Search() {
                         <div className="text-sm">
                             <p className="font-bold text-xs mb-1 mt-4">Popular tags</p>
                             <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground">
+                                <div
+                                    className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground"
+                                    onClick={() => handleSearchInput('React')}
+                                >
                                     <CiHashtag />
                                     <p>React</p>
                                 </div>
-                                <div className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground">
+                                <div
+                                    className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground"
+                                    onClick={() => handleSearchInput('Next')}
+                                >
                                     <CiHashtag />
                                     <p>Next</p>
                                 </div>
-                                <div className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground">
+                                <div
+                                    className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground"
+                                    onClick={() => handleSearchInput('Python')}
+                                >
                                     <CiHashtag />
                                     <p>Python</p>
                                 </div>
-                                <div className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground">
+                                <div
+                                    className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground"
+                                    onClick={() => handleSearchInput('Express')}
+                                >
                                     <CiHashtag />
                                     <p>Express</p>
                                 </div>
-                                <div className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground">
+                                <div
+                                    className="flex items-center gap-2 hover:bg-zinc-100 p-2 rounded-md dark:hover:bg-zinc-900 cursor-pointer text-muted-foreground"
+                                    onClick={() => handleSearchInput('Flask')}
+                                >
                                     <CiHashtag />
                                     <p>Flask</p>
                                 </div>
