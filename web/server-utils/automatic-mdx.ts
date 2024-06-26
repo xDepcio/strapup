@@ -15,15 +15,12 @@ export async function getScriptMdx(scriptPath: string) {
     const scriptConent = fs.readFileSync(scriptPath, "utf-8")
     const scripts: Script = await import(scriptPath).then(module => module.default)
     const params = getParameterNames(scripts.command)
-    const args = params.map((param) => `\${${param}}`)
     const script = {
         name: unEscape(path.basename(scriptPath, ".mjs")),
         description: scripts.description,
-        // command: scripts.command(...args),
         command: scripts.command.toString(),
         content: scriptConent
     }
-    console.log("scr OBJ", script)
     const mdxContent = getMdxScriptsContent({ sortNum: 1, script })
     return mdxContent
 }
@@ -72,9 +69,6 @@ export async function getTemplateMdx(templatePath: string, templateName: string)
 const getCodeBlocks = (files: string[], storagePath: string) => files.map((file) => {
     const fileContent = fs.readFileSync(file, "utf-8")
     const fileExtension = path.extname(file).replace(".", "")
-    console.log('------')
-    console.log(file, storagePath)
-    console.log('------')
     return `\`\`\`${fileExtension} title="${path.relative(storagePath, file)}"
 ${fileContent}\`\`\``
 }).join("\n")
@@ -97,7 +91,6 @@ ${codeBlocks || ''}
 
 function getTreeString(dirPath: string) {
     const ignoredFilesNames = new RegExp(`.*_strapupmetadata.json.*|.*directory.*file.*|${dirPath}|0 directories, 1 file|ignored: .*|.*${path.join(process.cwd(), dirPath)}.*`, "g")
-    console.log("ignoredFilesNames", ignoredFilesNames)
 
     return new Promise<string>((resolve, reject) => {
         tree({
@@ -105,11 +98,9 @@ function getTreeString(dirPath: string) {
             l: 1000,
             ignore: ['_strapupmetadata.json']
         }).then((res) => {
-            console.log("res", res)
             const formattedTree = res.report
                 .replace(ignoredFilesNames, "")
                 .trim()
-            console.log("formattedTree", formattedTree)
             resolve(formattedTree)
         })
     })

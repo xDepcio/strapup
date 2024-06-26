@@ -55,7 +55,6 @@ export async function downloadScript(scriptName: string, savePath: string) {
         throw new Error(`Failed to download script ${scriptName}`)
     }
     const script = await res.text()
-    console.log("script text", script)
     fs.writeFileSync(savePath, script)
 }
 
@@ -63,9 +62,6 @@ export async function downloadTemplate(templateName: string, savePath: string) {
     const templateStructure = await getTemplateStrcuture(templateName)
     if (!templateStructure) return
 
-    console.log("templateStructure", templateStructure)
-    console.log("savePath", savePath)
-    console.log("templateName", templateName)
     await saveTemplateStructure(templateStructure, savePath, templateName)
 }
 
