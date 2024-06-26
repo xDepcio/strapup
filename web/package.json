@@ -11,7 +11,8 @@
     "db-create-schema": "npx tsx -r dotenv/config ./db/schemas/schema.ts",
     "db-drop-schema": "npx tsx -r dotenv/config ./db/schemas/drop-schema.ts",
     "db-seed-all": "npx tsx -r dotenv/config ./db/seeds/seed-all.ts",
-    "db-recreate-schema": "npm run db-drop-schema && npm run db-create-next-auth-schema && npm run db-create-schema && npm run db-seed-all"
+    "db-recreate-schema": "npm run db-drop-schema && npm run db-create-next-auth-schema && npm run db-create-schema && npm run db-seed-all",
+    "build-all-start": "npm run db-recreate-schema && npm run build && npm start"
   },
   "dependencies": {
     "@auth/pg-adapter": "^0.2.6",
