@@ -2,7 +2,6 @@ package utils
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -70,9 +69,9 @@ func GetTemlateFile(filePath string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println(count, buf[:count])
+	// fmt.Println(count, buf[:count])
 	result += string(buf[:count])
-	fmt.Println(result)
+	// fmt.Println(result)
 	// for {
 	// 	n, err := file.Read(buf)
 	// 	if err != nil {
@@ -115,7 +114,7 @@ func Authorize(c *fiber.Ctx) (bool, bool, User, error) {
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
-		fmt.Println("Error creating request:", err)
+		// fmt.Println("Error creating request:", err)
 		return false, false, User{}, err
 	}
 	req.Header.Set("Authorization", "Bearer "+token)
@@ -123,14 +122,14 @@ func Authorize(c *fiber.Ctx) (bool, bool, User, error) {
 	// Make the request
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Error making request:", err)
+		// fmt.Println("Error making request:", err)
 		return false, false, User{}, err
 	}
 	defer resp.Body.Close()
 
 	// Check the HTTP status code
 	// if resp.StatusCode != http.StatusOK {
-	// 	fmt.Println("Error:", resp.Status)
+	// 	// fmt.Println("Error:", resp.Status)
 	// 	return User{}, err
 	// }
 
@@ -141,21 +140,21 @@ func Authorize(c *fiber.Ctx) (bool, bool, User, error) {
 		Id: 0,
 	}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		fmt.Println("Error decoding JSON:", err)
+		// fmt.Println("Error decoding JSON:", err)
 		return false, false, User{}, err
 	}
 
 	// Check if the response contains certain values
 	// if value, ok := data["id"]; ok && value {
-	// 	fmt.Println("Value:", value)
+	// 	// fmt.Println("Value:", value)
 	// } else {
-	// 	fmt.Println("Key 'some_key' not found in the response.")
+	// 	// fmt.Println("Key 'some_key' not found in the response.")
 	// }
 
 	// You can add more checks based on your specific requirements
 
 	// Print the entire response for reference
-	fmt.Println("Response:", data)
+	// fmt.Println("Response:", data)
 
 	userGithubID := int(data.Id)
 	user, err := DbGetUserByGithubID(userGithubID)
@@ -180,7 +179,7 @@ func DbGetUserByGithubID(githubID int) (User, error) {
 	var user User
 	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Login, &user.GithubID)
 	if err != nil {
-		fmt.Println("Error while getting user by github id")
+		// fmt.Println("Error while getting user by github id")
 		return User{}, err
 	}
 

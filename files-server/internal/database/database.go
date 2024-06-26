@@ -33,14 +33,14 @@ func Connect() error {
 		return err
 	}
 
-	fmt.Println("Successfully connected to database!")
+	// fmt.Println("Successfully connected to database!")
 	return nil
 	// rows, err := DB.Query("SELECT name, email, login FROM users")
 	// if err != nil {
 	// 	log.Fatal(err)
 	// }
 	// defer rows.Close()
-	// fmt.Println(rows)
+	// // fmt.Println(rows)
 	// for rows.Next() {
 	// 	var name string
 	// 	var email string
@@ -51,6 +51,6 @@ func Connect() error {
 	// 	fmt.Printf("Name: %s, Email: %s, Login: %s\n", name, email, login)
 	// }
 
-	// fmt.Println("Successfully connected to database!")
+	// // fmt.Println("Successfully connected to database!")
 	// return nil
 }

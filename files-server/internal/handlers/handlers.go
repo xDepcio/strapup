@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"database/sql"
-	"fmt"
 	"os"
 	"strapup-files/internal/database"
 	"strapup-files/internal/utils"
@@ -51,7 +50,7 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).SendString("Unauthorized")
 	}
 
-	fmt.Println(user)
+	// fmt.Println(user)
 
 	templateStructure, err := utils.GetDirectoryStructure("./files/templates/" + escapedName)
 	if err != nil {
@@ -64,7 +63,7 @@ func GetTemplateStructure(c *fiber.Ctx) error {
 func GetFileHandler(c *fiber.Ctx) error {
 	name := c.Query("name")
 
-	fmt.Println(1)
+	// fmt.Println(1)
 	if name == "" {
 		return c.Status(fiber.StatusBadRequest).SendString("Name is not specified")
 	}
@@ -72,21 +71,21 @@ func GetFileHandler(c *fiber.Ctx) error {
 	var topNameArr = [2]string{strings.Split(name, "/")[0], strings.Split(name, "/")[1]}
 	topName := topNameArr[0] + "/" + topNameArr[1]
 	row := database.DB.QueryRow("SELECT id, name, public, owner_id FROM templates WHERE name = $1", topName)
-	fmt.Println(2)
+	// fmt.Println(2)
 
 	var template Template
 	err := row.Scan(&template.ID, &template.Name, &template.Public, &template.OwnerID)
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).SendString("Error while getting templates")
 	}
-	fmt.Println(3)
+	// fmt.Println(3)
 
 	escapedName := strings.Replace(name, "/", "_-_", 1)
 	if strings.Contains(escapedName, "..") {
 		return c.Status(fiber.StatusBadRequest).SendString("Invalid template name")
 	}
 
-	fmt.Println(escapedName)
+	// fmt.Println(escapedName)
 	if template.Public {
 		file, err := utils.GetTemlateFile("./files/templates/" + escapedName)
 		if err != nil {
@@ -201,11 +200,11 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 			Success: false,
 		})
 	}
-	fmt.Println(script.Name)
-	fmt.Println(script.Content)
-	fmt.Println(script.Description)
-	fmt.Println(script.Public)
-	fmt.Println(script.Tags)
+	// fmt.Println(script.Name)
+	// fmt.Println(script.Content)
+	// fmt.Println(script.Description)
+	// fmt.Println(script.Public)
+	// fmt.Println(script.Tags)
 
 	if "@"+user.Login != strings.Split(script.Name, "/")[0] {
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
@@ -238,7 +237,7 @@ func PostScriptsHandler(c *fiber.Ctx) error {
 
 	_, dbErr := database.DB.Exec("INSERT INTO scripts (name, public, owner_id, tags, description) VALUES ($1, $2, $3, $4, $5)", script.Name, script.Public, user.ID, strings.Join(script.Tags, " "), script.Description)
 	if dbErr != nil {
-		fmt.Println(dbErr)
+		// fmt.Println(dbErr)
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
 			Message: "Error while saving script in db",
 			Success: false,
@@ -274,13 +273,13 @@ func CreateChildren(children []Files, parentName string) {
 		if child.IsDir {
 			err := os.Mkdir("./files/templates/"+parentName+"/"+child.Name, 0755)
 			if err != nil {
-				fmt.Println("Error creating directory")
+				// fmt.Println("Error creating directory")
 			}
 			CreateChildren(child.Children, parentName+"/"+child.Name)
 		} else {
 			f, err := os.Create("./files/templates/" + parentName + "/" + child.Name)
 			if err != nil {
-				fmt.Println("Error creating file")
+				// fmt.Println("Error creating file")
 			}
 			defer f.Close()
 			f.Write([]byte(child.Content))
@@ -383,7 +382,7 @@ func PostTemplatesHandler(c *fiber.Ctx) error {
 	if dbErr != nil {
 		// Reverse file creation
 		err = os.RemoveAll("./files/templates/" + escapedName)
-		fmt.Println(dbErr)
+		// fmt.Println(dbErr)
 		return c.Status(fiber.StatusBadRequest).JSON(Response{
 			Message: "Error while saving script in db",
 			Success: false,
