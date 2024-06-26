@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres_strapup:
+    image: postgres
+    container_name: postgres_strapup
+    env_file:
+      - .env.db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - my_network
+
+  go_backend_strapup:
+    container_name: go_backend_strapup
+    build:
+      context: ../files-server
+      dockerfile: Dockerfile
+    env_file:
+      - .env.files-server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres_strapup
+    networks:
+      - my_network
+
+  nextjs_strapup:
+    container_name: nextjs_strapup
+    build:
+      context: ../web
+      dockerfile: Dockerfile
+    env_file:
+      - .env.web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres_strapup
+      - go_backend_strapup
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
