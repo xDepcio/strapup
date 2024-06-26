@@ -18,6 +18,7 @@ async function syncContentWorker(contentDir: string) {
             const scriptMdx = await getScriptMdx(savePath)
             fs.writeFileSync(`${contentDir}/remote-scripts/${escape(scriptName)}.mdx`, scriptMdx)
             await markScriptAsSynced(scriptName)
+            fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
         } catch (e) {
             console.error("Failed to sync script", scriptName)
             console.error(e)
@@ -33,6 +34,7 @@ async function syncContentWorker(contentDir: string) {
             const templateMdx = await getTemplateMdx(savePath, templateName)
             fs.writeFileSync(`${contentDir}/remote-templates/${escape(templateName)}.mdx`, templateMdx)
             await markTemplateAsSynced(templateName)
+            fs.rmSync(process.env.PWD + '/temp', { force: true, recursive: true })
         } catch (e) {
             console.error("Failed to sync template", templateName)
             console.error(e)
@@ -41,8 +43,6 @@ async function syncContentWorker(contentDir: string) {
 }
 
 export async function syncContent(contentDir: string) {
-    // const xd = await getTreeString(resolve('.'))
-    // console.log("xd", xd)
     await syncContentWorker(contentDir)
 
     let wasCancelled = false
