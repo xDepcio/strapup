@@ -12,6 +12,7 @@ export async function DBQuery<T extends QueryResultRow>(query: string, params: a
     await dbClient.connect()
     const res = await dbClient.query<T>(query, params)
     dbClient.end()
+
     return res
 }
 
