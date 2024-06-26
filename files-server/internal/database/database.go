@@ -4,24 +4,56 @@ import (
 	"database/sql"
 	"fmt"
 
+	"github.com/gofor-little/env"
 	_ "github.com/lib/pq"
 )
 
-const (
-	host     = "ep-cool-king-89229861-pooler.eu-central-1.postgres.vercel-storage.com"
-	port     = 5432
-	user     = "default"
-	password = "s2afWbT5cptn"
-	dbname   = "verceldb"
-)
+type DbConnectionDetails struct {
+	host     string
+	port     string
+	user     string
+	password string
+	dbname   string
+}
+
+func getDbConnectionFromEnv() DbConnectionDetails {
+	host, err := env.MustGet("POSTGRES_HOST")
+	if err != nil {
+		panic(err)
+	}
+	port, err := env.MustGet("POSTGRES_PORT")
+	if err != nil {
+		panic(err)
+	}
+	user, err := env.MustGet("POSTGRES_USER")
+	if err != nil {
+		panic(err)
+	}
+	password, err := env.MustGet("POSTGRES_PASSWORD")
+	if err != nil {
+		panic(err)
+	}
+	dbname, err := env.MustGet("POSTGRES_DB")
+	if err != nil {
+		panic(err)
+	}
+	return DbConnectionDetails{
+		host:     host,
+		port:     port,
+		user:     user,
+		password: password,
+		dbname:   dbname,
+	}
+}
 
 var DB *sql.DB
 
 func Connect() error {
+	dbConnectionDetails := getDbConnectionFromEnv()
 	var err error
 	psqlInfo := fmt.Sprintf(
-		"host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=require",
-		host, port, user, password, dbname,
+		"host=%s port=%s user=%s "+"password=%s dbname=%s sslmode=disable",
+		dbConnectionDetails.host, dbConnectionDetails.port, dbConnectionDetails.user, dbConnectionDetails.password, dbConnectionDetails.dbname,
 	)
 
 	DB, err = sql.Open("postgres", psqlInfo)
@@ -33,24 +65,5 @@ func Connect() error {
 		return err
 	}
 
-	// fmt.Println("Successfully connected to database!")
 	return nil
-	// rows, err := DB.Query("SELECT name, email, login FROM users")
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// defer rows.Close()
-	// // fmt.Println(rows)
-	// for rows.Next() {
-	// 	var name string
-	// 	var email string
-	// 	var login string
-	// 	if err := rows.Scan(&name, &email, &login); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// 	fmt.Printf("Name: %s, Email: %s, Login: %s\n", name, email, login)
-	// }
-
-	// // fmt.Println("Successfully connected to database!")
-	// return nil
 }
