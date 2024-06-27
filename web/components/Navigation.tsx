@@ -18,7 +18,7 @@ export default async function Navigation() {
                     <Link href={'/'} className={cn(ProximaSoft.className, "font-bold text-2xl bg-clip-text text-transparent bg-[rgba(67,_56,_202,_1)]")}>Strapup</Link>
                 </div>
                 <div className="flex items-center justify-center gap-4">
-                    <Search />
+                    {/* <Search /> */}
                     <Link href={'/docs'} className="font-medium flex items-center justify-center text-sm">
                         <Button variant={'ghost'}>
                             Docs
