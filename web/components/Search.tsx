@@ -1,25 +1,23 @@
 'use client'
+import { SearchResBody } from "@/app/api/search/route";
 import {
     Dialog,
     DialogContent,
     DialogTrigger,
     closeDialog
 } from "@/components/ui/dialog";
-import { useEffect, useRef, useState } from "react";
-import { useHotkeys } from "react-hotkeys-hook";
-import { CiHashtag } from "react-icons/ci";
-import { FaSearch } from "react-icons/fa";
-import { Skeleton } from "./ui/skeleton";
-import { Switch } from "./ui/switch";
-import { Label } from "./ui/label";
-import { SearchResBody } from "@/app/api/search/route";
-import { FaCode } from "react-icons/fa6";
-import { MdOutlineStorage } from "react-icons/md";
-import { cn } from "@/lib/utils";
-import { FaRegStar } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
+import { CiHashtag } from "react-icons/ci";
+import { FaRegStar, FaSearch } from "react-icons/fa";
+import { FaCode } from "react-icons/fa6";
+import { MdOutlineStorage } from "react-icons/md";
 import { SearchResBodyData } from "./Providers";
+import { Label } from "./ui/label";
+import { Skeleton } from "./ui/skeleton";
+import { Switch } from "./ui/switch";
 
 export default function Search() {
     const searchRef = useRef<HTMLButtonElement>(null)
@@ -62,7 +60,6 @@ export default function Search() {
 
     function handleSearchSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
-        // console.log(e.currentTarget.val)
         router.push(`/search?keyword=${searchInput}&searchScripts=${searchScripts}&searchTemplates=${searchTemplates}`)
         closeDialog()
     }
@@ -73,9 +70,9 @@ export default function Search() {
                 <button className="dark:bg-zinc-900 bg-zinc-100 flex text-muted-foreground text-sm items-center justify-between px-4 py-2 gap-8 rounded-md">
                     <div className="flex items-center justify-center gap-2">
                         <FaSearch />
-                        <p className="">Search templates/scripts...</p>
+                        <p className="text-nowrap overflow-hidden text-ellipsis max-w-[50px] sm:max-w-full">Search templates/scripts...</p>
                     </div>
-                    <p className="dark:bg-zinc-950 dark:border-zinc-500 dark:text-zinc-50 p-0 text-xs font-medium bg-white px-2 py-[2px] rounded-full text-zinc-950 border border-zinc-200">
+                    <p className="dark:bg-zinc-950 sm:block hidden dark:border-zinc-500 dark:text-zinc-50 p-0 text-xs font-medium bg-white px-2 py-[2px] rounded-full text-zinc-950 border border-zinc-200">
                         Ctrl+K
                     </p>
                 </button>
