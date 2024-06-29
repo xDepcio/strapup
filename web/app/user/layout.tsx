@@ -13,8 +13,8 @@ export default function UserPage({ children }: { children: React.ReactNode }) {
     const pathname = usePathname()
 
     return (
-        <div className="min-h-screen mx-auto max-w-screen-lg grid grid-cols-[20%_auto] mt-16 mb-16">
-            <div className="flex flex-col gap-2 text-muted-foreground">
+        <div className="min-h-screen mx-auto max-w-screen-lg sm:grid sm:grid-cols-[20%_auto] mt-16 mb-16">
+            <div className="sm:flex-col sm:gap-2 text-muted-foreground flex flex-wrap text-nowrap gap-0 justify-center sm:justify-start gap-x-6">
                 <Link href={'/user/templates'} className={cn("py-2 flex gap-2 items-center cursor-pointer hover:text-indigo-600 transition-all", pathname === '/user/templates' ? 'text-indigo-600 font-medium' : '')}>
                     <p>My Templates</p>
                     <MdOutlineSdStorage />
