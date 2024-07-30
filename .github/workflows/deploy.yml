@@ -29,5 +29,5 @@ jobs:
         password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
         script: |
           ls -al
-          [ -z 'ds']
+          [ -z 'ds' ]
           echo "Hello World"
