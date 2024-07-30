@@ -3,40 +3,12 @@ name: deploy to server
 on: [push]
 
 jobs:
-#   build-docker-image:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v4
-
-#       - name: Build Docker image
-#         run: docker compose -f
-
-#       - name: Push Docker image
-#         run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-#         run: docker tag my-docker-image ${{ secrets.DOCKER_USERNAME }}/my-docker-image
-#         run: docker push ${{ secrets.DOCKER_USERNAME }}/my-docker-image
-
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    - name: executing remote ssh commands using password
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.DEPLOY_SERVER_HOST }}
-        username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
-        password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
-        script_stop: true
-        script: |
-          ls -al
-          echo "Hello World"
-
-    - name: Tar code
-      run: tar -czf ../strapup.tar.gz ../$(basename $PWD)
 
     - name: copy file via ssh password
       uses: appleboy/scp-action@v0.1.7
@@ -46,3 +18,13 @@ jobs:
         password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
         source: "./"
         target: ./strapup
+
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.DEPLOY_SERVER_HOST }}
+        username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+        password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
+        script_stop: true
+        script: |
+          docker compose -f ./strapup/strapup-container/docker-compose.yml up --build -d
