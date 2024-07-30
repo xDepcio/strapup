@@ -27,4 +27,4 @@ jobs:
         password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
         script_stop: true
         script: |
-          docker compose -f ./strapup/strapup-container/docker-compose.yml up --build -d
+          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml up --build -d
