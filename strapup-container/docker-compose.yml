@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - ~/docker-volumes/strapup/data:/var/lib/postgresql/data
     networks:
       - my_network
     healthcheck:
