@@ -19,6 +19,15 @@ jobs:
         source: "./"
         target: ./strapup
 
+    - name: copy env files
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.DEPLOY_SERVER_HOST }}
+        username: ${{ secrets.DEPLOY_SERVER_USERNAME }}
+        password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
+        source: ".env.db,.env.files-server,.env.web"
+        target: ./strapup/strapup-container/
+
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@v1.0.3
       with:
