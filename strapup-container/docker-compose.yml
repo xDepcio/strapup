@@ -12,6 +12,11 @@ services:
       - ./data:/var/lib/postgresql/data
     networks:
       - my_network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   go_backend_strapup:
     container_name: go_backend_strapup
@@ -23,7 +28,8 @@ services:
     ports:
       - "5000:5000"
     depends_on:
-      - postgres_strapup
+      postgres_strapup:
+        condition: service_healthy
     networks:
       - my_network
 
@@ -37,8 +43,10 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - postgres_strapup
-      - go_backend_strapup
+      postgres_strapup:
+        condition: service_healthy
+      go_backend_strapup:
+        condition: service_started
     networks:
       - my_network
 
