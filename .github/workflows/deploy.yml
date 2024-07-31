@@ -12,19 +12,19 @@ jobs:
 
     - name: paste env variables to files
       run: |
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./strapup/strapup-container/.env.db
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./strapup/strapup-container/.env.db
-        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./strapup/strapup-container/.env.db
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > ./strapup/strapup-container/.env.files-server
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./strapup/strapup-container/.env.files-server
-        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./strapup/strapup-container/.env.files-server
-        echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./strapup/strapup-container/.env.files-server
-        echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./strapup/strapup-container/.env.files-server
-        echo "API_ROOT_KEY=${{ secrets.API_ROOT_KEY }}" >> ./strapup/strapup-container/.env.files-server
-        echo "API_ROOT_KEY=${{ secrets.API_ROOT_KEY }}" >> ./strapup/strapup-container/.env.web
-        echo "POSTGRES_URL=${{ secrets.POSTGRES_URL }}" >> ./strapup/strapup-container/.env.web
-        echo "GO_BACKEND_URL=${{ secrets.GO_BACKEND_URL }}" >> ./strapup/strapup-container/.env.web
-        echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./strapup/strapup-container/.env.web
+        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> ./strapup-container/.env.db
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./strapup-container/.env.db
+        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./strapup-container/.env.db
+        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" > ./strapup-container/.env.files-server
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> ./strapup-container/.env.files-server
+        echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> ./strapup-container/.env.files-server
+        echo "POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}" >> ./strapup-container/.env.files-server
+        echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> ./strapup-container/.env.files-server
+        echo "API_ROOT_KEY=${{ secrets.API_ROOT_KEY }}" >> ./strapup-container/.env.files-server
+        echo "API_ROOT_KEY=${{ secrets.API_ROOT_KEY }}" >> ./strapup-container/.env.web
+        echo "POSTGRES_URL=${{ secrets.POSTGRES_URL }}" >> ./strapup-container/.env.web
+        echo "GO_BACKEND_URL=${{ secrets.GO_BACKEND_URL }}" >> ./strapup-container/.env.web
+        echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./strapup-container/.env.web
 
     - name: copy repo to remote server
       uses: appleboy/scp-action@v0.1.7
