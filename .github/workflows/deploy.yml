@@ -10,7 +10,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - name: copy file via ssh password
+    - name: copy repo to remote server
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.DEPLOY_SERVER_HOST }}
@@ -27,4 +27,5 @@ jobs:
         password: ${{ secrets.DEPLOY_SERVER_PASSWORD }}
         script_stop: true
         script: |
-          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml up --build -d
+          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml down
+          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml up -d
