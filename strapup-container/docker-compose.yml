@@ -8,12 +8,12 @@ services:
       - .env.db
     ports:
       - "5432:5432"
-    volumes:
-      - ~/docker-volumes/strapup/data:/var/lib/postgresql/data
+    # volumes:
+    #   - ~/docker-volumes/strapup/data:/var/lib/postgresql/data
     networks:
       - my_network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready" ]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
