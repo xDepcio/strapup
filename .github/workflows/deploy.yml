@@ -28,6 +28,7 @@ jobs:
         echo "AUTH_GITHUB_ID=${{ secrets.AUTH_GITHUB_ID }}" >> ./strapup-container/.env.web
         echo "AUTH_GITHUB_SECRET=${{ secrets.AUTH_GITHUB_SECRET }}" >> ./strapup-container/.env.web
         echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./strapup-container/.env.web
+        cp ./strapup-container/.env.files-server ./files-server/.env
 
     - name: copy repo to remote server
       uses: appleboy/scp-action@v0.1.7
