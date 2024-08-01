@@ -25,6 +25,9 @@ jobs:
         echo "POSTGRES_URL=${{ secrets.POSTGRES_URL }}" >> ./strapup-container/.env.web
         echo "GO_BACKEND_URL=${{ secrets.GO_BACKEND_URL }}" >> ./strapup-container/.env.web
         echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> ./strapup-container/.env.web
+        echo "AUTH_GITHUB_ID=${{ secrets.AUTH_GITHUB_ID }}" >> ./strapup-container/.env.web
+        echo "AUTH_GITHUB_SECRET=${{ secrets.AUTH_GITHUB_SECRET }}" >> ./strapup-container/.env.web
+        echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> ./strapup-container/.env.web
 
     - name: copy repo to remote server
       uses: appleboy/scp-action@v0.1.7
@@ -44,4 +47,4 @@ jobs:
         script_stop: true
         script: |
           echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml down
-          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml up -d
+          echo ${{ secrets.DEPLOY_SERVER_PASSWORD }} | sudo -S docker compose -f ./strapup/strapup-container/docker-compose.yml up --build -d
